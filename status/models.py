@@ -32,6 +32,12 @@ class ServicesDescriptions(models.Model):
         return self.description
 
 
+class BusinessServiceDescriptions(models.Model):
+    business_service_descriptions_id = models.AutoField(primary_key=True)  # Field name made lowercase.
+    business_service_key = models.ForeignKey(BusinessService, models.DO_NOTHING)  # Field name made lowercase.
+    service_description_key = models.ForeignKey(ServicesDescriptions, models.DO_NOTHING)  # Field name made lowercase.
+
+
 class ServicesCategory(models.Model):
     service_category_id = models.AutoField(primary_key=True)  # Field name made lowercase.
     tag = models.CharField(unique=True, max_length=45)  # Field name made lowercase.
@@ -116,6 +122,10 @@ class ServiceHistoryStatus(models.Model):
     service_status = models.ForeignKey(ServicesStatus, models.DO_NOTHING)
     action_date = models.DateTimeField()
     action_notes = models.TextField(blank=True, null=True, verbose_name='Notes')  # Field name made lowercase.
+
+    class Meta:
+        verbose_name = _("Service History Status")
+        verbose_name_plural = _("Service Histories Status")
 
     def __str__(self):
         return "{0} in {1}".format(self.service_history.business_service, self.service_history.ticket_id)
