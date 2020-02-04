@@ -5,65 +5,44 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 
-class BusinessService(models.Model):
-    business_service_id = models.AutoField(primary_key=True)  # Field name made lowercase.
-    business_service_name = models.CharField(unique=True, max_length=100)  # Field name made lowercase.
-    business_service_description = models.CharField(max_length=100, blank=True, null=True)  # Field name made lowercase.
+class Service(models.Model):
+    service_name = models.CharField(unique=True, max_length=100)  # Field name made lowercase.
+    service_description = models.CharField(max_length=100, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = _("Business Service")
-        verbose_name_plural = _("Business Services")
+        verbose_name = _("Service")
+        verbose_name_plural = _("Services")
 
     def __str__(self):
-        return self.business_service_name
+        return self.service_name
 
 
-class ServicesDescriptions(models.Model):
-    service_description_id = models.AutoField(primary_key=True)  # Field name made lowercase.
-    business_service = models.ForeignKey(BusinessService, models.DO_NOTHING, verbose_name='Business Service')  # Field name made lowercase.
-    description = models.CharField(max_length=45)  # Field name made lowercase.
+class SubService(models.Model):
+    sub_service_name = models.CharField(unique=True, max_length=100)  # Field name made lowercase.
+    sub_service_description = models.CharField(max_length=100, blank=True, null=True)  # Field name made lowercase.
+    services = models.ManyToManyField(Service)
 
     class Meta:
-        unique_together = (('business_service', 'description'),)
-        verbose_name = _("Services Description")
-        verbose_name_plural = _("Services Descriptions")
+        verbose_name = _("Sub - Service")
+        verbose_name_plural = _("Sub - Services")
 
     def __str__(self):
-        return self.description
+        return self.sub_service_name
 
 
-class BusinessServiceDescriptions(models.Model):
-    business_service_descriptions_id = models.AutoField(primary_key=True)  # Field name made lowercase.
-    business_service_key = models.ForeignKey(BusinessService, models.DO_NOTHING)  # Field name made lowercase.
-    service_description_key = models.ForeignKey(ServicesDescriptions, models.DO_NOTHING)  # Field name made lowercase.
-
-
-class ServicesCategory(models.Model):
-    service_category_id = models.AutoField(primary_key=True)  # Field name made lowercase.
-    tag = models.CharField(unique=True, max_length=45)  # Field name made lowercase.
-    color = models.CharField(unique=True, max_length=7)  # Field name made lowercase.
+class StatusCategory(models.Model):
+    status_category_tag = models.CharField(unique=True, max_length=45)  # Field name made lowercase.
+    status_category_color = models.CharField(unique=True, max_length=7)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = _("Service Category")
-        verbose_name_plural = _("Services Category")
+        verbose_name = _("Status Category")
+        verbose_name_plural = _("Status Categories")
 
     def __str__(self):
-        return self.tag
+        return self.status_category_tag
 
 
-class ServicesStatus(models.Model):
-    service_status_id = models.AutoField(primary_key=True)  # Field name made lowercase.
-    status = models.CharField(unique=True, max_length=45)  # Field name made lowercase.
-
-    class Meta:
-        verbose_name = _("Service Status")
-        verbose_name_plural = _("Services Status")
-
-    def __str__(self):
-        return self.status
-
-
-class ServicesHistory(models.Model):
+class Ticket(models.Model):
     NO = False
     YES = True
     YES_NO_CHOICES = (
@@ -71,36 +50,43 @@ class ServicesHistory(models.Model):
         (YES, 'Yes')
     )
 
-    service_history_id = models.AutoField(primary_key=True)  # Field name made lowercase.
     ticket_id = models.CharField(unique=True, max_length=10)
-    business_service = models.ForeignKey(BusinessService, models.DO_NOTHING, verbose_name='Business Service')  # Field name made lowercase.
-    service_category = models.ForeignKey(ServicesCategory, models.DO_NOTHING, verbose_name='Service Category')  # Field name made lowercase.
-    service_status = models.ForeignKey(ServicesStatus, models.DO_NOTHING, default=1, verbose_name='Service Status')  # Field name made lowercase.
+    sub_service = models.ForeignKey(SubService, models.DO_NOTHING, verbose_name='Sub-Service')  # Field name made lowercase.
+
+    category_status = models.ForeignKey(StatusCategory, models.DO_NOTHING, default=3, verbose_name='Status')  # Field name made lowercase.
     begin = models.DateTimeField()  # Field name made lowercase.
     end = models.DateTimeField()  # Field name made lowercase.
     action_description = models.TextField()  # Field name made lowercase.
     action_notes = models.TextField(blank=True, null=True)  # Field name made lowercase.
-    # closing_notes = models.TextField(blank=True, null=True)  # Field name made lowercase.
-    # notify_action = models.BooleanField(default=False, verbose_name='Ticket notified')  # Field name made lowercase.
+
     notify_action = models.BooleanField(
         default=NO,
         choices=YES_NO_CHOICES,
         verbose_name='Ticket notified')
 
     class Meta:
-        verbose_name = _("Service History")
-        verbose_name_plural = _("Services History")
+        verbose_name = _("Ticket")
+        verbose_name_plural = _("Tickets")
 
     def __str__(self):
         # return "{0} in {1}".format(self.service_category, self.business_service)
         return self.ticket_id
 
 
-class Subscribers(models.Model):
-    subscribers_id = models.AutoField(primary_key=True)  # Field name made lowercase.
-    name = models.CharField(max_length=45)  # Field name made lowercase.
-    email = models.CharField(max_length=45)  # Field name made lowercase.
-    business_service = models.ManyToManyField(BusinessService)
+class TicketLog(models.Model):
+    service_history = models.ForeignKey(Ticket, models.DO_NOTHING)
+    service_status = models.ForeignKey(StatusCategory, models.DO_NOTHING)
+    action_date = models.DateTimeField()
+    action_notes = models.TextField(blank=True, null=True, verbose_name='Notes')  # Field name made lowercase.
+
+    def __str__(self):
+        return "{0} in {1}".format(self.service_history.sub_service, self.service_history.ticket_id)
+
+
+class Subscriber(models.Model):
+    name = models.CharField(max_length=45)      # Field name made lowercase.
+    email = models.CharField(max_length=45)     # Field name made lowercase.
+    services = models.ManyToManyField(Service)
 
     class Meta:
         verbose_name = _("Subscriber")
@@ -108,24 +94,3 @@ class Subscribers(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class SubscribersBusinessService(models.Model):
-    subscription_id = models.AutoField(primary_key=True)  # Field name made lowercase.
-    subscribers = models.ForeignKey(Subscribers, models.DO_NOTHING)  # Field name made lowercase.
-    business_service_key = models.ForeignKey(BusinessService, models.DO_NOTHING)  # Field name made lowercase.
-
-
-class ServiceHistoryStatus(models.Model):
-    service_history_status_id = models.AutoField(primary_key=True)
-    service_history = models.ForeignKey(ServicesHistory, models.DO_NOTHING)
-    service_status = models.ForeignKey(ServicesStatus, models.DO_NOTHING)
-    action_date = models.DateTimeField()
-    action_notes = models.TextField(blank=True, null=True, verbose_name='Notes')  # Field name made lowercase.
-
-    class Meta:
-        verbose_name = _("Service History Status")
-        verbose_name_plural = _("Service Histories Status")
-
-    def __str__(self):
-        return "{0} in {1}".format(self.service_history.business_service, self.service_history.ticket_id)
