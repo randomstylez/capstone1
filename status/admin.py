@@ -7,6 +7,7 @@ from .models import StatusCategory
 from .models import Ticket
 from .models import TicketLog
 from .models import Subscriber
+from .models import SubServiceServices
 
 from status.forms import *
 
@@ -88,76 +89,17 @@ class TicketAdmin(admin.ModelAdmin):
         form.instance.save()
         formset.save()
 
-    # def save_formset(self, request, form, formset, change):
-    #
-    #     change_detected = False
-    #
-    #     # Detect changes in the main form
-    #     if form.changed_data:
-    #         change_detected = True
-    #
-    #     # Detect changes in the child forms (inline forms/Service Histories)
-    #     my_list = []
-    #     for _form in formset:
-    #         my_list.append(_form.cleaned_data['category_status'].status)
-    #         if _form.has_changed():
-    #             change_detected = True
-    #
-    #     good_to_save = True
-    #
-    #     # Update the Service Status with the last value specified in the Service Status List
-    #     if change_detected:
-    #
-    #         # It checks for multiple 'Completed' status on the Service Status List
-    #         # print(_form.cleaned_data['service_status'])
-    #         # for result in _form.cleaned_data:
-    #         #     print(result)
-    #         # my_list = [_form.cleaned_data[result].status for result in _form.cleaned_data if result == 'service_status']
-    #
-    #         # if [item for item in set(my_list) if my_list.count(item) > 1].count('Completed'):
-    #         #     print("Error")
-    #         #     good_to_save = False
-    #
-    #         # It checks for the proper specification of a 'Completed' status. It must be at the last status object
-    #         if good_to_save and formset.cleaned_data:
-    #
-    #             # It gets the latest service's status specified on the Service Status List
-    #             category_status = formset.cleaned_data[-1]['category_status']
-    #             # It retrieves the service status' id given its value
-    #             category_status_id = StatusCategory.objects.get(status=category_status)
-    #
-    #             # Check for errors in the Service Status List
-    #             if category_status.status != 'Completed' and \
-    #                     any('Completed' in result['category_status'].status for result in formset.cleaned_data):
-    #                 print("Error")
-    #                 good_to_save = False
-    #             else:
-    #                 print("Good to save")
-    #
-    #                 # It modifies the ticket's status given the last service status history specified
-    #                 # obj.instance.service_status_id = service_status_id.pk
-    #                 form.instance.category_status = category_status_id.pk
-    #                 # obj.save()
-    #                 form.instance.save()
-    #
-    #         if good_to_save:
-    #             # super().save_related(request, obj, forms, change)
-    #             formset.save()
-    #
-    #             # It sends the Business Service's ID to notify all the users subscribed
-    #             # self.notify_user(obj.cleaned_data['business_service'].pk)
-    #             self.notify_user(form.cleaned_data['sub_service'].pk)
-    #         else:
-    #             formset.save(commit=False)
-    #
-    #     # # It calls the saving function but specifying that no changes has been made
-    #     # print(change)
-    #     # # super().save_related(request, obj, forms, change)
-    #     formset.save(commit=False)
-
 
 @admin.register(Subscriber)
 class SubscribersAdmin(admin.ModelAdmin):
     list_display = ('name', 'email')
     search_fields = ['name', 'email']
     ordering = ['name']
+
+
+@admin.register(SubServiceServices)
+class SubServiceServicesAdmin(admin.ModelAdmin):
+    list_display = ('service', 'subservice', 'dimension')
+    list_filter = ('service', 'subservice', 'dimension')
+    search_fields = ['service', 'subservice', 'dimension']
+    ordering = ['service']

@@ -20,7 +20,7 @@ class Service(models.Model):
 class SubService(models.Model):
     sub_service_name = models.CharField(unique=True, max_length=100)  # Field name made lowercase.
     sub_service_description = models.CharField(max_length=100, blank=True, null=True)  # Field name made lowercase.
-    services = models.ManyToManyField(Service)
+    services = models.ManyToManyField(Service, through='SubServiceServices')
 
     class Meta:
         verbose_name = _("Sub - Service")
@@ -28,6 +28,18 @@ class SubService(models.Model):
 
     def __str__(self):
         return self.sub_service_name
+
+
+class SubServiceServices(models.Model):
+    service = models.ForeignKey(Service, models.CASCADE)
+    subservice = models.ForeignKey(SubService, models.CASCADE)
+    dimension = models.CharField(max_length=45, blank=True, null=True)  # Field name made lowercase. {High - Medium - Low}
+
+    class Meta:
+        verbose_name = _("Overview")
+
+    def __str__(self):
+        return "about {0} in {1}".format(self.subservice, self.service)
 
 
 class StatusCategory(models.Model):
