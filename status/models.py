@@ -12,6 +12,7 @@ class Service(models.Model):
     class Meta:
         verbose_name = _("Service")
         verbose_name_plural = _("Services")
+        ordering = ['service_name']
 
     def __str__(self):
         return self.service_name
@@ -25,18 +26,33 @@ class SubService(models.Model):
     class Meta:
         verbose_name = _("Sub - Service")
         verbose_name_plural = _("Sub - Services")
+        ordering = ['sub_service_name']
 
     def __str__(self):
         return self.sub_service_name
 
 
+class Priority(models.Model):
+    priority_tag = models.CharField(unique=True, max_length=25)  # Field name made lowercase.
+    priority_color = models.CharField(unique=True, max_length=7)  # Field name made lowercase.
+
+    class Meta:
+        verbose_name = _("Priority Tag")
+        verbose_name_plural = _("Priority Tags")
+        ordering = ['priority_tag']
+
+    def __str__(self):
+        return self.priority_tag
+
+
 class SubServiceServices(models.Model):
     service = models.ForeignKey(Service, models.CASCADE)
     subservice = models.ForeignKey(SubService, models.CASCADE)
-    dimension = models.CharField(max_length=45, blank=True, null=True)  # Field name made lowercase. {High - Medium - Low}
+    priority = models.ForeignKey(Priority, models.DO_NOTHING)
 
     class Meta:
         verbose_name = _("Overview")
+        verbose_name_plural = _("Overview")
 
     def __str__(self):
         return "about {0} in {1}".format(self.subservice, self.service)

@@ -8,6 +8,7 @@ from .models import Ticket
 from .models import TicketLog
 from .models import Subscriber
 from .models import SubServiceServices
+from .models import Priority
 
 from status.forms import *
 
@@ -99,7 +100,13 @@ class SubscribersAdmin(admin.ModelAdmin):
 
 @admin.register(SubServiceServices)
 class SubServiceServicesAdmin(admin.ModelAdmin):
-    list_display = ('service', 'subservice', 'dimension')
-    list_filter = ('service', 'subservice', 'dimension')
-    search_fields = ['service', 'subservice', 'dimension']
+    list_display = ('service', 'subservice', 'priority')
+    list_filter = ('service', 'subservice', 'priority')
+    search_fields = ['service', 'subservice', 'priority']
     ordering = ['service']
+
+
+@admin.register(Priority)
+class PriorityAdmin(admin.ModelAdmin):
+    list_display = ('priority_tag', 'priority_color')
+    ordering = ['priority_tag']
