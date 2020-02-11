@@ -24,7 +24,8 @@ class ServiceAdmin(admin.ModelAdmin):
 @admin.register(SubService)
 class SubServiceAdmin(admin.ModelAdmin):
     list_display = ('sub_service_name', 'sub_service_description')
-    search_fields = ['services', 'service_name', 'service_description']
+    # search_fields = ['services', 'sub_service_description', 'sub_service_name']
+    search_fields = ['sub_service_description', 'sub_service_name']
     list_filter = ('services',)
     ordering = ['sub_service_name']
 
@@ -74,8 +75,9 @@ class TicketAdmin(admin.ModelAdmin):
 
     readonly_fields = ['notify_action']
 
-    search_fields = ['services', 'sub_service', 'category_status']
-    list_filter = ('category_status',)
+    # search_fields = ['sub_service', 'category_status']
+    search_fields = ['ticket_id']
+    list_filter = ('category_status', 'sub_service')
     ordering = ['end']
 
     actions = [notify_users]

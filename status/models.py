@@ -51,8 +51,8 @@ class SubServiceServices(models.Model):
     priority = models.ForeignKey(Priority, models.DO_NOTHING)
 
     class Meta:
-        verbose_name = _("Overview")
-        verbose_name_plural = _("Overview")
+        verbose_name = _("Topology")
+        verbose_name_plural = _("Topology")
 
     def __str__(self):
         return "about {0} in {1}".format(self.subservice, self.service)
@@ -114,7 +114,8 @@ class TicketLog(models.Model):
 class Subscriber(models.Model):
     name = models.CharField(max_length=45)      # Field name made lowercase.
     email = models.CharField(max_length=45)     # Field name made lowercase.
-    services = models.ManyToManyField(Service)
+    # services = models.ManyToManyField(Service)
+    subservices = models.ManyToManyField(SubService, verbose_name='Sub - Services')
 
     class Meta:
         verbose_name = _("Subscriber")
