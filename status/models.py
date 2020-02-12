@@ -19,13 +19,13 @@ class Service(models.Model):
 
 
 class SubService(models.Model):
-    sub_service_name = models.CharField(unique=True, max_length=100)  # Field name made lowercase.
+    sub_service_name = models.CharField(unique=True, max_length=100, verbose_name='Sub-Service')  # Field name made lowercase.
     sub_service_description = models.CharField(max_length=100, blank=True, null=True)  # Field name made lowercase.
-    services = models.ManyToManyField(Service, through='SubServiceServices')
+    services = models.ManyToManyField(Service, through='SubServiceServices', verbose_name='Service')
 
     class Meta:
-        verbose_name = _("Sub - Service")
-        verbose_name_plural = _("Sub - Services")
+        verbose_name = _("Sub-Service")
+        verbose_name_plural = _("Sub-Services")
         ordering = ['sub_service_name']
 
     def __str__(self):
@@ -114,7 +114,6 @@ class TicketLog(models.Model):
 class Subscriber(models.Model):
     name = models.CharField(max_length=45)      # Field name made lowercase.
     email = models.CharField(max_length=45)     # Field name made lowercase.
-    # services = models.ManyToManyField(Service)
     subservices = models.ManyToManyField(SubService, verbose_name='Sub - Services')
 
     class Meta:
