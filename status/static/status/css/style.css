@@ -1,0 +1,59 @@
+
+body{
+    font-family: 'Roboto', sans-serif;
+}
+
+.navbar{
+    font-family: 'Fira Sans', sans-serif;
+}
+
+#logo{
+    width: auto;
+    height: 2.5rem;
+}
+
+.navbar-nav .active{
+    background-color: rgb(212, 212, 212);
+}
+
+.contact{
+    font-weight: Bold;
+}
+
+#footer{
+    background-color: #1B2B60;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+}
+
+
+/* Default size for xs screen sizes */
+.navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p {
+        font-size: 0.5rem;
+}
+
+
+/* Adjusting elements according to screen size. Responsive */
+
+@media (min-width: 576px) {   /*Small*/
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p{
+        font-size: 0.7rem;
+    }
+}
+
+@media (min-width: 768px) {   /*Medium*/
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p{
+        font-size: 0.8rem;
+    }
+}
+
+@media (min-width: 992px) {  /*Large*/
+
+}
+
+@media (min-width: 1200px) {   /*Extra Large*/
+
+}
