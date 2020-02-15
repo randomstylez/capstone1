@@ -10,7 +10,9 @@ from django.views import View
 class ServicesStatusView(View):
     template_name = "status/services_status.html"
     def get(self, request, *args, **kwargs):
+        queryset = Ticket.objects.all()
         context = {
+            "object_list": queryset,
             "active_nav": 1
         }
         return render(request, self.template_name, context)
@@ -38,8 +40,8 @@ class ServiceHistoryView(View):
         return render(request, self.template_name, context)
 
 #Services Status History Details page
-class ServiceHistoryDetails(View):
-    template_name = "status/details.html"
+class ServiceHistoryDetailsView(View):
+    template_name = "status/sh_details.html"
 
     def get(self, request, id=None, *args, **kwargs):
         context = {

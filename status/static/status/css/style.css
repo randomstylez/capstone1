@@ -16,8 +16,8 @@ body{
     background-color: rgb(212, 212, 212);
 }
 
-.contact{
-    font-weight: Bold;
+.bold{
+    font-weight: 700;
 }
 
 #footer{
@@ -29,6 +29,28 @@ body{
     color: white;
 }
 
+#service_status_heading h1{
+    text-align: center;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: Semi-Bold;
+    font-size: 1.5rem;
+}
+
+#list_events{
+    background-color: #E9ECEF;
+}
+
+#list_events p{
+    margin-bottom: 0.3rem;
+}
+
+a { color: inherit; }
+
+a:hover
+{
+     text-decoration:none;
+     color: inherit;
+}
 
 /* Default size for xs screen sizes */
 .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p {
@@ -42,11 +64,19 @@ body{
     .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p{
         font-size: 0.7rem;
     }
+
+    #service_status_heading h1{
+    font-size: 1.8rem;
+    }
 }
 
 @media (min-width: 768px) {   /*Medium*/
     .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p{
         font-size: 0.8rem;
+    }
+
+    #service_status_heading h1{
+    font-size: 2rem;
     }
 }
 

@@ -3,7 +3,32 @@
 
 {% block content %}
 
-<!--PAGE CONTENT GOES HERE-->
+<div class="container mt-4" id="service_status_heading">
+    <h1>Services Status</h1>
+</div>
+
+<!--Recent events section-->
+
+<section id="recent_events"> <!--this section will show all events in the last five days-->
+    <div class="container" id="events_heading">
+        <p class="bold">Recent Events</p>
+    </div>
+    {% for instance in object_list %}
+        <div class="container mt-4 py-3" id="list_events">
+            <a href="details/{{ instance.id}}">
+                <p><span class="bold">Service Impacted: </span>{{ instance.sub_service.sub_service_name }}</p>
+                <p><span class="bold">Status: </span>{{ instance.category_status.status_category_tag }}</p>
+                <p>{{ instance.action_description }}</p> <!--Description of the ticket-->
+            </a>
+        </div>
+    {% endfor %}
+</section>
+
+<!--End of Recent events section-->
+
+<!--Services List section-->
+
+<!--End of Services List section-->
 
 {% endblock %}
 
