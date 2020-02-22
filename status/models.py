@@ -47,10 +47,12 @@ class Priority(models.Model):
 
 class SubServiceServices(models.Model):
     service = models.ForeignKey(Service, models.CASCADE)
-    subservice = models.ForeignKey(SubService, models.CASCADE)
+    subservice = models.ForeignKey(SubService, models.CASCADE, verbose_name='Sub-Service')
     priority = models.ForeignKey(Priority, models.DO_NOTHING)
 
     class Meta:
+        unique_together = ('service', 'subservice')
+
         verbose_name = _("Topology")
         verbose_name_plural = _("Topology")
 
@@ -114,6 +116,7 @@ class TicketLog(models.Model):
 class Subscriber(models.Model):
     name = models.CharField(max_length=45)      # Field name made lowercase.
     email = models.CharField(max_length=45)     # Field name made lowercase.
+    services = models.ManyToManyField(Service, verbose_name='Services')
     subservices = models.ManyToManyField(SubService, verbose_name='Sub - Services')
 
     class Meta:
