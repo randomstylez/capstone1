@@ -13,8 +13,9 @@
     <div class="container" id="events_heading">
         <p class="bold">Recent Events</p>
     </div>
-    {% for instance in object_list %}
-        <div class="container mt-4 py-3" id="list_events">
+    {% for instance in ticket_list %}
+        <div class="container mt-4 py-3" id="list_events"
+             style="border-left: 0.6rem solid {{instance.category_status.status_category_color}};">
             <a href="details/{{ instance.id}}">
                 <p><span class="bold">Service Impacted: </span>{{ instance.sub_service.sub_service_name }}</p>
                 <p><span class="bold">Status: </span>{{ instance.category_status.status_category_tag }}</p>
@@ -28,6 +29,115 @@
 
 <!--Services List section-->
 
+<!--Search section-->
+<div class="container">
+    <div class="row mt-4">
+    <div class="col-3" id="search">
+        <form action="." method="GET">
+            <div class="row">
+                <div class="col-10 p-0">
+                    <div class="form-group m-0">
+                        <input type="text" name="search" placeholder="Search..." class="form-control">
+                    </div>
+                </div>
+                <div class="col-2 p-0 m-0">
+                    <button type="submit" class="btn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+<!--End of Search section-->
+
+<div class="container mt-4 mb-2">
+
+    <div class="row">
+        <div class="col-10 mb-2 border">
+             <!--Table headings-->
+            <div class="row border-top border-bottom bold pt-2 mb-2" id="list_of_services_heading">
+                <div class="col-5">
+                    <p>Business Services</p>
+                </div>
+                <div class="col">
+                    <p>Day 1</p>
+                </div>
+                <div class="col">
+                    <p>Day 2</p>
+                </div>
+                <div class="col">
+                    <p>Day 3</p>
+                </div>
+                <div class="col">
+                    <p>Day 4</p>
+                </div>
+                <div class="col">
+                    <p>Today</p>
+                </div>
+            </div>
+            <!--End of Table headings-->
+
+            <!--Table Data-->
+            <div id="list_of_services_data">
+                {% for instance in services_list %}
+            <div class="row">
+                <div class="col-5">
+                    <a href="{{instance.id}}">
+                        <p>{{instance.service_name}}</p>
+                    </a>
+                </div>
+                <div class="col">
+                </div>
+                <div class="col">
+                </div>
+                <div class="col">
+                </div>
+                <div class="col">
+                </div>
+                <div class="col">
+                </div>
+            </div>
+            {% endfor %}
+            </div>
+            <!--End of Table Data-->
+        </div>
+        <div class="col-2">
+            <!--Legend section-->
+            <div class="row py-2 border ml-2" id="legend_heading">
+                <p class="bold my-1 pl-2">Legend</p>
+            </div>
+            <div class="container ml-2 border-left border-right border-bottom">
+                <!--Legend items-->
+                {% for instance in category_list %}
+                <div class="row pl-2" id="legend_items">
+                    <div class="col-10">
+                        <p class="my-1">{{instance.status_category_tag}}</p>
+                    </div>
+                    <div class="col-2 px-0">
+                        <p class="m-0 mt-1" style="color: {{instance.status_category_color}}">
+                            {% if instance.status_category_tag == "Alert" %}
+                            <i class="fas fa-exclamation-circle"></i>
+                            {% elif instance.status_category_tag == "Completed"%}
+                            <i class="fas fa-check-circle"></i>
+                            {% elif instance.status_category_tag == "In Process"%}
+                            <i class="fas fa-tools"></i>
+                            {% elif instance.status_category_tag == "Outage"%}
+                            <i class="fas fa-times-circle"></i>
+                            {% elif instance.status_category_tag == "Planned"%}
+                            <i class="far fa-calendar-alt"></i>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            <!--End of Legend items-->
+            </div>
+            <!--End ofLegend section-->
+        </div>
+    </div>
+
+</div>
 <!--End of Services List section-->
 
 {% endblock %}

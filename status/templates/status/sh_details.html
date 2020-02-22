@@ -3,8 +3,98 @@
 
 {% block content %}
 
+<div class="container mt-4" id="service_subservice_info">
+    <div class="row">
+        <div class="col-1 p-0"></div>
+        <div class="col-10">
 
-<!--PAGE CONTENT GOES HERE-->
-<h1>SERVICE HISTORY DETAILS</h1>
-<p><span class="bold">Ticket ID: </span>{{ object.ticket_id }}</p>
+            <!--Ticket main information section-->
+            <p><span class="bold">Service affected:</span> {{ object.sub_service }}</p>
+            <div class="container mb-1" id="ticket_info">
+                <div class="row px-3 pt-3 d-flex justify-content-between">
+                     <p><span class="bold">Ticket ID:</span> {{object.ticket_id}}</p>
+                    <p class="bold"><span style="color: {{object.category_status.status_category_color}}">
+                        {{object.category_status}}</span></p>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <p><span class="bold">Started:</span> {{object.begin}}</p>
+                    </div>
+                    <div class="col-4">
+                        <p><span class="bold">Ended:</span> {{object.end}}</p>
+                    </div>
+                </div>
+                <div class="row" id="ticket_details">
+                    <div class="container mb-3">
+                        <p class="bold">Description:</p>
+                        <p>{{object.action_description}}</p>
+                    </div>
+                    <div class="container mb-3">
+                        <p class="bold">Notes:</p>
+                        <p>{{object.action_notes}}</p>
+                    </div>
+                </div>
+            </div>
+            <!--End of Ticket main information section-->
+
+            <div class="row justify-content-between" id="control_section">
+                <div class="col">
+                    <a href="/status/{{object.sub_service.id}}">
+                        <p class="mb-0">Go to service status history</p>
+                    </a>
+                </div>
+                <div class="col" id="arrows">
+
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number}}">
+                            <p class="border-right pr-2">
+                                <i class="fas fa-arrow-left"></i> Prev
+                            </p>
+                        </a>
+                    {%else%}
+                        <p class="ml-3 border-right inactive pr-2">
+                            <i class="fas fa-arrow-left"></i> Prev
+                        </p>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">
+                            <p class="ml-3">
+                                Next <i class="fas fa-arrow-right"></i>
+                            </p>
+                        </a>
+                    {%else%}
+                        <p class="ml-3 inactive">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </p>
+                    {% endif %}
+                </div>
+                <div class="container">
+
+                </div>
+            </div>
+
+            <!--Ticket Logs section-->
+            <div class="row d-flex justify-content-center mb-1" id="ticketLogsHeading">
+                <div class="col-5"><hr></div>
+                <div class="col-2 px-0 px-md-3 d-flex align-items-center justify-content-center">
+                    <p class="mb-0">Ticket Logs</p>
+                </div>
+                <div class="col-5"><hr></div>
+            </div>
+            <div class="container" id="ticketLogscontent">
+                {% for instance in ticket_logs %}
+                <div class="container ticket_log border py-2 my-2">
+                    <p><span class="bold">Service status: </span>{{instance.service_status.status_category_tag}}</p>
+                    <p><span class="bold">Action date: </span>{{instance.action_date}}</p>
+                    <p class="mb-0"><span class="bold">Notes: </span>{{instance.action_notes}}</p>
+                </div>
+                {% endfor %}
+            </div>
+            <!--End of Ticket Logs section-->
+
+        </div>
+        <div class="col-1 p-0"></div>
+    </div>
+</div>
 {% endblock %}

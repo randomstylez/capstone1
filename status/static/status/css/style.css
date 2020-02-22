@@ -13,7 +13,7 @@ body{
 }
 
 .navbar-nav .active{
-    background-color: rgb(212, 212, 212);
+    background-color: #E9ECEF;
 }
 
 .bold{
@@ -22,8 +22,6 @@ body{
 
 #footer{
     background-color: #1B2B60;
-    position: fixed;
-    bottom: 0;
     width: 100%;
     text-align: center;
     color: white;
@@ -52,8 +50,62 @@ a:hover
      color: inherit;
 }
 
+.form-control{
+    border: none;
+}
+
+#search .row{
+     border: 1px solid #ced4da;
+     border-radius: .25rem;
+}
+
+#list_of_services_data{
+    overflow: auto;
+    height:250px;
+}
+
+#legend_heading{
+    width: 10rem;
+    background-color: #E9ECEF;
+}
+
+#ticket_info{
+    background-color:#E9ECEF;
+    overflow: auto;
+    height: 14rem;
+}
+
+#ticket_details p{
+    margin: 0;
+}
+#ticketLogsHeading p{
+    text-align: center;
+}
+
+#ticketLogscontent{
+    overflow: auto;
+    height: 17rem;
+}
+
+#arrows{
+    text-align: right;
+}
+
+#arrows p{
+    display: inline;
+}
+
+#control_section a{
+    color: #0373fc;
+    text-decoration: underline;
+}
+
+.inactive{
+    color: #96989e;
+}
+
 /* Default size for xs screen sizes */
-.navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p {
+.navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control {
         font-size: 0.5rem;
 }
 
@@ -61,7 +113,7 @@ a:hover
 /* Adjusting elements according to screen size. Responsive */
 
 @media (min-width: 576px) {   /*Small*/
-    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p{
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control{
         font-size: 0.7rem;
     }
 
@@ -71,7 +123,7 @@ a:hover
 }
 
 @media (min-width: 768px) {   /*Medium*/
-    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p{
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control{
         font-size: 0.8rem;
     }
 
