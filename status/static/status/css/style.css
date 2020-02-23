@@ -27,7 +27,7 @@ body{
     color: white;
 }
 
-#service_status_heading h1{
+h1 {
     text-align: center;
     font-family: 'Fira Sans', sans-serif;
     font-weight: Semi-Bold;
@@ -64,6 +64,11 @@ a:hover
     height:250px;
 }
 
+#incidents_data{
+    overflow: auto;
+    height:23rem;
+}
+
 #legend_heading{
     width: 10rem;
     background-color: #E9ECEF;
@@ -95,13 +100,28 @@ a:hover
     display: inline;
 }
 
-#control_section a{
+#control_section a, #incidents_data a{
     color: #0373fc;
     text-decoration: underline;
 }
 
 .inactive{
     color: #96989e;
+}
+
+#service_name p{
+    text-align: right;
+}
+
+#incidents_heading{
+  background-color:#E9ECEF;
+}
+#incidents_heading p{
+  margin: 0;
+}
+
+.btn-dark{
+    background-color: #3b4045;
 }
 
 /* Default size for xs screen sizes */
@@ -117,8 +137,8 @@ a:hover
         font-size: 0.7rem;
     }
 
-    #service_status_heading h1{
-    font-size: 1.8rem;
+    h1{
+        font-size: 1.8rem;
     }
 }
 
@@ -127,8 +147,8 @@ a:hover
         font-size: 0.8rem;
     }
 
-    #service_status_heading h1{
-    font-size: 2rem;
+    h1{
+        font-size: 2rem;
     }
 }
 

@@ -9,7 +9,7 @@
         <div class="col-10">
 
             <!--Ticket main information section-->
-            <p><span class="bold">Service affected:</span> {{ object.sub_service }}</p>
+            <p><span class="bold">Sub-service affected:</span> {{ object.sub_service }}</p>
             <div class="container mb-1" id="ticket_info">
                 <div class="row px-3 pt-3 d-flex justify-content-between">
                      <p><span class="bold">Ticket ID:</span> {{object.ticket_id}}</p>
@@ -39,8 +39,8 @@
 
             <div class="row justify-content-between" id="control_section">
                 <div class="col">
-                    <a href="/status/{{object.sub_service.id}}">
-                        <p class="mb-0">Go to service status history</p>
+                    <a href="/status">
+                        <p class="mb-0">Go to services status page</p>
                     </a>
                 </div>
                 <div class="col" id="arrows">

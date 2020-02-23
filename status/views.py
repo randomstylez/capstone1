@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
-from .models import SubService, Ticket, StatusCategory,Service,TicketLog
+from .models import SubService, Ticket, StatusCategory,Service,TicketLog, SubServiceServices
 from django.views import View
 from django.views.generic import ListView
 from django.core.paginator import Paginator
+from datetime import datetime, timedelta
 
 
 # Create your views here.
@@ -12,7 +13,9 @@ from django.core.paginator import Paginator
 class ServicesStatusView(View):
     template_name = "status/services_status.html"
     def get(self, request, *args, **kwargs):
-        queryset = Ticket.objects.all()
+
+        queryset = Ticket.objects.all().order_by('begin').reverse()[:5]
+
         context = {
             "ticket_list": queryset,
             "active_nav": 1
@@ -22,6 +25,18 @@ class ServicesStatusView(View):
 
         queryset = StatusCategory.objects.all()
         context['category_list'] = queryset
+
+        # Getting today's date
+        today = datetime.now()
+        list_of_five_days = [today]
+
+        counter = 1
+        while counter < 5:
+            list_of_five_days.append(today-timedelta(days=counter))
+            counter = counter+1
+
+
+        context['days'] = list_of_five_days
 
         return render(request, self.template_name, context)
 
@@ -43,8 +58,23 @@ class ServiceHistoryView(View):
             "active_nav": 1
         }
         if id is not None:
-            obj = get_object_or_404(SubService, id=id)
+            obj = get_object_or_404(Service, id=id)
             context['object'] = obj
+
+            #Getting all tickets affecting this service
+            sub_service_service = SubServiceServices.objects.filter(service=obj)
+
+            #Initializing queryset to empty
+            tickets_list = Ticket.objects.none()
+
+            for row in sub_service_service:
+                queryset = Ticket.objects.filter(sub_service=row.subservice)
+                if queryset:
+                    tickets_list = tickets_list | queryset
+
+            context['tickets_list'] = tickets_list
+
+
         return render(request, self.template_name, context)
 
 #Services Status History Details page
@@ -67,7 +97,7 @@ class ServiceHistoryDetailsView(ListView):
             context['ticket_logs'] = queryset
 
             #Getting list of tickets associated with the service
-            service_tickets = Ticket.objects.filter(sub_service=obj.sub_service)
+            service_tickets = Ticket.objects.filter(sub_service=obj.sub_service).order_by('begin')
 
             #Pagination
             paginator = Paginator(service_tickets, 1)

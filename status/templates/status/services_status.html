@@ -17,7 +17,7 @@
         <div class="container mt-4 py-3" id="list_events"
              style="border-left: 0.6rem solid {{instance.category_status.status_category_color}};">
             <a href="details/{{ instance.id}}">
-                <p><span class="bold">Service Impacted: </span>{{ instance.sub_service.sub_service_name }}</p>
+                <p><span class="bold">Sub-service Impacted: </span>{{ instance.sub_service.sub_service_name }}</p>
                 <p><span class="bold">Status: </span>{{ instance.category_status.status_category_tag }}</p>
                 <p>{{ instance.action_description }}</p> <!--Description of the ticket-->
             </a>
@@ -61,19 +61,19 @@
                     <p>Business Services</p>
                 </div>
                 <div class="col">
-                    <p>Day 1</p>
+                    <p>{{days.4 | date:'M-d'}}</p>
                 </div>
                 <div class="col">
-                    <p>Day 2</p>
+                    <p>{{days.3 | date:'M-d'}}</p>
                 </div>
                 <div class="col">
-                    <p>Day 3</p>
+                    <p>{{days.2 | date:'M-d'}}</p>
                 </div>
                 <div class="col">
-                    <p>Day 4</p>
+                    <p>{{days.1 | date:'M-d'}}</p>
                 </div>
                 <div class="col">
-                    <p>Today</p>
+                    <p>{{days.0 | date:'M-d'}}</p>
                 </div>
             </div>
             <!--End of Table headings-->
@@ -81,24 +81,24 @@
             <!--Table Data-->
             <div id="list_of_services_data">
                 {% for instance in services_list %}
-            <div class="row">
-                <div class="col-5">
-                    <a href="{{instance.id}}">
-                        <p>{{instance.service_name}}</p>
-                    </a>
+                <div class="row">
+                    <div class="col-5">
+                        <a href="{{instance.id}}">
+                            <p>{{instance.service_name}}</p>
+                        </a>
+                    </div>
+                    <div class="col">
+                    </div>
+                    <div class="col">
+                    </div>
+                    <div class="col">
+                    </div>
+                    <div class="col">
+                    </div>
+                    <div class="col">
+                    </div>
                 </div>
-                <div class="col">
-                </div>
-                <div class="col">
-                </div>
-                <div class="col">
-                </div>
-                <div class="col">
-                </div>
-                <div class="col">
-                </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
             </div>
             <!--End of Table Data-->
         </div>
