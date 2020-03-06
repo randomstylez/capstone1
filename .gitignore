@@ -4,6 +4,10 @@ venv/
 /venv/*
 /venv/
 
+status/migrations
+status/migrations/
+status/migrations/*
+
 .DS_Store
 
 .idea
