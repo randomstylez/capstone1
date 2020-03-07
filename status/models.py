@@ -18,6 +18,20 @@ class Service(models.Model):
         return self.service_name
 
 
+class View(models.Model):
+    view_name = models.CharField(unique=True, max_length=100, verbose_name='Regions')  # Field name made lowercase.
+    view_description = models.TextField(blank=True, null=True)  # Field name made lowercase.
+    services = models.ManyToManyField(Service)
+
+    class Meta:
+        verbose_name = _("Region")
+        verbose_name_plural = _("Regions")
+        ordering = ['view_name']
+
+    def __str__(self):
+        return self.view_name
+
+
 class SubService(models.Model):
     sub_service_name = models.CharField(unique=True, max_length=100, verbose_name='Sub-Service')  # Field name made lowercase.
     sub_service_description = models.CharField(max_length=100, blank=True, null=True)  # Field name made lowercase.
@@ -82,7 +96,6 @@ class Ticket(models.Model):
 
     ticket_id = models.CharField(unique=True, max_length=10)
     sub_service = models.ForeignKey(SubService, models.DO_NOTHING, verbose_name='Sub-Service')  # Field name made lowercase.
-
     category_status = models.ForeignKey(StatusCategory, models.DO_NOTHING, default=3, verbose_name='Status')  # Field name made lowercase.
     begin = models.DateTimeField()  # Field name made lowercase.
     end = models.DateTimeField()  # Field name made lowercase.

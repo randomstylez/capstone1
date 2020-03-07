@@ -4,6 +4,10 @@ venv/
 /venv/*
 /venv/
 
+status/migrations
+status/migrations/
+status/migrations/*
+
 .DS_Store
 
 .idea
@@ -16,4 +20,3 @@ venv/
 __pycache__
 __pycache__/
 __pycache__/*
-
