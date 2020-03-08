@@ -180,22 +180,42 @@ a:hover
 
 @media (min-width: 768px) {   /*Medium*/
     .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe{
+        font-size: 0.7rem;
+    }
+
+    h1{
+        font-size: 1.8rem;
+    }
+
+    #subscribe, #update{
+        height: 35rem;
+    }
+}
+
+@media (min-width: 992px) {  /*Large*/
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe{
+        font-size: 0.7rem;
+    }
+
+    h1{
+        font-size: 1.8rem;
+    }
+
+    #subscribe, #update{
+        height: 34rem;
+    }
+}
+
+@media (min-width: 1200px) {   /*Extra Large*/
+
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe{
         font-size: 0.8rem;
     }
 
     h1{
         font-size: 2rem;
     }
-
     #subscribe, #update{
-        height: 38rem;
+        height: 36rem;
     }
-}
-
-@media (min-width: 992px) {  /*Large*/
-
-}
-
-@media (min-width: 1200px) {   /*Extra Large*/
-
 }

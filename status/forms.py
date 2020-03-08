@@ -124,7 +124,7 @@ class SubscribeForm (forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}), required=True)
     services = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
                                               queryset=Service.objects.all(), required=False)
-    sub_services = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+    subservices = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
                                               queryset=SubService.objects.all(), required=False)
 
     class Meta:

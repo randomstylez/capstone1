@@ -4,21 +4,20 @@
 {% block content %}
 
 <div class="container" id="subscription_page">
-    <div class="row">
+    <div class="row d-flex justify-content-center ">
         <div class="col-sm-12 col-lg-6 m-4 pt-4" id="subscribe">
             <div class="container mb-3 border-bottom">
                 <h1>Subscribe to Services Updates</h1>
             </div>
             <div class="container">
-
                 {% if subscribed %}
-                <div class="container mt-4 pt-4" id="reg_confirmation">
-                    <h3>You have been registered to receive status updates for the selected services</h3>
-                    <h1>Thank you!</h1>
-                     <a href="/status">
-                        <p class="mb-0">Go to services status page</p>
-                    </a>
-                </div>
+                    <div class="container mt-4 pt-4" id="reg_confirmation">
+                        <h3>You have been registered to receive status updates for the selected services</h3>
+                        <h1>Thank you!</h1>
+                         <a href="/status">
+                            <p class="mb-0">Go to services status page</p>
+                        </a>
+                    </div>
                 {% else %}
                     <form action="." method="POST"> {% csrf_token %}
 
@@ -46,13 +45,13 @@
                         </div>
                         <div class="form-group">
                             <div class="row">
-                                <div class="col my-2 pl-0">
+                                <div class="col mb-1 pl-0">
                                     <p class="mb-0 bold">Sub-Services</p>
                                 </div>
                             </div>
                             <div class="row border" id="list_of_sub_services">
                                 <div class="ml-2">
-                                    {{form.sub_services}}
+                                    {{form.subservices}}
                                 </div>
                             </div>
                         </div>
