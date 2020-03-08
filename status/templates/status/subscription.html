@@ -3,8 +3,90 @@
 
 {% block content %}
 
+<div class="container" id="subscription_page">
+    <div class="row">
+        <div class="col-sm-12 col-lg-6 m-4 pt-4" id="subscribe">
+            <div class="container mb-3 border-bottom">
+                <h1>Subscribe to Services Updates</h1>
+            </div>
+            <div class="container">
 
-<!--PAGE CONTENT GOES HERE-->
+                {% if subscribed %}
+                <div class="container mt-4 pt-4" id="reg_confirmation">
+                    <h3>You have been registered to receive status updates for the selected services</h3>
+                    <h1>Thank you!</h1>
+                     <a href="/status">
+                        <p class="mb-0">Go to services status page</p>
+                    </a>
+                </div>
+                {% else %}
+                    <form action="." method="POST"> {% csrf_token %}
+
+                        <div class="form-group form-inline"> <!--Name info-->
+                            <label class="mr-2 bold" >Enter your name</label>
+                            {{form.name}}
+                        </div>
+
+                        <div class="form-group form-inline mb-0"> <!--Email info-->
+                            <label class="mr-2  bold">Email address</label>
+                            {{form.email}}
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col my-2 pl-0">
+                                    <p class="mb-0  bold">Business Services</p>
+                                </div>
+                            </div>
+                            <div class="row border" id="list_of_services">
+                                <div class="ml-2">
+                                    {{form.services}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col my-2 pl-0">
+                                    <p class="mb-0 bold">Sub-Services</p>
+                                </div>
+                            </div>
+                            <div class="row border" id="list_of_sub_services">
+                                <div class="ml-2">
+                                    {{form.sub_services}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-end" id="subscribe_submit">
+                            <button type="submit" class="btn btn-primary mb-2">Subscribe to updates</button>
+                        </div>
+
+                    </form>
+                {% endif %}
+
+
+            </div>
+        </div>
+        <div class="col d-flex align-items-center justify-content-center" id="update">
+            <div class="container">
+                <div class="container mb-3 border-bottom">
+                    <h1>Update Subscription</h1>
+                </div>
+                <div class="container">
+                    <form action="." method="POST"> {% csrf_token %}
+                        <div class="form-group"> <!--Email info-->
+                            <label for="InputEmail">Please enter your email address to unsubscribe to one or more services notifications</label>
+                            <input type="email" class="form-control" aria-describedby="emailHelp">
+                            <small class="form-text text-muted">You will receive an email shortly</small>
+                        </div>
+                        <div class="row d-flex justify-content-end" id="unsubscribe_submit">
+                            <button type="submit" class="btn btn-primary mb-2">Submit request</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 

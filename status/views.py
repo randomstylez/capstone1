@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
-from .models import SubService, Ticket, StatusCategory,Service,TicketLog, SubServiceServices
+from .models import SubService, Ticket, StatusCategory,Service,TicketLog,SubServiceServices,View
 from django.views import View
 from django.views.generic import ListView
 from django.core.paginator import Paginator
 from datetime import datetime, timedelta
+from .forms import SubscribeForm
 
 
 # Create your views here.
@@ -43,11 +44,33 @@ class ServicesStatusView(View):
 #Subscription page
 class SubscriptionView(View):
     template_name = "status/subscription.html"
+
     def get(self, request, *args, **kwargs):
         context = {
             "active_nav": 2
         }
+
+        form = SubscribeForm()
+        context = {"form": form}
+
+        # queryset = View.objects.all()
+        context['region_list'] = {"Region1", "Region2"}
+
+        queryset = Service.objects.all()
+        context['services_list'] = queryset
+
+        context['subscribed'] = False
+
         return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = SubscribeForm(request.POST)
+        context = {"form": form}
+        if form.is_valid():
+            form.save()
+            context['subscribed'] = True
+        return render(request, self.template_name, context)
+
 
 #Services Status History Visualization page
 class ServiceHistoryView(View):

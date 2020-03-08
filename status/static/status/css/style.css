@@ -50,7 +50,7 @@ a:hover
      color: inherit;
 }
 
-.form-control{
+#search .form-control{
     border: none;
 }
 
@@ -62,6 +62,10 @@ a:hover
 #list_of_services_data{
     overflow: auto;
     height:250px;
+}
+#list_of_services, #list_of_sub_services{
+    overflow: auto;
+    height:8rem;
 }
 
 #incidents_data{
@@ -100,7 +104,7 @@ a:hover
     display: inline;
 }
 
-#control_section a, #incidents_data a{
+#control_section a, #incidents_data a, #reg_confirmation a{
     color: #0373fc;
     text-decoration: underline;
 }
@@ -124,8 +128,36 @@ a:hover
     background-color: #3b4045;
 }
 
+#regions .btn-secondary {
+    color: #212529;
+    background-color: white;
+    border-color: #212529;
+    border-radius: 0;
+}
+
+#subscribe, #update{
+    height: 36rem;
+}
+
+#subscribe{
+    background-color: #E9ECEF;
+}
+
+#subscription_page .btn-primary{
+    background-color: #4A4A4A;
+    border-color: #4A4A4A;
+}
+
+#update{
+    text-align: center;
+}
+
+#reg_confirmation{
+    text-align: center;
+}
+
 /* Default size for xs screen sizes */
-.navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control {
+.navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe {
         font-size: 0.5rem;
 }
 
@@ -133,22 +165,30 @@ a:hover
 /* Adjusting elements according to screen size. Responsive */
 
 @media (min-width: 576px) {   /*Small*/
-    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control{
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe{
         font-size: 0.7rem;
     }
 
     h1{
         font-size: 1.8rem;
     }
+
+    #subscribe, #update{
+        height: 35rem;
+    }
 }
 
 @media (min-width: 768px) {   /*Medium*/
-    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control{
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe{
         font-size: 0.8rem;
     }
 
     h1{
         font-size: 2rem;
+    }
+
+    #subscribe, #update{
+        height: 38rem;
     }
 }
 

@@ -3,6 +3,7 @@ import copy
 from .models import Ticket
 from .models import Service
 from .models import Subscriber
+from .models import SubService
 from status.mail_sender import MailSender
 
 from django import forms
@@ -116,3 +117,22 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
             if my_raises:
                 raise ValidationError("There are some errors on the Service's Status.")
+
+class SubscribeForm (forms.ModelForm):
+
+    name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Full Name", "class": "form-control"}), max_length=20, required=True)
+    email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}), required=True)
+    services = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                              queryset=Service.objects.all(), required=False)
+    sub_services = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                              queryset=SubService.objects.all(), required=False)
+
+    class Meta:
+        model = Subscriber
+        fields = [
+            'name',
+            'email',
+            'services',
+            'subservices'
+        ]
+
