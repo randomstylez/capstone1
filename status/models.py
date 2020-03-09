@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Service(models.Model):
-    service_name = models.CharField(unique=True, max_length=100)  # Field name made lowercase.
+    service_name = models.CharField(unique=True, max_length=100, verbose_name='Services')  # Field name made lowercase.
     service_description = models.CharField(max_length=100, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -75,7 +75,7 @@ class SubServiceServices(models.Model):
 
 
 class StatusCategory(models.Model):
-    status_category_tag = models.CharField(unique=True, max_length=45)  # Field name made lowercase.
+    status_category_tag = models.CharField(unique=True, max_length=45, verbose_name='Status')  # Field name made lowercase.
     status_category_color = models.CharField(unique=True, max_length=7)  # Field name made lowercase.
 
     class Meta:

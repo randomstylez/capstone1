@@ -18,7 +18,8 @@ from status.forms import *
 class ViewAdmin(admin.ModelAdmin):
     list_display = ('view_name', 'view_description')
     search_fields = ['view_name', 'view_description', 'services__service_name']
-    list_filter = ('services__service_name', )
+    list_filter = ('services__subservice__ticket__category_status__status_category_tag',
+                   'services__service_name', 'services__subservice__sub_service_name' )
     ordering = ['view_name']
 
 
@@ -26,7 +27,8 @@ class ViewAdmin(admin.ModelAdmin):
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ('service_name', 'service_description')
     search_fields = ['service_name', 'service_description', 'subservice__sub_service_name', 'view__view_name']
-    list_filter = ('view__view_name', 'subservice__sub_service_name', )
+    list_filter = ('subservice__ticket__category_status__status_category_tag', 'view__view_name',
+                   'subservice__sub_service_name', )
     ordering = ['service_name']
 
 
@@ -34,7 +36,7 @@ class ServiceAdmin(admin.ModelAdmin):
 class SubServiceAdmin(admin.ModelAdmin):
     list_display = ('sub_service_name', 'sub_service_description')
     search_fields = ['services__service_name', 'sub_service_description', 'sub_service_name']
-    list_filter = ('services__view__view_name', 'services',)
+    list_filter = ('ticket__category_status__status_category_tag', 'services__view__view_name', 'services',)
     ordering = ['sub_service_name']
 
 
@@ -110,7 +112,8 @@ class SubscribersAdmin(admin.ModelAdmin):
 @admin.register(SubServiceServices)
 class SubServiceServicesAdmin(admin.ModelAdmin):
     list_display = ('service', 'subservice', 'priority')
-    list_filter = ('service__view__view_name', 'service', 'subservice', 'priority')
+    list_filter = ('subservice__ticket__category_status__status_category_tag', 'priority',
+                   'service__view__view_name', 'service', 'subservice')
     search_fields = ['service', 'subservice', 'priority']
     ordering = ['service']
 
