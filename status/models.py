@@ -127,8 +127,9 @@ class TicketLog(models.Model):
 
 
 class Subscriber(models.Model):
-    name = models.CharField(max_length=45)      # Field name made lowercase.
-    email = models.CharField(max_length=45)     # Field name made lowercase.
+    name = models.CharField(max_length=45)                  # Field name made lowercase.
+    email = models.CharField(max_length=45)                 # Field name made lowercase.
+    token = models.CharField(max_length=128, null=True)     # Field name made lowercase.
     services = models.ManyToManyField(Service, verbose_name='Services')
     subservices = models.ManyToManyField(SubService, verbose_name='Sub - Services')
 
@@ -138,3 +139,15 @@ class Subscriber(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class DomainList(models.Model):
+    domain_name = models.CharField(unique=True, max_length=100)  # Field name made lowercase.
+    domain_description = models.TextField(blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        verbose_name = _("Domain")
+        verbose_name_plural = _("Domains")
+
+    def __str__(self):
+        return self.domain_name
