@@ -18,18 +18,18 @@ class Service(models.Model):
         return self.service_name
 
 
-class View(models.Model):
-    view_name = models.CharField(unique=True, max_length=100, verbose_name='Regions')  # Field name made lowercase.
-    view_description = models.TextField(blank=True, null=True)  # Field name made lowercase.
+class Region(models.Model):
+    region_name = models.CharField(unique=True, max_length=100, verbose_name='Regions')  # Field name made lowercase.
+    region_description = models.TextField(blank=True, null=True)  # Field name made lowercase.
     services = models.ManyToManyField(Service)
 
     class Meta:
         verbose_name = _("Region")
         verbose_name_plural = _("Regions")
-        ordering = ['view_name']
+        ordering = ['region_name']
 
     def __str__(self):
-        return self.view_name
+        return self.region_name
 
 
 class SubService(models.Model):
