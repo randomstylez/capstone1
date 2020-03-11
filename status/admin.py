@@ -10,6 +10,7 @@ from .models import TicketLog
 from .models import Subscriber
 from .models import SubServiceServices
 from .models import Priority
+from .models import DomainList
 
 from status.forms import *
 
@@ -122,3 +123,10 @@ class SubServiceServicesAdmin(admin.ModelAdmin):
 class PriorityAdmin(admin.ModelAdmin):
     list_display = ('priority_tag', 'priority_color',)
     ordering = ['priority_tag']
+
+
+@admin.register(DomainList)
+class DomainListAdmin(admin.ModelAdmin):
+    list_display = ('domain_name', 'domain_description')
+    search_fields = ['domain_name', 'domain_description']
+    ordering = ['domain_name']
