@@ -129,7 +129,7 @@ class TicketLog(models.Model):
 class Subscriber(models.Model):
     name = models.CharField(max_length=45)                  # Field name made lowercase.
     email = models.CharField(max_length=45)                 # Field name made lowercase.
-    token = models.CharField(max_length=128, null=True)     # Field name made lowercase.
+    token = models.CharField(max_length=128, null=True, blank=True)     # Field name made lowercase.
     services = models.ManyToManyField(Service, verbose_name='Services')
     subservices = models.ManyToManyField(SubService, verbose_name='Sub - Services')
 
