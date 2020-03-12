@@ -109,6 +109,8 @@ class SubscribersAdmin(admin.ModelAdmin):
     search_fields = ['name', 'email']
     ordering = ['name']
 
+    form = SubscriberForm
+
 
 @admin.register(SubServiceServices)
 class SubServiceServicesAdmin(admin.ModelAdmin):
