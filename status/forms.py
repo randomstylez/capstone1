@@ -1,12 +1,15 @@
 import copy
+import secrets
 
 from .models import Ticket
 from .models import Service
 from .models import Subscriber
+from .models import DomainList
 from status.mail_sender import MailSender
 
 from django import forms
 from django.core.exceptions import ValidationError
+from validate_email import validate_email
 
 
 class TicketForm(forms.ModelForm):
@@ -116,3 +119,46 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
             if my_raises:
                 raise ValidationError("There are some errors on the Service's Status.")
+
+
+class SubscriberForm(forms.ModelForm):
+    class Meta:
+        model = Subscriber
+        fields = '__all__'
+
+    def clean(self):
+
+        cleaned_data = super().clean()
+
+        email = cleaned_data['email']
+
+        # Verify email authenticity
+        is_valid = validate_email(email)
+
+        # # Check if the host has SMTP Server and the email really exists:
+        # pip install pyDNS
+        # is_valid = validate_email(email, verify=True)
+
+        if not is_valid:
+            self.add_error("email", "{} is an invalid email information.".format(
+                self.cleaned_data["email"]))
+            raise ValidationError("There are some errors on the Subscriber's information.")
+
+        # Verify that the subscriber email belong to our domain list
+        domain = email.split('@')[1]
+
+        # It gets the list of services that has that Sub Service
+        domain_exist = DomainList.objects.filter(domain_name=domain).count()
+
+        if domain_exist == 0:
+            self.add_error("email", "{} does not belong to our Users' domain.".format(
+                self.cleaned_data["email"]))
+            raise ValidationError("There are some errors on the Subscriber's information.")
+
+        # Insert user and insert token
+        if not self.instance.pk:
+            # Create token
+            token = secrets.token_hex(64)
+
+            # Update User's token
+            self.cleaned_data["token"] = token
