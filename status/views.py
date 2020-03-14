@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
-from .models import SubService, Ticket, StatusCategory,Service,TicketLog,SubServiceServices,View
+from .models import SubService, Ticket, StatusCategory,Service,TicketLog,SubServiceServices,Region
 from django.views import View
 from django.views.generic import ListView
 from django.core.paginator import Paginator
 from datetime import datetime, timedelta
-from .forms import SubscribeForm
+from .forms import SubscriberForm
 
 
 # Create your views here.
@@ -50,7 +50,7 @@ class SubscriptionView(View):
             "active_nav": 2
         }
 
-        form = SubscribeForm()
+        form = SubscriberForm()
         context = {"form": form}
 
         # queryset = View.objects.all()

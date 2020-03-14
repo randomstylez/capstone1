@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Service(models.Model):
-    service_name = models.CharField(unique=True, max_length=100)  # Field name made lowercase.
+    service_name = models.CharField(unique=True, max_length=100, verbose_name='Services')  # Field name made lowercase.
     service_description = models.CharField(max_length=100, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -18,18 +18,18 @@ class Service(models.Model):
         return self.service_name
 
 
-class View(models.Model):
-    view_name = models.CharField(unique=True, max_length=100, verbose_name='Regions')  # Field name made lowercase.
-    view_description = models.TextField(blank=True, null=True)  # Field name made lowercase.
+class Region(models.Model):
+    region_name = models.CharField(unique=True, max_length=100, verbose_name='Regions')  # Field name made lowercase.
+    region_description = models.TextField(blank=True, null=True)  # Field name made lowercase.
     services = models.ManyToManyField(Service)
 
     class Meta:
         verbose_name = _("Region")
         verbose_name_plural = _("Regions")
-        ordering = ['view_name']
+        ordering = ['region_name']
 
     def __str__(self):
-        return self.view_name
+        return self.region_name
 
 
 class SubService(models.Model):
@@ -75,7 +75,7 @@ class SubServiceServices(models.Model):
 
 
 class StatusCategory(models.Model):
-    status_category_tag = models.CharField(unique=True, max_length=45)  # Field name made lowercase.
+    status_category_tag = models.CharField(unique=True, max_length=45, verbose_name='Status')  # Field name made lowercase.
     status_category_color = models.CharField(unique=True, max_length=7)  # Field name made lowercase.
 
     class Meta:
@@ -127,8 +127,9 @@ class TicketLog(models.Model):
 
 
 class Subscriber(models.Model):
-    name = models.CharField(max_length=45)      # Field name made lowercase.
-    email = models.CharField(max_length=45)     # Field name made lowercase.
+    name = models.CharField(max_length=45)                  # Field name made lowercase.
+    email = models.CharField(max_length=45)                 # Field name made lowercase.
+    token = models.CharField(max_length=128, null=True, blank=True)     # Field name made lowercase.
     services = models.ManyToManyField(Service, verbose_name='Services')
     subservices = models.ManyToManyField(SubService, verbose_name='Sub - Services')
 
@@ -138,3 +139,15 @@ class Subscriber(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class DomainList(models.Model):
+    domain_name = models.CharField(unique=True, max_length=100)  # Field name made lowercase.
+    domain_description = models.TextField(blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        verbose_name = _("Domain")
+        verbose_name_plural = _("Domains")
+
+    def __str__(self):
+        return self.domain_name

@@ -118,7 +118,7 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
             if my_raises:
                 raise ValidationError("There are some errors on the Service's Status.")
 
-class SubscribeForm (forms.ModelForm):
+class SubscriberForm (forms.ModelForm):
 
     name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Full Name", "class": "form-control"}), max_length=20, required=True)
     email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}), required=True)
