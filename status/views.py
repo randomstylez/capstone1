@@ -6,7 +6,7 @@ from django.views.generic import ListView
 from django.core.paginator import Paginator
 from datetime import datetime, timedelta
 from .forms import SubscriberForm
-
+from itertools import chain
 
 # Create your views here.
 
@@ -15,15 +15,26 @@ class ServicesStatusView(View):
     template_name = "status/services_status.html"
     def get(self, request, *args, **kwargs):
 
+        # Getting most recent 5 tickets
         queryset = Ticket.objects.all().order_by('begin').reverse()[:5]
 
         context = {
             "ticket_list": queryset,
             "active_nav": 1
         }
-        queryset = Service.objects.all()
-        context['services_list'] = queryset
 
+        # Getting list of regions
+        queryset = Region.objects.all()
+        context['regions'] = queryset
+
+        # Getting list of services
+        services = []
+        for region in queryset:
+            services = list(dict.fromkeys(chain(services, region.services.all())))
+
+        context['services_list'] = services
+
+        # Getting list of status for legend
         queryset = StatusCategory.objects.all()
         context['category_list'] = queryset
 
@@ -64,7 +75,7 @@ class SubscriptionView(View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        form = SubscribeForm(request.POST)
+        form = SubscriberForm(request.POST)
         context = {"form": form}
         if form.is_valid():
             form.save()
