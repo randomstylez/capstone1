@@ -215,3 +215,45 @@ class SubscriberForm(forms.ModelForm):
 
         mail_sender = MailSender(html, subject, text, email)
         mail_sender.send_mail()
+
+    @staticmethod
+    def send_link_by_user_email(_email):
+        """
+        Method to send a notification link given the User email
+        :param _email:
+        :return:
+        """
+
+        # It gets the user's token given its email
+        user = Subscriber.objects.filter(email=_email).values('token')
+
+        token = user[0]['token']
+
+        hostname = 'http://127.0.0.1:8000'
+        # we should create a mechanism to get the hostname. This option works on views request
+        # print(HttpRequest.get_host(self))
+
+        view_path = '/admin/status/subscriber'  # email and toke
+
+        link = hostname + view_path + '/' + _email + '/' + token
+
+        # Email content
+        text = f"""\
+                            Link to modify your subscription:
+                            {link}
+                            """
+
+        html = f"""\
+                            <html>
+                              <body>
+                                <p>Link to modify your subscription<br>
+                                </p>
+                                {link}
+                              </body>
+                            </html>
+                            """
+
+        subject = "Modification requested on Subscription!"
+
+        mail_sender = MailSender(html, subject, text, _email)
+        mail_sender.send_mail()
