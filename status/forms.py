@@ -257,3 +257,28 @@ class SubscriberForm(forms.ModelForm):
 
         mail_sender = MailSender(html, subject, text, _email)
         mail_sender.send_mail()
+
+    @staticmethod
+    def get_user_data(_email, _token):
+        """
+        Method to get the services and subservices associated
+        to an user(subscriber) given its email and token
+        :param _email:
+        :param _token:
+        :return:
+        """
+        # It collect the services and subservices associated to an user
+        services_subservices = Subscriber.objects.filter(email=_email, token=_token).values('services', 'subservices')
+        services = list()
+        sub_services = list()
+
+        # It creates the list of services and subservices
+        # avoiding repeated items on the list
+        for service_subservice in services_subservices:
+            services.append(service_subservice['services']) \
+                if service_subservice['services'] not in services else services
+            sub_services.append(service_subservice['subservices']) \
+                if service_subservice['subservices'] not in sub_services else sub_services
+
+        if len(services_subservices) == 0:
+            print("Errors on the information provided")
