@@ -261,8 +261,8 @@ class SubscriberForm(forms.ModelForm):
     @staticmethod
     def get_user_data(_email, _token):
         """
-        Method to get the services and subservices associated
-        to an user(subscriber) given its email and token
+        Method to get the services and sub-services associated
+        with a user(subscriber) given its email and token
         :param _email:
         :param _token:
         :return:
@@ -282,3 +282,35 @@ class SubscriberForm(forms.ModelForm):
 
         if len(services_subservices) == 0:
             print("Errors on the information provided")
+
+    def update_user_token_by_user_id(self, user_id):
+        """
+        Method to update the user token after submitting its information
+        This function was thought to be used considering the User ID as a reference
+        :param user_id:
+        :return:
+        """
+        _token = secrets.token_hex(64)
+        self.cleaned_data["token"] = _token
+        #
+        # Subscriber.objects.filter(pk=user_id).update(token=_token)
+        #
+        # obj = Subscriber.objects.get(pk=user_id)
+        # obj.token = _token
+        # obj.save()
+
+    def update_user_token_by_user_email(self, _email):
+        """
+        Method to update the user token after submitting its information
+        This function was thought to be used considering the User email as a reference
+        :param _email:
+        :return:
+        """
+        _token = secrets.token_hex(64)
+        self.cleaned_data["token"] = _token
+        #
+        # Subscriber.objects.filter(email=_email).update(token=_token)
+        #
+        # obj = Subscriber.objects.get(email=_email)
+        # obj.token = _token
+        # obj.save()
