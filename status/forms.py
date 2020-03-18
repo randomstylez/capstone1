@@ -1,15 +1,14 @@
-import copy
 import secrets
-
-from .models import Ticket
-from .models import Service
-from .models import Subscriber
-from .models import DomainList
-from status.mail_sender import MailSender
 
 from django import forms
 from django.core.exceptions import ValidationError
 from validate_email import validate_email
+
+from status.mail_sender import MailSender
+from .models import DomainList
+from .models import Service
+from .models import Subscriber
+from .models import Ticket
 
 
 class TicketForm(forms.ModelForm):
@@ -44,7 +43,9 @@ class TicketForm(forms.ModelForm):
                             </html>
                             """
 
-            mail_sender = MailSender(html, text, user.email)
+            subject = "Changes detected!"
+
+            mail_sender = MailSender(html, subject, text, user.email)
             mail_sender.send_mail()
 
     def clean(self):
@@ -122,6 +123,9 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
 
 class SubscriberForm(forms.ModelForm):
+    """
+    This methods is related with the insertion and update process that belong to the admin
+    """
     class Meta:
         model = Subscriber
         fields = '__all__'
@@ -162,3 +166,52 @@ class SubscriberForm(forms.ModelForm):
 
             # Update User's token
             self.cleaned_data["token"] = token
+        # else:
+        #     SubscriberForm.get_user_data(self.cleaned_data["email"], self.cleaned_data["token"])
+        #     SubscriberForm.send_link_by_user_id(self.instance.pk)
+        #     SubscriberForm.send_link_by_user_email(self.cleaned_data["email"])
+        #     self.update_user_token_by_user_id(self.instance.pk)
+        #     self.update_user_token_by_user_email(self.cleaned_data["email"])
+
+    @staticmethod
+    def send_link_by_user_id(user_id):
+        """
+        Method to send a notification link given the User ID
+        :param user_id:
+        :return:
+        """
+
+        # It gets the user's email and token given its ID
+        user = Subscriber.objects.filter(pk=user_id).values('email', 'token')
+
+        email = user[0]['email']
+        token = user[0]['token']
+
+        hostname = 'http://127.0.0.1:8000'
+        # we should create a mechanism to get the hostname. This option works on views request
+        # print(HttpRequest.get_host(self))
+
+        view_path = '/admin/status/subscriber'
+
+        link = hostname + view_path + '/' + email + '/' + token
+
+        # Email content
+        text = f"""\
+                        Link to modify your subscription:
+                        {link}
+                        """
+
+        html = f"""\
+                        <html>
+                          <body>
+                            <p>Link to modify your subscription<br>
+                            </p>
+                            {link}
+                          </body>
+                        </html>
+                        """
+
+        subject = "Modification requested on Subscription!"
+
+        mail_sender = MailSender(html, subject, text, email)
+        mail_sender.send_mail()

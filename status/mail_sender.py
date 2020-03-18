@@ -1,12 +1,12 @@
 import smtplib
 import ssl
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 class MailSender:
 
-    def __init__(self, html, text, to):
+    def __init__(self, html, subject, text, to):
 
         self.smtp_server = "smtp.gmail.com"
         self.port = 587  # For starttls
@@ -15,7 +15,7 @@ class MailSender:
         self.receiver_email = to
 
         self.message = MIMEMultipart("alternative")
-        self.message["Subject"] = "Changes detected!"
+        self.message["Subject"] = subject
         self.message["From"] = self.sender_email
         self.message["To"] = to
 
