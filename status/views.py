@@ -6,6 +6,7 @@ from django.views.generic import ListView
 from django.core.paginator import Paginator
 from datetime import datetime, timedelta
 from .forms import SubscriberForm
+from .forms import SubscriberDataForm
 from itertools import chain
 
 # Create your views here.
@@ -25,7 +26,7 @@ class ServicesStatusView(View):
 
         # Getting list of regions
         queryset = Region.objects.all()
-        context['regions'] = queryset
+        context['region_list'] = queryset
 
         # Getting list of services
         services = []
@@ -52,6 +53,54 @@ class ServicesStatusView(View):
 
         return render(request, self.template_name, context)
 
+    def post(self, request, *args, **kwargs):
+
+        if 'regions_select' in request.POST:
+            # Getting most recent 5 tickets
+            queryset = Ticket.objects.all().order_by('begin').reverse()[:5]
+
+            context = {
+                "ticket_list": queryset,
+                "active_nav": 1
+            }
+
+            #Getting checked regions
+            regions = request.POST.getlist('regions')
+
+            # Getting list of services
+            services = []
+            for region in regions:
+
+                #setting checked status to true
+                context['checked_regions'] = regions
+
+                queryset = Region.objects.filter(region_name=region)
+                for e in queryset:
+                    services = list(dict.fromkeys(chain(services, e.services.all())))
+                    context['services_list'] = services
+
+            # Getting list of status for legend
+            queryset = StatusCategory.objects.all()
+            context['category_list'] = queryset
+
+            # Getting today's date
+            today = datetime.now()
+            list_of_five_days = [today]
+
+            # Getting list of regions
+            queryset = Region.objects.all()
+            context['region_list'] = queryset
+
+            counter = 1
+            while counter < 5:
+                list_of_five_days.append(today - timedelta(days=counter))
+                counter = counter + 1
+
+            context['days'] = list_of_five_days
+
+            return render(request, self.template_name, context)
+
+
 #Subscription page
 class SubscriptionView(View):
     template_name = "status/subscription.html"
@@ -61,25 +110,74 @@ class SubscriptionView(View):
             "active_nav": 2
         }
 
-        form = SubscriberForm()
+        # Getting services
+        services = Service.objects.all()
+
+        # Getting subservices
+        subservices = SubService.objects.all()
+
+        form = SubscriberDataForm(services,subservices)
         context = {"form": form}
 
-        # queryset = View.objects.all()
-        context['region_list'] = {"Region1", "Region2"}
-
-        queryset = Service.objects.all()
-        context['services_list'] = queryset
-
         context['subscribed'] = False
+
+        # Getting list of regions
+        queryset = Region.objects.all()
+        context['region_list'] = queryset
 
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        form = SubscriberForm(request.POST)
-        context = {"form": form}
-        if form.is_valid():
-            form.save()
-            context['subscribed'] = True
+
+        context = {
+            "active_nav": 2
+        }
+
+        if 'subs_updates' in request.POST:
+            form = SubscriberDataForm(request.POST)
+            context = {"form": form}
+            if form.is_valid():
+                form.save()
+                context['subscribed'] = True
+
+        if 'regions_select' in request.POST:
+            # Getting checked regions
+            regions = request.POST.getlist('regions')
+
+            # Getting list of services
+            services = []
+            for region in regions:
+
+                # Getting checked regions
+                regions = request.POST.getlist('regions')
+
+                # Getting list of services
+                services = Service.objects.none()
+                for region in regions:
+
+                    # setting checked status to true
+                    context['checked_regions'] = regions
+
+                    # Getting list of services associated with selected regions
+                    queryset = Region.objects.filter(region_name=region)
+                    for e in queryset:
+                        services = services | e.services.all()
+
+                # Getting list of subservices
+                subservices = SubService.objects.none()
+                for service in services:
+                    sub_services = SubServiceServices.objects.filter(service=service)
+                    subservices |= sub_services.all()
+
+                form = SubscriberDataForm(services, subservices)
+                context = {"form": form}
+
+        context['subscribed'] = False
+
+        # Getting list of regions
+        queryset = Region.objects.all()
+        context['region_list'] = queryset
+
         return render(request, self.template_name, context)
 
 
@@ -94,6 +192,10 @@ class ServiceHistoryView(View):
         if id is not None:
             obj = get_object_or_404(Service, id=id)
             context['object'] = obj
+
+            # Getting list of regions
+            queryset = Region.objects.all()
+            context['region_list'] = queryset
 
             #Getting all tickets affecting this service
             sub_service_service = SubServiceServices.objects.filter(service=obj)
@@ -120,6 +222,10 @@ class ServiceHistoryDetailsView(ListView):
         context = {
             "active_nav": 1
         }
+
+        # Getting list of regions
+        queryset = Region.objects.all()
+        context['region_list'] = queryset
 
         if id is not None:
             #Getting ticket instance

@@ -56,7 +56,7 @@
                             </div>
                         </div>
                         <div class="row d-flex justify-content-end" id="subscribe_submit">
-                            <button type="submit" class="btn btn-primary mb-2">Subscribe to updates</button>
+                            <button type="submit" name="subs_updates" class="btn btn-primary mb-2">Subscribe to updates</button>
                         </div>
 
                     </form>
@@ -73,7 +73,7 @@
                 <div class="container">
                     <form action="." method="POST"> {% csrf_token %}
                         <div class="form-group"> <!--Email info-->
-                            <label for="InputEmail">Please enter your email address to unsubscribe to one or more services notifications</label>
+                            <label>Please enter your email address to unsubscribe to one or more services notifications</label>
                             <input type="email" class="form-control" aria-describedby="emailHelp">
                             <small class="form-text text-muted">You will receive an email shortly</small>
                         </div>

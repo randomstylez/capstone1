@@ -109,7 +109,7 @@ class SubscribersAdmin(admin.ModelAdmin):
     search_fields = ['name', 'email']
     ordering = ['name']
 
-    form = SubscriberForm
+    # form = SubscriberForm
 
 
 @admin.register(SubServiceServices)

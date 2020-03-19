@@ -1,9 +1,6 @@
 import copy
 
-from .models import Ticket
-from .models import Service
-from .models import Subscriber
-from .models import SubService
+from .models import Ticket, Region, Service, Subscriber, SubService
 from status.mail_sender import MailSender
 
 from django import forms
@@ -118,14 +115,18 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
             if my_raises:
                 raise ValidationError("There are some errors on the Service's Status.")
 
-class SubscriberForm (forms.ModelForm):
+class SubscriberDataForm (forms.ModelForm):
 
-    name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Full Name", "class": "form-control"}), max_length=20, required=True)
-    email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}), required=True)
-    services = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                              queryset=Service.objects.all(), required=False)
-    subservices = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                              queryset=SubService.objects.all(), required=False)
+    def __init__(self, services, subservices, *args, **kwargs):
+        super(SubscriberDataForm, self).__init__(*args, **kwargs)
+        self.fields['services'] = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                              queryset=services, required=False)
+        self.fields['subservices'] = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                              queryset=subservices, required=False)
+        name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Full Name", "class": "form-control"}),
+                               max_length=20, required=True)
+        email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
+                                 required=True)
 
     class Meta:
         model = Subscriber
