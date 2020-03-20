@@ -13,8 +13,12 @@ from itertools import chain
 
 #Services Status Visualization page
 class ServicesStatusView(View):
+
     template_name = "status/services_status.html"
+
     def get(self, request, *args, **kwargs):
+
+        global services
 
         # Getting most recent 5 tickets
         queryset = Ticket.objects.all().order_by('begin').reverse()[:5]
@@ -23,17 +27,6 @@ class ServicesStatusView(View):
             "ticket_list": queryset,
             "active_nav": 1
         }
-
-        # Getting list of regions
-        queryset = Region.objects.all()
-        context['region_list'] = queryset
-
-        # Getting list of services
-        services = []
-        for region in queryset:
-            services = list(dict.fromkeys(chain(services, region.services.all())))
-
-        context['services_list'] = services
 
         # Getting list of status for legend
         queryset = StatusCategory.objects.all()
@@ -51,21 +44,15 @@ class ServicesStatusView(View):
 
         context['days'] = list_of_five_days
 
-        return render(request, self.template_name, context)
+        # Getting list of regions
+        regions = Region.objects.all()
+        context['region_list'] = regions
 
-    def post(self, request, *args, **kwargs):
 
-        if 'regions_select' in request.POST:
-            # Getting most recent 5 tickets
-            queryset = Ticket.objects.all().order_by('begin').reverse()[:5]
-
-            context = {
-                "ticket_list": queryset,
-                "active_nav": 1
-            }
+        if 'regions_select' in request.GET:
 
             #Getting checked regions
-            regions = request.POST.getlist('regions')
+            regions = request.GET.getlist('regions')
 
             # Getting list of services
             services = []
@@ -74,31 +61,31 @@ class ServicesStatusView(View):
                 #setting checked status to true
                 context['checked_regions'] = regions
 
+                #Getting list of services
                 queryset = Region.objects.filter(region_name=region)
                 for e in queryset:
                     services = list(dict.fromkeys(chain(services, e.services.all())))
-                    context['services_list'] = services
+                context['services_list'] = services
 
-            # Getting list of status for legend
-            queryset = StatusCategory.objects.all()
-            context['category_list'] = queryset
+        elif 'search_services' in request.GET:
 
-            # Getting today's date
-            today = datetime.now()
-            list_of_five_days = [today]
+            searchfor = request.GET['search']
+            services_list = []
+            for service in services:
+                if searchfor.lower() in service.service_name.lower():
+                    services_list.append(service)
 
-            # Getting list of regions
-            queryset = Region.objects.all()
-            context['region_list'] = queryset
+            context['services_list'] = services_list
 
-            counter = 1
-            while counter < 5:
-                list_of_five_days.append(today - timedelta(days=counter))
-                counter = counter + 1
+        else:
+            # Getting list of services
+            services = []
+            for region in regions:
+                services = list(dict.fromkeys(chain(services, region.services.all())))
 
-            context['days'] = list_of_five_days
+            context['services_list'] = services
 
-            return render(request, self.template_name, context)
+        return render(request, self.template_name, context)
 
 
 #Subscription page
@@ -139,38 +126,38 @@ class SubscriptionView(View):
             if form.is_valid():
                 form.save()
                 context['subscribed'] = True
-
-        if 'regions_select' in request.POST:
-            # Getting checked regions
-            regions = request.POST.getlist('regions')
-
-            # Getting list of services
-            services = []
-            for region in regions:
-
-                # Getting checked regions
-                regions = request.POST.getlist('regions')
-
-                # Getting list of services
-                services = Service.objects.none()
-                for region in regions:
-
-                    # setting checked status to true
-                    context['checked_regions'] = regions
-
-                    # Getting list of services associated with selected regions
-                    queryset = Region.objects.filter(region_name=region)
-                    for e in queryset:
-                        services = services | e.services.all()
-
-                # Getting list of subservices
-                subservices = SubService.objects.none()
-                for service in services:
-                    sub_services = SubServiceServices.objects.filter(service=service)
-                    subservices |= sub_services.all()
-
-                form = SubscriberDataForm(services, subservices)
-                context = {"form": form}
+        # DISABLED TEMPORARY *************************
+        # if 'regions_select' in request.POST:
+        #     # Getting checked regions
+        #     regions = request.POST.getlist('regions')
+        #
+        #     # Getting list of services
+        #     services = []
+        #     for region in regions:
+        #
+        #         # Getting checked regions
+        #         regions = request.POST.getlist('regions')
+        #
+        #         # Getting list of services
+        #         services = Service.objects.none()
+        #         for region in regions:
+        #
+        #             # setting checked status to true
+        #             context['checked_regions'] = regions
+        #
+        #             # Getting list of services associated with selected regions
+        #             queryset = Region.objects.filter(region_name=region)
+        #             for e in queryset:
+        #                 services = services | e.services.all()
+        #
+        #         # Getting list of subservices
+        #         subservices = SubService.objects.none()
+        #         for service in services:
+        #             sub_services = SubServiceServices.objects.filter(service=service)
+        #             subservices |= sub_services.all()
+        #
+        #         form = SubscriberDataForm(services, subservices)
+        #         context = {"form": form}
 
         context['subscribed'] = False
 

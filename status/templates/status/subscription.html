@@ -36,6 +36,31 @@
                                 <div class="col my-2 pl-0">
                                     <p class="mb-0  bold">Business Services</p>
                                 </div>
+<!--                                TEMPORARY DISABLE**************************-->
+<!--                                <div class="col">-->
+<!--                                    &lt;!&ndash;Regions Dropdown&ndash;&gt;-->
+<!--                                      <div class="dropdown">-->
+<!--                                          <button class="btn dropdown-toggle p-0 pt-2" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--                                            See services by regions-->
+<!--                                          </button>-->
+<!--                                          <div class="dropdown-menu" aria-labelledby="dropdownMenu1">-->
+<!--                                              &lt;!&ndash;This section will list regions from the database&ndash;&gt;-->
+<!--                                              <form action="." method="post"> {% csrf_token %}-->
+<!--                                                  {% for instance in region_list %}-->
+<!--                                                  <div class="dropdown-item">-->
+<!--                                                      <input class="form-check-input" type="checkbox" name="regions" value="{{instance}}">-->
+<!--                                                      <label class="form-check-label">-->
+<!--                                                          {{instance}}-->
+<!--                                                      </label>-->
+<!--                                                  </div>-->
+<!--                                                  {% endfor %}-->
+<!--                                                  <button type="submit" name="regions_select" class="btn btn-primary mb-2">Select Regions</button>-->
+<!--                                              </form>-->
+<!--                                              &lt;!&ndash;End of list of regions from DB&ndash;&gt;-->
+<!--                                          </div>-->
+<!--                                      </div>-->
+<!--                                      &lt;!&ndash;End of Regions Dropdown&ndash;&gt;-->
+<!--                                </div>-->
                             </div>
                             <div class="row border" id="list_of_services">
                                 <div class="ml-2">

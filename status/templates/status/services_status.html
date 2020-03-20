@@ -29,27 +29,52 @@
 
 <!--Services List section-->
 
-<!--Search section-->
-<div class="container">
+<!--Search and filter section-->
+<div class="container" id="search_and_filter">
     <div class="row mt-4">
-    <div class="col-3" id="search">
-        <form action="." method="GET">
-            <div class="row">
-                <div class="col-10 p-0">
-                    <div class="form-group m-0">
-                        <input type="text" name="search" placeholder="Search..." class="form-control">
+        <div class="col-3" id="search">
+                <form action="." method="get">
+                <div class="row">
+                    <div class="col-10 p-0">
+                        <div class="form-group m-0">
+                            <input type="text" name="search" placeholder="Search..." class="form-control">
+                            <input type="text" name="region_list" hidden value="{{region_list}}" >
+                        </div>
+                    </div>
+                    <div class="col-2 p-0 m-0">
+                        <button type="submit" name="search_services" class="btn"><i class="fas fa-search"></i></button>
                     </div>
                 </div>
-                <div class="col-2 p-0 m-0">
-                    <button type="submit" class="btn"><i class="fas fa-search"></i></button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
+        <div class="col-3">
+            <!--Regions Dropdown-->
+              <div class="dropdown">
+                  <button class="btn dropdown-toggle p-0 pt-2" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    List services by regions
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                      <!--This section will list regions from the database-->
+                      <form action="." method="get">
+                          {% for instance in region_list %}
+                          <div class="dropdown-item">
+                              <input class="form-check-input" type="checkbox" name="regions" value="{{instance}}">
+                              <label class="form-check-label">
+                                  {{instance}}
+                              </label>
+                          </div>
+                          {% endfor %}
+                          <button type="submit" name="regions_select" class="btn btn-primary mb-2">Select Regions</button>
+                      </form>
+                      <!--End of list of regions from DB-->
+                  </div>
+              </div>
+              <!--End of Regions Dropdown-->
+        </div>
     </div>
 </div>
-</div>
 
-<!--End of Search section-->
+<!--End of Search and filter section-->
 
 <div class="container mt-4 mb-2">
 

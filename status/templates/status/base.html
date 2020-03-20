@@ -36,32 +36,6 @@
              href="{% url 'subscription_view' %}">Manage subscriptions</a>
           <a class="nav-item nav-link border-left px-3 py-0" href="#">
 
-              <!--Regions Dropdown-->
-              <div class="dropdown">
-                  <button class="btn dropdown-toggle p-0 pt-2" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Regions
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                      <!--This section will list regions from the database-->
-                      <form action="." method="post"> {% csrf_token %}
-                          {% for instance in region_list %}
-                          <div class="dropdown-item">
-                              <input class="form-check-input" type="checkbox" name="regions" value="{{instance}}">
-                              <label class="form-check-label">
-                                  {{instance}}
-                              </label>
-                          </div>
-                          {% endfor %}
-                          <button type="submit" name="regions_select" class="btn btn-primary mb-2">Select Regions</button>
-                      </form>
-                      <!--End of list of regions from DB-->
-                  </div>
-              </div>
-              <!--End of Regions Dropdown-->
-
-          </a>
-          <a class="nav-item nav-link border-left px-3 py-0" href="#">
-
               <!--Contact Dropdown-->
               <button class="btn dropdown-toggle p-0 pt-2" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Contact us
