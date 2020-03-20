@@ -180,10 +180,6 @@ class ServiceHistoryView(View):
             obj = get_object_or_404(Service, id=id)
             context['object'] = obj
 
-            # Getting list of regions
-            queryset = Region.objects.all()
-            context['region_list'] = queryset
-
             #Getting all tickets affecting this service
             sub_service_service = SubServiceServices.objects.filter(service=obj)
 
@@ -195,8 +191,20 @@ class ServiceHistoryView(View):
                 if queryset:
                     tickets_list = tickets_list | queryset
 
-            context['tickets_list'] = tickets_list
+            if 'search' in request.GET:
+                searchfor = request.GET['search']
+                aux_list = []
 
+                for ticket in tickets_list:
+                    if (searchfor.lower() in ticket.ticket_id.lower()
+                            or searchfor.lower() in ticket.action_description.lower()
+                            or searchfor.lower() in ticket.category_status.status_category_tag.lower()):
+                        aux_list.append(ticket)
+
+                tickets_list = aux_list
+
+
+            context['tickets_list'] = tickets_list
 
         return render(request, self.template_name, context)
 
