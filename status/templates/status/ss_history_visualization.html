@@ -21,7 +21,7 @@
                         </div>
                     </div>
                     <div class="col-2 p-0 m-0">
-                        <button type="submit" class="btn"><i class="fas fa-search"></i></button>
+                        <button type="submit" name="search_tickets" class="btn"><i class="fas fa-search"></i></button>
                     </div>
                 </div>
             </form>
@@ -56,28 +56,39 @@
     <div class="container m-0 p-0"  id="incidents_data">
         {% for instance in tickets_list %}
         <div class="row border-bottom py-2 mb-4">
-        <div class="col-1">
-            <a href="/status/details/{{ instance.id}}">
-               <p class="m-0" data-toggle="tooltip" data-placement="top"
-                  title="Sub-service affected: {{instance.sub_service.sub_service_name}}" id="ticket_id">
-                   {{instance.ticket_id}}</p>
-            </a>
+            <div class="col-1">
+                <a href="/status/details/{{ instance.id}}">
+                   <p class="m-0" data-toggle="tooltip" data-placement="top"
+                      title="Sub-service affected: {{instance.sub_service.sub_service_name}}" id="ticket_id">
+                       {{instance.ticket_id}}</p>
+                </a>
+            </div>
+            <div class="col-1">
+                 <p class="m-0">{{instance.begin | date:'m-d-Y h:i a'}}</p>
+            </div>
+            <div class="col-1">
+                 <p class="m-0">{{instance.end | date:'m-d-Y h:i a'}}</p>
+            </div>
+            <div class="col-8">
+                 <p class="m-0">{{instance.action_description}}</p>
+            </div>
+            <div class="col-1">
+                 <p class="m-0" style="color: {{instance.category_status.status_category_color}}">
+                     {{instance.category_status.status_category_tag}}</p>
+            </div>
         </div>
-        <div class="col-1">
-             <p class="m-0">{{instance.begin | date:'m-d-Y h:i a'}}</p>
-        </div>
-        <div class="col-1">
-             <p class="m-0">{{instance.end | date:'m-d-Y h:i a'}}</p>
-        </div>
-        <div class="col-8">
-             <p class="m-0">{{instance.action_description}}</p>
-        </div>
-        <div class="col-1">
-             <p class="m-0" style="color: {{instance.category_status.status_category_color}}">
-                 {{instance.category_status.status_category_tag}}</p>
-        </div>
-    </div>
         {% endfor %}
+
+        {%if no_tickets%}
+        <div class="row d-flex justify-content-center mt-4">
+            <h3>No incidents have been reported for this service</h3>
+        </div>
+        <div class="row d-flex justify-content-center mt-4">
+           <a href="/status">
+             <p class="mb-0">Go to services status page</p>
+          </a>
+        </div>
+        {%endif%}
     </div>
 
 </div>
@@ -86,10 +97,9 @@
 <div class="container mb-4">
     <div class="row">
         <div class="col-6" id="ticket_legend"></div>
-        <div class="col-6 d-flex justify-content-end" id="subscribe_thi_service">
-            <form action="">
-                <button type="submit" class="btn btn-dark">Subscribe to this service</button>
-            </form>
+        <div class="col-6 d-flex justify-content-end" id="subscribe_to_service">
+            <a href="/status/subscription/{{object.id}}"><button name="subscribe_to_service" class="btn btn-dark">
+                    Subscribe to this service</button></a>
         </div>
     </div>
 </div>

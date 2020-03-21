@@ -61,8 +61,14 @@ a:hover
 
 #list_of_services_data{
     overflow: auto;
-    height:250px;
+    height:18rem;
 }
+
+#specific_service{
+    overflow: auto;
+    height:17rem;
+}
+
 #list_of_services, #list_of_sub_services{
     overflow: auto;
     height:8rem;

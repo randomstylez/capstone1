@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
-from .models import SubService, Ticket, StatusCategory,Service,TicketLog,SubServiceServices,Region
+from .models import SubService, Ticket, StatusCategory,Service,TicketLog,SubServiceServices,Region,Subscriber
 from django.views import View
 from django.views.generic import ListView
 from django.core.paginator import Paginator
@@ -92,25 +92,22 @@ class ServicesStatusView(View):
 class SubscriptionView(View):
     template_name = "status/subscription.html"
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request ,id=None, *args, **kwargs):
         context = {
             "active_nav": 2
         }
 
-        # Getting services
-        services = Service.objects.all()
-
-        # Getting subservices
-        subservices = SubService.objects.all()
-
-        form = SubscriberDataForm(services,subservices)
+        form = SubscriberDataForm()
         context = {"form": form}
 
         context['subscribed'] = False
 
-        # Getting list of regions
-        queryset = Region.objects.all()
-        context['region_list'] = queryset
+        if id is not None:
+            obj = get_object_or_404(Service, id=id)
+            context['object'] = obj
+            context['service_specific'] = True
+        else:
+            context['service_specific'] = False
 
         return render(request, self.template_name, context)
 
@@ -123,9 +120,17 @@ class SubscriptionView(View):
         if 'subs_updates' in request.POST:
             form = SubscriberDataForm(request.POST)
             context = {"form": form}
+
             if form.is_valid():
-                form.save()
+                subscriber = form.save()
                 context['subscribed'] = True
+
+            if 'one_service' in request.POST:
+                id = request.POST['one_service']
+                service = get_object_or_404(Service, id=id)
+                subscriber.services.add(service)
+                subscriber.save()
+
         # DISABLED TEMPORARY *************************
         # if 'regions_select' in request.POST:
         #     # Getting checked regions
@@ -159,12 +164,6 @@ class SubscriptionView(View):
         #         form = SubscriberDataForm(services, subservices)
         #         context = {"form": form}
 
-        context['subscribed'] = False
-
-        # Getting list of regions
-        queryset = Region.objects.all()
-        context['region_list'] = queryset
-
         return render(request, self.template_name, context)
 
 
@@ -191,7 +190,7 @@ class ServiceHistoryView(View):
                 if queryset:
                     tickets_list = tickets_list | queryset
 
-            if 'search' in request.GET:
+            if 'search_tickets' in request.GET:
                 searchfor = request.GET['search']
                 aux_list = []
 
@@ -205,6 +204,10 @@ class ServiceHistoryView(View):
 
 
             context['tickets_list'] = tickets_list
+
+            if not(tickets_list):
+                context['no_tickets'] = True
+
 
         return render(request, self.template_name, context)
 

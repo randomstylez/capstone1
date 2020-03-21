@@ -9,6 +9,7 @@ from .models import DomainList
 from .models import Service
 from .models import Subscriber
 from .models import Ticket
+from .models import SubService
 
 
 class TicketForm(forms.ModelForm):
@@ -122,16 +123,14 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
 class SubscriberDataForm (forms.ModelForm):
 
-    def __init__(self, services, subservices, *args, **kwargs):
-        super(SubscriberDataForm, self).__init__(*args, **kwargs)
-        self.fields['services'] = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                              queryset=services, required=False)
-        self.fields['subservices'] = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                              queryset=subservices, required=False)
-        name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Full Name", "class": "form-control"}),
-                               max_length=20, required=True)
-        email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
-                                 required=True)
+    services = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                          queryset=Service.objects.all(), required=False)
+    subservices = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                          queryset=SubService.objects.all(), required=False)
+    name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Full Name", "class": "form-control"}),
+                           max_length=20, required=True)
+    email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
+                             required=True)
 
     class Meta:
         model = Subscriber
