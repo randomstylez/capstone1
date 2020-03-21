@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from .forms import SubscriberForm
 from .forms import SubscriberDataForm
 from itertools import chain
+from django.shortcuts import redirect
 
 # Create your views here.
 
@@ -221,10 +222,6 @@ class ServiceHistoryDetailsView(ListView):
             "active_nav": 1
         }
 
-        # Getting list of regions
-        queryset = Region.objects.all()
-        context['region_list'] = queryset
-
         if id is not None:
             #Getting ticket instance
             obj = get_object_or_404(Ticket, id=id)
@@ -235,14 +232,29 @@ class ServiceHistoryDetailsView(ListView):
             context['ticket_logs'] = queryset
 
             #Getting list of tickets associated with the service
-            service_tickets = Ticket.objects.filter(sub_service=obj.sub_service).order_by('begin')
+            service_tickets = Ticket.objects.filter(sub_service=obj.sub_service).order_by('pk')
+            context['service_tickets'] = list(service_tickets)
 
-            #Pagination
-            paginator = Paginator(service_tickets, 1)
+            #Getting number of tickets
+            count = service_tickets.count()
+            context['tickets_count'] = count
 
-            page_number = request.GET.get('page')
-            page_obj = paginator.get_page(page_number)
+            #Getting index of this ticket
+            index = service_tickets.filter(id__lt = obj.id).count()
+            context['ticket_index'] = index
 
-            context['page_obj'] = page_obj
+            #Getting previous ticket
+            prev = index-1
+
+            if prev >= 0:
+                ticket = service_tickets[prev]
+                context['prev_ticket'] = ticket
+
+            # Getting index of previous ticket
+            next = index + 1
+
+            if next <= count-1:
+                ticket = service_tickets[next]
+                context['next_ticket'] = ticket
 
         return render(request, self.template_name, context)
