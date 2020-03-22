@@ -47,24 +47,24 @@
                 <div class="col" id="arrows">
                     {% if prev_ticket %}
                     <a href="/status/details/{{ prev_ticket.id }}">
-                        <p class="ml-3 border-right pr-2">
+                        <p class="ml-3 border-right pr-2 link">
                             <i class="fas fa-arrow-left"></i> Prev
                         </p>
                     </a>
                     {% else %}
-                    <p class="ml-3 border-right inactive pr-2">
+                    <p class="ml-3 border-right inactive pr-2 link">
                         <i class="fas fa-arrow-left"></i> Prev
                     </p>
                     {% endif %}
 
                     {% if next_ticket %}
                     <a href="/status/details/{{ next_ticket.id }}">
-                        <p class=" ml-3 pr-2">
+                        <p class=" ml-3 pr-2 link">
                             Next <i class="fas fa-arrow-right"></i>
                         </p>
                     </a>
                     {% else %}
-                    <p class="ml-3 inactive pr-2">
+                    <p class="ml-3 inactive pr-2 link">
                         Next <i class="fas fa-arrow-right"></i>
                     </p>
                     {% endif %}

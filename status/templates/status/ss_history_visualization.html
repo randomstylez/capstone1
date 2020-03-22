@@ -46,7 +46,7 @@
         <div class="col-1">
              <p class="bold">Ended</p>
         </div>
-        <div class="col-8">
+        <div class="col-7">
              <p class="bold">Description</p>
         </div>
         <div class="col-1">
@@ -55,10 +55,11 @@
     </div>
     <div class="container m-0 p-0"  id="incidents_data">
         {% for instance in tickets_list %}
-        <div class="row border-bottom py-2 mb-4">
+        <div class="row border-bottom py-2 mb-4"
+             style="border-left: 1.5rem solid {{instance.category_status.status_category_color}};">
             <div class="col-1">
                 <a href="/status/details/{{ instance.id}}">
-                   <p class="m-0" data-toggle="tooltip" data-placement="top"
+                   <p class="m-0 link" data-toggle="tooltip" data-placement="top"
                       title="Sub-service affected: {{instance.sub_service.sub_service_name}}" id="ticket_id">
                        {{instance.ticket_id}}</p>
                 </a>
@@ -69,7 +70,7 @@
             <div class="col-1">
                  <p class="m-0">{{instance.end | date:'m-d-Y h:i a'}}</p>
             </div>
-            <div class="col-8">
+            <div class="col-7">
                  <p class="m-0">{{instance.action_description}}</p>
             </div>
             <div class="col-1">
@@ -85,7 +86,7 @@
         </div>
         <div class="row d-flex justify-content-center mt-4">
            <a href="/status">
-             <p class="mb-0">Go to services status page</p>
+             <p class="mb-0 link">Go to services status page</p>
           </a>
         </div>
         {%endif%}

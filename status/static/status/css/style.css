@@ -12,6 +12,11 @@ body{
     height: 2.5rem;
 }
 
+.link{
+    color: #0373fc;
+    text-decoration: underline;
+}
+
 .navbar-nav .active{
     background-color: #E9ECEF;
 }
@@ -108,11 +113,6 @@ a:hover
 
 #arrows p{
     display: inline;
-}
-
-#control_section a, #incidents_data a, #reg_confirmation a{
-    color: #0373fc;
-    text-decoration: underline;
 }
 
 .inactive{
