@@ -86,6 +86,59 @@ class ServicesStatusView(View):
 
             context['services_list'] = services
 
+        #Declaring an empty dictionary to store status per day for each service
+        service_status = {}
+        no_issues = StatusCategory()
+        no_issues.status_category_tag = "No Issues"
+        no_issues.status_category_color = "green"
+
+        # Getting list of tickets associated with each service
+        for service in services:
+
+            sub_service_service = SubServiceServices.objects.filter(service=service)
+
+            #Initializing queryset to empty
+            tickets_list = Ticket.objects.none()
+
+            for row in sub_service_service:
+                queryset = Ticket.objects.filter(sub_service=row.subservice)
+                if queryset:
+                    tickets_list = tickets_list | queryset
+
+            status_per_day = []
+            for day in list_of_five_days:
+                active_tickets_per_day = tickets_list.filter(begin__lte=day, end__gte=day-timedelta(1))
+
+                if active_tickets_per_day:
+                    #Separating tickets in groups by priority
+                    priority_tickets = []
+                    medium_priority_tickets = []
+                    low_priority = []
+                    for ticket in active_tickets_per_day:
+                        status = ticket.category_status.status_category_tag
+                        if status == "In Process" or status == "Alert" or status == "Outage":
+                            priority_tickets.append(ticket)
+                        elif status == "Planned":
+                            medium_priority_tickets.append(ticket)
+                        else:
+                            low_priority.append(ticket)
+
+                    if priority_tickets:
+                        status_per_day.append(priority_tickets[0].category_status)
+                    elif medium_priority_tickets:
+                        status_per_day.append(medium_priority_tickets[0].category_status)
+                    elif low_priority:
+                        status_per_day.append(low_priority[0].category_status)
+                    else:
+                        status_per_day.append(no_issues)
+                else:
+                    status_per_day.append(no_issues)
+
+            status_per_day.reverse()
+            service_status[service] = status_per_day
+
+        context['service_status'] = service_status
+
         return render(request, self.template_name, context)
 
 
