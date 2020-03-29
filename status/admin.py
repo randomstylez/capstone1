@@ -1,18 +1,13 @@
 from django.contrib import admin
 
+from status.forms import *
+from .models import Priority
 # Register your models here.
 from .models import Region
-from .models import Service
-from .models import SubService
 from .models import StatusCategory
-from .models import Ticket
-from .models import TicketLog
-from .models import Subscriber
+from .models import SubService
 from .models import SubServiceServices
-from .models import Priority
-from .models import DomainList
-
-from status.forms import *
+from .models import TicketLog
 
 
 @admin.register(Region)
@@ -29,14 +24,16 @@ class ServiceAdmin(admin.ModelAdmin):
     list_display = ('service_name', 'service_description',)
     search_fields = ['service_name', 'service_description', 'subservice__sub_service_name', 'region__region_name']
     list_filter = ('subservice__ticket__category_status__status_category_tag', 'region__region_name',
-                   'subservice__sub_service_name', )
+                   'subservice__sub_service_name')
     ordering = ['service_name']
 
 
 @admin.register(SubService)
 class SubServiceAdmin(admin.ModelAdmin):
     list_display = ('sub_service_name', 'sub_service_description',)
-    list_filter = ('ticket__category_status__status_category_tag', 'services__region__region_name', 'services',)
+    search_fields = ['sub_service_name', 'sub_service_description', 'services__service_name',
+                     'services__region__region_name']
+    list_filter = ('ticket__category_status__status_category_tag', 'services__region__region_name', 'services')
     ordering = ['sub_service_name']
 
 
