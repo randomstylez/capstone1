@@ -17,6 +17,10 @@ body{
     text-decoration: underline;
 }
 
+.subscribe_summary{
+    background-color: #E9ECEF;
+}
+
 .navbar-nav .active{
     background-color: #E9ECEF;
 }
@@ -64,6 +68,10 @@ a:hover
      border-radius: .25rem;
 }
 
+#unsubscribe_page{
+    height:38rem;
+}
+
 #list_of_services_data{
     overflow: auto;
     height:33rem;
@@ -74,7 +82,13 @@ a:hover
     height:17rem;
 }
 
-#list_of_services, #list_of_sub_services{
+.subscribe_summary{
+    overflow: auto;
+    max-height:20rem;
+
+}
+
+#list_of_services, #list_of_sub_services, #user_services, #user_subservices{
     overflow: auto;
     height:8rem;
 }

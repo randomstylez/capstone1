@@ -78,18 +78,28 @@
                 <div class="container mb-3 border-bottom">
                     <h1>Update Subscription</h1>
                 </div>
+                {% if updated %}
+                <div class="container">
+                    <h3>Your request has been submitted</h3>
+                    <p> You will receive an email shortly</p>
+                    <a href="/status">
+                            <p class=" link mb-0">Go to services status page</p>
+                        </a>
+                </div>
+                {%else%}
                 <div class="container">
                     <form action="." method="POST"> {% csrf_token %}
                         <div class="form-group"> <!--Email info-->
                             <label>Please enter your email address to unsubscribe to one or more services notifications</label>
-                            <input type="email" class="form-control" aria-describedby="emailHelp">
+                            <input type="email" class="form-control" aria-describedby="emailHelp" name="user_email" id="user_email">
                             <small class="form-text text-muted">You will receive an email shortly</small>
                         </div>
                         <div class="row d-flex justify-content-end" id="unsubscribe_submit">
-                            <button type="submit" class="btn btn-primary mb-2">Submit request</button>
+                            <button type="submit" class="btn btn-primary mb-2" name="update_subs">Submit request</button>
                         </div>
                     </form>
                 </div>
+                {%endif%}
             </div>
         </div>
     </div>

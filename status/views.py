@@ -1,14 +1,16 @@
+import secrets
+
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from .models import SubService, Ticket, StatusCategory,Service,TicketLog,SubServiceServices,Region,Subscriber
 from django.views import View
 from django.views.generic import ListView
-from django.core.paginator import Paginator
 from datetime import datetime, timedelta
 from .forms import SubscriberForm
 from .forms import SubscriberDataForm
 from itertools import chain
 from django.shortcuts import redirect
+from status.mail_sender import MailSender
 
 # Create your views here.
 
@@ -59,7 +61,7 @@ class ServicesStatusView(View):
             services = []
             for region in regions:
 
-                #setting checked status to true
+                #Getting checked status to true
                 context['checked_regions'] = regions
 
                 #Getting list of services
@@ -146,7 +148,7 @@ class ServicesStatusView(View):
 class SubscriptionView(View):
     template_name = "status/subscription.html"
 
-    def get(self, request ,id=None, *args, **kwargs):
+    def get(self, request, id=None, *args, **kwargs):
         context = {
             "active_nav": 2
         }
@@ -171,9 +173,12 @@ class SubscriptionView(View):
             "active_nav": 2
         }
 
+        generate_token = secrets.token_hex(16)
+
+        form = SubscriberDataForm(request.POST, initial={'token': generate_token})
+        context = {"form": form}
+
         if 'subs_updates' in request.POST:
-            form = SubscriberDataForm(request.POST)
-            context = {"form": form}
 
             if form.is_valid():
                 subscriber = form.save()
@@ -185,40 +190,21 @@ class SubscriptionView(View):
                 subscriber.services.add(service)
                 subscriber.save()
 
-        # DISABLED TEMPORARY *************************
-        # if 'regions_select' in request.POST:
-        #     # Getting checked regions
-        #     regions = request.POST.getlist('regions')
-        #
-        #     # Getting list of services
-        #     services = []
-        #     for region in regions:
-        #
-        #         # Getting checked regions
-        #         regions = request.POST.getlist('regions')
-        #
-        #         # Getting list of services
-        #         services = Service.objects.none()
-        #         for region in regions:
-        #
-        #             # setting checked status to true
-        #             context['checked_regions'] = regions
-        #
-        #             # Getting list of services associated with selected regions
-        #             queryset = Region.objects.filter(region_name=region)
-        #             for e in queryset:
-        #                 services = services | e.services.all()
-        #
-        #         # Getting list of subservices
-        #         subservices = SubService.objects.none()
-        #         for service in services:
-        #             sub_services = SubServiceServices.objects.filter(service=service)
-        #             subservices |= sub_services.all()
-        #
-        #         form = SubscriberDataForm(services, subservices)
-        #         context = {"form": form}
+        elif 'update_subs' in request.POST:
+
+            #Getting the email entered by the user
+            user_email = request.POST.get('user_email', None)
+
+            #Send the email with the link to update subscription
+            SubscriberForm.send_link_by_user_email(str(user_email))
+
+            #Email has been sent, update template
+            context['updated'] = True
 
         return render(request, self.template_name, context)
+
+
+
 
 
 #Services Status History Visualization page
@@ -310,4 +296,66 @@ class ServiceHistoryDetailsView(ListView):
                 ticket = service_tickets[next]
                 context['next_ticket'] = ticket
 
+        return render(request, self.template_name, context)
+
+
+class ModifyUserSubscription (ListView):
+
+    template_name = "status/modify_subscription.html"
+
+    def get(self, request, email, token):
+
+        #Getting user by token
+        user = Subscriber.objects.filter(token=token)[:1].get()
+
+        context = {
+            'user': user
+        }
+
+        #Getting the services for this user
+        services = user.services.all()
+
+        if services:
+            context['services'] = services
+        else:
+            context['no_services'] = True
+
+        # Getting the subservices for this user
+        sub_services = user.subservices.all()
+
+        if sub_services:
+            context['sub_services'] = sub_services
+        else:
+            context['no_subservices'] = True
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+
+        #Getting user by userID
+        user_id = request.POST.get('user_id')
+        user = Subscriber.objects.get(id=user_id)
+
+        #Getting list of services to delete
+        services = request.POST.getlist('selected_services')
+
+        #Deleting the services
+        for service in services:
+            model_service = Service.objects.filter(service_name=service)[:1].get()
+            user.services.remove(model_service)
+
+        # Getting list of sub_services to delete
+        subservices = request.POST.getlist('selected_subservices')
+
+        # Deleting the subservices
+        for subservice in subservices:
+            model_subservice = SubService.objects.filter(sub_service_name=subservice)[:1].get()
+            user.subservices.remove(model_subservice)
+
+        context = {
+            'completed' : True,
+            'user': user,
+            'services_list': services,
+            'subservices_list': subservices
+        }
         return render(request, self.template_name, context)
