@@ -92,11 +92,11 @@ class TicketAdmin(admin.ModelAdmin):
     form = TicketForm
 
     def save_formset(self, request, form, formset, change):
-
-        status_category = formset.cleaned_data[-1]['service_status']
-        status_category_id = StatusCategory.objects.get(status_category_tag=status_category)
-        form.instance.category_status_id = status_category_id.pk
-        form.instance.save()
+        if formset.cleaned_data:
+            status_category = formset.cleaned_data[-1]['service_status']
+            status_category_id = StatusCategory.objects.get(status_category_tag=status_category)
+            form.instance.category_status_id = status_category_id.pk
+            form.instance.save()
         formset.save()
 
 

@@ -52,14 +52,16 @@ class TicketForm(forms.ModelForm):
         cleaned_data = super().clean()
 
         begin = cleaned_data['begin'].strftime('%Y-%m-%d %H:%M:%S')
-        end = cleaned_data['end'].strftime('%Y-%m-%d %H:%M:%S')
 
-        if begin > end:
-            self.add_error("begin", "The Begin date {} should follow a chronological order.".format(
-                self.cleaned_data["begin"]))
-            self.add_error("end", "The End date {} should follow a chronological order.".format(
-                self.cleaned_data["end"]))
-            raise ValidationError("There are some errors on the Ticket's dates.")
+        if cleaned_data['end']:
+            end = cleaned_data['end'].strftime('%Y-%m-%d %H:%M:%S')
+
+            if begin > end:
+                self.add_error("begin", "The Begin date {} should follow a chronological order.".format(
+                    self.cleaned_data["begin"]))
+                self.add_error("end", "The End date {} should follow a chronological order.".format(
+                    self.cleaned_data["end"]))
+                raise ValidationError("There are some errors on the Ticket's dates.")
 
         self.notify_user(cleaned_data['sub_service'].pk)
 
@@ -72,10 +74,15 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
         form_list = []
         change_detected = False
         service_status = None
+        main_begin = None
 
-        main_begin = self.data['begin_0'] + ' ' + self.data['begin_1']
+        if self.data['begin_0'] and self.data['begin_1']:
+            main_begin = self.data['begin_0'] + ' ' + self.data['begin_1']
 
         for form in self.forms:
+
+            if main_begin is None:
+                main_begin = form.cleaned_data.get('begin').strftime('%Y-%m-%d %H:%M:%S')
 
             service_status = form.cleaned_data.get('service_status')
             status_list.append(service_status.status_category_tag)
