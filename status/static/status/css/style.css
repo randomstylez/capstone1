@@ -98,9 +98,12 @@ a:hover
     height:23rem;
 }
 
-#legend_heading{
-    width: 10rem;
+.legend_heading{
     background-color: #E9ECEF;
+}
+
+#dropdownMenuButton{
+    width: 7rem; important!
 }
 
 #ticket_info{

@@ -9,6 +9,7 @@
     <h1>Services Status</h1>
 </div>
 
+
 <!--Recent events section-->
 
 <section id="recent_events"> <!--this section will show all events in the last five days-->
@@ -44,12 +45,12 @@
                         </div>
                     </div>
                     <div class="col-2 p-0 m-0">
-                        <button type="submit" name="search_services" class="btn"><i class="fas fa-search"></i></button>
+                        <button type="submit" name="search_services" class="btn pl-0"><i class="fas fa-search"></i></button>
                     </div>
                 </div>
             </form>
         </div>
-        <div class="col-3">
+        <div class="col-5 pl-1 ">
             <!--Regions Dropdown-->
               <div class="dropdown">
                   <button class="btn dropdown-toggle p-0 pt-2" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -73,38 +74,71 @@
               </div>
               <!--End of Regions Dropdown-->
         </div>
-        <div class="col-3 d-flex align-items-center">
+        <div class="col-4 border-left d-flex align-items-center">
             <a href="/status" class="link">
                 <p class="m-0">Reset filters</p>
             </a>
         </div>
     </div>
 </div>
-
 <!--End of Search and filter section-->
+
+<!--Small legend section-->
+<div class="container mt-3 d-lg-none">
+  <div class="row py-1 border-top border-bottom d-flex justify-content-center">
+      <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle py-1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Legend
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          {% for instance in category_list %}
+          <div class="row m-0 p-0 dropdown-item">
+              <div class="col-10 d-inline">{{instance.status_category_tag}}</div>
+              <div class="col-2 d-inline">
+                   <span style="color: {{instance.status_category_color}}">
+                        {% if instance.status_category_tag == "Alert" %}
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% elif instance.status_category_tag == "No Issues"%}
+                        <i class="fas fa-check-circle"></i>
+                        {% elif instance.status_category_tag == "In Process"%}
+                        <i class="fas fa-tools"></i>
+                        {% elif instance.status_category_tag == "Outage"%}
+                        <i class="fas fa-times-circle"></i>
+                        {% elif instance.status_category_tag == "Planned"%}
+                        <i class="far fa-calendar-alt"></i>
+                        {% endif %}
+                    </span>
+              </div>
+          </div>
+          {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+<!--End of small legend section-->
 
 <div class="container mt-4 mb-2">
 
     <div class="row">
-        <div class="col-10 mb-2 border">
+        <div class="col-12 col-lg-10 mb-2 border">
              <!--Table headings-->
             <div class="row border-top border-bottom bold pt-2 mb-2" id="list_of_services_heading">
                 <div class="col-5">
                     <p>Business Services</p>
                 </div>
-                <div class="col">
+                <div class="col pl-1">
                     <p>{{days.4 | date:'M-d'}}</p>
                 </div>
-                <div class="col">
+                <div class="col pl-1">
                     <p>{{days.3 | date:'M-d'}}</p>
                 </div>
-                <div class="col">
+                <div class="col pl-1">
                     <p>{{days.2 | date:'M-d'}}</p>
                 </div>
-                <div class="col">
+                <div class="col pl-1">
                     <p>{{days.1 | date:'M-d'}}</p>
                 </div>
-                <div class="col">
+                <div class="col pl-1">
                     <p>{{days.0 | date:'M-d'}}</p>
                 </div>
             </div>
@@ -141,12 +175,12 @@
             </div>
             <!--End of Table Data-->
         </div>
-        <div class="col-2">
+        <div class="col-2 d-none d-lg-inline ">
             <!--Legend section-->
-            <div class="row py-2 border ml-2" id="legend_heading">
-                <p class="bold my-1 pl-2">Legend</p>
-            </div>
             <div class="container ml-2 border-left border-right border-bottom">
+                <div class="row py-1 border legend_heading">
+                    <p class="bold my-1 pl-2">Legend</p>
+                </div>
                 <!--Legend items-->
                 {% for instance in category_list %}
                 <div class="row pl-2" id="legend_items">
@@ -157,7 +191,7 @@
                         <p class="m-0 mt-1" style="color: {{instance.status_category_color}}">
                             {% if instance.status_category_tag == "Alert" %}
                             <i class="fas fa-exclamation-circle"></i>
-                            {% elif instance.status_category_tag == "Completed"%}
+                            {% elif instance.status_category_tag == "No Issues"%}
                             <i class="fas fa-check-circle"></i>
                             {% elif instance.status_category_tag == "In Process"%}
                             <i class="fas fa-tools"></i>
@@ -178,6 +212,7 @@
 
 </div>
 <!--End of Services List section-->
+
 
 {% endblock %}
 

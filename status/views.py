@@ -143,7 +143,6 @@ class ServicesStatusView(View):
 
         return render(request, self.template_name, context)
 
-
 #Subscription page
 class SubscriptionView(View):
     template_name = "status/subscription.html"
