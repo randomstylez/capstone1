@@ -61,14 +61,13 @@ class ServicesStatusView(View):
             services = []
             for region in regions:
 
-                #Getting checked status to true
-                context['checked_regions'] = regions
-
                 #Getting list of services
                 queryset = Region.objects.filter(region_name=region)
                 for e in queryset:
                     services = list(dict.fromkeys(chain(services, e.services.all())))
                 context['services_list'] = services
+
+            context['regions_checked'] = regions
 
         elif 'search_services' in request.GET:
 

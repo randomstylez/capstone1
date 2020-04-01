@@ -34,6 +34,7 @@ body{
     width: 100%;
     text-align: center;
     color: white;
+    bottom:0;
 }
 
 h1 {
@@ -180,15 +181,18 @@ a:hover
 }
 
 /* Default size for xs screen sizes */
-.navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe {
+.navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe, #user_subservices, #user_services {
         font-size: 0.5rem;
 }
 
+#ss_info_section, #modify_subscription {
+    height: 90vh;
+}
 
 /* Adjusting elements according to screen size. Responsive */
 
 @media (min-width: 576px) {   /*Small*/
-    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe{
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe, #user_subservices, #user_services{
         font-size: 0.7rem;
     }
 
@@ -202,7 +206,7 @@ a:hover
 }
 
 @media (min-width: 768px) {   /*Medium*/
-    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe{
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe, #user_subservices, #user_services{
         font-size: 0.7rem;
     }
 
@@ -216,7 +220,7 @@ a:hover
 }
 
 @media (min-width: 992px) {  /*Large*/
-    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe{
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe, #user_subservices, #user_services{
         font-size: 0.7rem;
     }
 
@@ -227,11 +231,15 @@ a:hover
     #subscribe, #update{
         height: 34rem;
     }
+
+      #subscription_page{
+        height: 90vh;
+        }
 }
 
 @media (min-width: 1200px) {   /*Extra Large*/
 
-    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe{
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe, #user_subservices, #user_services{
         font-size: 0.8rem;
     }
 
@@ -241,4 +249,25 @@ a:hover
     #subscribe, #update{
         height: 36rem;
     }
+
 }
+
+
+@media (min-width: 1400px) {   /*Extra Large*/
+
+     #incidents_data{
+        overflow: auto;
+        height:30rem;
+    }
+
+    #status_history {
+        height: 88vh;
+    }
+
+     #user_subservices, #user_services{
+        height:10rem;
+      }
+
+}
+
+

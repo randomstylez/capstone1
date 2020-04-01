@@ -5,106 +5,111 @@
 
 
 <!--PAGE CONTENT GOES HERE-->
-<div class="container mt-4" id="page_heading">
+
+<div class="container" id="status_history">
+    <div class="container mt-4" id="page_heading">
     <h1>Service Status History</h1>
 </div>
 
-<!--Search section-->
-<div class="container my-4" id="search_and_serviceName">
-    <div class="row">
-        <div class="col-3" id="search">
-            <form action="." method="GET">
-                <div class="row">
-                    <div class="col-10 p-0">
-                        <div class="form-group m-0">
-                            <input type="text" name="search" placeholder="Search..." class="form-control">
+    <!--Search section-->
+    <div class="container my-4" id="search_and_serviceName">
+        <div class="row">
+            <div class="col-3" id="search">
+                <form action="." method="GET">
+                    <div class="row">
+                        <div class="col-10 p-0">
+                            <div class="form-group m-0">
+                                <input type="text" name="search" placeholder="Search..." class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-2 p-0 m-0">
+                            <button type="submit" name="search_tickets" class="btn"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
-                    <div class="col-2 p-0 m-0">
-                        <button type="submit" name="search_tickets" class="btn"><i class="fas fa-search"></i></button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="col-9" id="service_name">
-            <p><span class="bold">Business Service: </span>{{ object.service_name }}</p>
+                </form>
+            </div>
+            <div class="col-9" id="service_name">
+                <p><span class="bold">Business Service: </span>{{ object.service_name }}</p>
+            </div>
         </div>
     </div>
-</div>
-<!--End of Search section-->
+    <!--End of Search section-->
 
-<!--Tickets history section-->
+    <!--Tickets history section-->
 
-<div class="container">
-    <div class="row py-2 mb-3" id="incidents_heading">
-        <div class="col-1">
-            <p class="bold">Ticket ID</p>
-        </div>
-        <div class="col-1">
-             <p class="bold">Started</p>
-        </div>
-        <div class="col-1">
-             <p class="bold">Ended</p>
-        </div>
-        <div class="col-7">
-             <p class="bold">Description</p>
-        </div>
-        <div class="col-1">
-             <p class="bold">Status</p>
-        </div>
-    </div>
-    <div class="container m-0 p-0"  id="incidents_data">
-        {% for instance in tickets_list %}
-        <div class="row border-bottom py-2 mb-4"
-             style="border-left: 1.5rem solid {{instance.category_status.status_category_color}};">
+    <div class="container">
+        <div class="row py-2 mb-3" id="incidents_heading">
             <div class="col-1">
-                <a href="/status/details/{{ instance.id}}">
-                   <p class="m-0 link" data-toggle="tooltip" data-placement="top"
-                      title="Sub-service affected: {{instance.sub_service.sub_service_name}}" id="ticket_id">
-                       {{instance.ticket_id}}</p>
-                </a>
+                <p class="bold">Ticket ID</p>
             </div>
             <div class="col-1">
-                 <p class="m-0">{{instance.begin | date:'m-d-Y h:i a'}}</p>
+                 <p class="bold">Started</p>
             </div>
             <div class="col-1">
-                 <p class="m-0">{{instance.end | date:'m-d-Y h:i a'}}</p>
+                 <p class="bold">Ended</p>
             </div>
             <div class="col-7">
-                 <p class="m-0">{{instance.action_description}}</p>
+                 <p class="bold">Description</p>
             </div>
             <div class="col-1">
-                 <p class="m-0" style="color: {{instance.category_status.status_category_color}}">
-                     {{instance.category_status.status_category_tag}}</p>
+                 <p class="bold">Status</p>
             </div>
         </div>
-        {% endfor %}
+        <div class="container m-0 p-0"  id="incidents_data">
+            {% for instance in tickets_list %}
+            <div class="row border-bottom py-2 mb-4"
+                 style="border-left: 1.5rem solid {{instance.category_status.status_category_color}};">
+                <div class="col-1">
+                    <a href="/status/details/{{ instance.id}}">
+                       <p class="m-0 link" data-toggle="tooltip" data-placement="top"
+                          title="Sub-service affected: {{instance.sub_service.sub_service_name}}" id="ticket_id">
+                           {{instance.ticket_id}}</p>
+                    </a>
+                </div>
+                <div class="col-1">
+                     <p class="m-0">{{instance.begin | date:'m-d-Y h:i a'}}</p>
+                </div>
+                <div class="col-1">
+                     <p class="m-0">{{instance.end | date:'m-d-Y h:i a'}}</p>
+                </div>
+                <div class="col-7">
+                     <p class="m-0">{{instance.action_description}}</p>
+                </div>
+                <div class="col-1">
+                     <p class="m-0" style="color: {{instance.category_status.status_category_color}}">
+                         {{instance.category_status.status_category_tag}}</p>
+                </div>
+            </div>
+            {% endfor %}
 
-        {%if no_tickets%}
-        <div class="row d-flex justify-content-center mt-4">
-            <h3>No incidents have been reported for this service</h3>
+            {%if no_tickets%}
+            <div class="row d-flex justify-content-center mt-4">
+                <h3>No incidents have been reported for this service</h3>
+            </div>
+            <div class="row d-flex justify-content-center mt-4">
+               <a href="/status">
+                 <p class="mb-0 link">Go to services status page</p>
+              </a>
+            </div>
+            {%endif%}
         </div>
-        <div class="row d-flex justify-content-center mt-4">
-           <a href="/status">
-             <p class="mb-0 link">Go to services status page</p>
-          </a>
-        </div>
-        {%endif%}
+
     </div>
+
+    <!--End of tickets history section-->
+    <div class="container mb-4">
+        <div class="row">
+            <div class="col-6" id="ticket_legend"></div>
+            <div class="col-6 d-flex justify-content-end" id="subscribe_to_service">
+                <a href="/status/subscription/{{object.id}}"><button name="subscribe_to_service" class="btn btn-dark">
+                        Subscribe to this service</button></a>
+            </div>
+        </div>
+    </div>
+    <!--Subscription and legend section-->
 
 </div>
 
-<!--End of tickets history section-->
-<div class="container mb-4">
-    <div class="row">
-        <div class="col-6" id="ticket_legend"></div>
-        <div class="col-6 d-flex justify-content-end" id="subscribe_to_service">
-            <a href="/status/subscription/{{object.id}}"><button name="subscribe_to_service" class="btn btn-dark">
-                    Subscribe to this service</button></a>
-        </div>
-    </div>
-</div>
-<!--Subscription and legend section-->
 
 
 

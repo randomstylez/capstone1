@@ -61,7 +61,11 @@
                       <form action="." method="get">
                           {% for instance in region_list %}
                           <div class="dropdown-item">
+                              {% if instance.region_name in regions_checked  %}
+                              <input class="form-check-input" type="checkbox" name="regions" value="{{instance}}" checked>
+                              {% else %}
                               <input class="form-check-input" type="checkbox" name="regions" value="{{instance}}">
+                              {% endif %}
                               <label class="form-check-label">
                                   {{instance}}
                               </label>
@@ -92,9 +96,9 @@
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           {% for instance in category_list %}
-          <div class="row m-0 p-0 dropdown-item">
-              <div class="col-10 d-inline">{{instance.status_category_tag}}</div>
-              <div class="col-2 d-inline">
+          <div class="row m-0 d-flex justify-content-between p-0 dropdown-item">
+              <div class="col-1 d-inline">{{instance.status_category_tag}}</div>
+              <div class="col-1 mr-2 d-inline">
                    <span style="color: {{instance.status_category_color}}">
                         {% if instance.status_category_tag == "Alert" %}
                         <i class="fas fa-exclamation-circle"></i>
