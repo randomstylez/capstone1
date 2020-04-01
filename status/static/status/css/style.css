@@ -189,6 +189,10 @@ a:hover
     height: 90vh;
 }
 
+#status_history {
+    height: 83vh;
+}
+
 /* Adjusting elements according to screen size. Responsive */
 
 @media (min-width: 576px) {   /*Small*/
@@ -235,6 +239,7 @@ a:hover
       #subscription_page{
         height: 90vh;
         }
+
 }
 
 @media (min-width: 1200px) {   /*Extra Large*/
@@ -250,6 +255,7 @@ a:hover
         height: 36rem;
     }
 
+
 }
 
 
@@ -264,9 +270,14 @@ a:hover
         height: 88vh;
     }
 
-     #user_subservices, #user_services{
+    #user_subservices, #user_services{
         height:10rem;
-      }
+    }
+
+    #status_history {
+        height: 88vh;
+    }
+
 
 }
 

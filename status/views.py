@@ -28,7 +28,7 @@ class ServicesStatusView(View):
 
         context = {
             "ticket_list": queryset,
-            "active_nav": 1
+            "service_active": True
         }
 
         # Getting list of status for legend
@@ -147,12 +147,12 @@ class SubscriptionView(View):
     template_name = "status/subscription.html"
 
     def get(self, request, id=None, *args, **kwargs):
-        context = {
-            "active_nav": 2
-        }
 
         form = SubscriberDataForm()
-        context = {"form": form}
+        context = {
+            "form": form,
+            "subscription_active": True
+        }
 
         context['subscribed'] = False
 
@@ -168,13 +168,16 @@ class SubscriptionView(View):
     def post(self, request, *args, **kwargs):
 
         context = {
-            "active_nav": 2
+
         }
 
         generate_token = secrets.token_hex(16)
 
         form = SubscriberDataForm(request.POST, initial={'token': generate_token})
-        context = {"form": form}
+        context = {
+            "form": form,
+            "subscription_active": True
+        }
 
         if 'subs_updates' in request.POST:
 
@@ -213,6 +216,9 @@ class ServiceHistoryView(View):
         context = {
             "active_nav": 1
         }
+
+        searching = False
+
         if id is not None:
             obj = get_object_or_404(Service, id=id)
             context['object'] = obj
@@ -232,19 +238,24 @@ class ServiceHistoryView(View):
                 searchfor = request.GET['search']
                 aux_list = []
 
-                for ticket in tickets_list:
-                    if (searchfor.lower() in ticket.ticket_id.lower()
-                            or searchfor.lower() in ticket.action_description.lower()
-                            or searchfor.lower() in ticket.category_status.status_category_tag.lower()):
-                        aux_list.append(ticket)
+                if searchfor is not '':
+                    for ticket in tickets_list:
+                        if (searchfor.lower() in ticket.ticket_id.lower()
+                                or searchfor.lower() in ticket.action_description.lower()
+                                or searchfor.lower() in ticket.category_status.status_category_tag.lower()):
+                            aux_list.append(ticket)
 
-                tickets_list = aux_list
+                    tickets_list = aux_list
+                    searching = True
 
 
             context['tickets_list'] = tickets_list
 
-            if not(tickets_list):
+            if not(tickets_list) and not(searching):
                 context['no_tickets'] = True
+
+            if not(tickets_list) and searching:
+                context['no_results'] = True
 
 
         return render(request, self.template_name, context)
