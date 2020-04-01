@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from status.forms import *
-from .models import Priority
 # Register your models here.
+from .models import Priority
 from .models import Region
 from .models import StatusCategory
 from .models import SubService
@@ -39,7 +39,7 @@ class SubServiceAdmin(admin.ModelAdmin):
 
 @admin.register(StatusCategory)
 class StatusCategoryAdmin(admin.ModelAdmin):
-    list_display = ('status_category_tag', 'status_category_color',)
+    list_display = ('status_category_tag', 'status_category_color', 'status_class_design')
     ordering = ['status_category_tag']
 
 
@@ -105,6 +105,8 @@ class SubscribersAdmin(admin.ModelAdmin):
     list_display = ('name', 'email')
     search_fields = ['name', 'email']
     ordering = ['name']
+
+    readonly_fields = ['token']
 
     form = SubscriberForm
 

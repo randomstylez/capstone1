@@ -7,11 +7,13 @@ from validate_email import validate_email
 from status.mail_sender import MailSender
 from .models import DomainList
 from .models import Service
+from .models import SubService
 from .models import Subscriber
 from .models import Ticket
 
 
 class TicketForm(forms.ModelForm):
+
     class Meta:
         model = Ticket
         fields = '__all__'
@@ -22,14 +24,27 @@ class TicketForm(forms.ModelForm):
 
         # It gets the list of services that has that Sub Service
         services = Service.objects.filter(subservice=sub_service_id)
+        subservices = SubService.objects.filter(id=sub_service_id)
 
-        # It gets the list of Key ID ot those services
-        users_mail = Subscriber.objects.filter(services__in=services)
+        users_mail1 = None
+        users_mail2 = None
 
-        # Remove duplicates
-        users_mail = list(dict.fromkeys(users_mail))
+        if services.count() != 0:
+            # It gets the list of Key ID ot those services
+            users_mail1 = Subscriber.objects.filter(services__in=services)
 
-        for user in users_mail:
+            # Remove duplicates
+            users_mail1 = list(dict.fromkeys(users_mail1))
+
+        if subservices.count() != 0:
+            users_mail2 = Subscriber.objects.filter(subservices__in=subservices)
+
+            # Remove duplicates
+            users_mail2 = list(dict.fromkeys(users_mail2))
+
+        users = list(set(users_mail1) | set(users_mail2))
+
+        for user in users:
             text = f"""\
                             Changes on the ticket:
                             """
@@ -63,7 +78,9 @@ class TicketForm(forms.ModelForm):
                     self.cleaned_data["end"]))
                 raise ValidationError("There are some errors on the Ticket's dates.")
 
-        self.notify_user(cleaned_data['sub_service'].pk)
+        if self.changed_data:
+            self.instance.notify_action = True
+            self.notify_user(cleaned_data['sub_service'].pk)
 
 
 class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
@@ -100,8 +117,8 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
                 begin = form.cleaned_data['action_date'].strftime('%Y-%m-%d %H:%M:%S')
                 if begin < main_begin:
                     form.add_error("action_date", "You can not have an action date "
-                                                  "lower than the start day of the ticket {}.".format(
-                        form.cleaned_data["action_date"]))
+                                                  "lower than the start day of the ticket {}.".
+                                   format(form.cleaned_data["action_date"]))
                     my_raises = True
 
             if my_raises:
@@ -127,6 +144,8 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
             if my_raises:
                 raise ValidationError("There are some errors on the Service's Status.")
+
+        return self.cleaned_data
 
 
 class SubscriberForm(forms.ModelForm):
@@ -173,12 +192,14 @@ class SubscriberForm(forms.ModelForm):
 
             # Update User's token
             self.cleaned_data["token"] = token
-        # else:
-        #     SubscriberForm.get_user_data(self.cleaned_data["email"], self.cleaned_data["token"])
-        #     SubscriberForm.send_link_by_user_id(self.instance.pk)
-        #     SubscriberForm.send_link_by_user_email(self.cleaned_data["email"])
-        #     self.update_user_token_by_user_id(self.instance.pk)
-        #     self.update_user_token_by_user_email(self.cleaned_data["email"])
+        else:
+            # SubscriberForm.get_user_data(self.cleaned_data["email"], self.cleaned_data["token"])
+            # SubscriberForm.send_link_by_user_id(self.instance.pk)
+            # SubscriberForm.send_link_by_user_email(self.cleaned_data["email"])
+            self.update_user_token_by_user_id(self.instance.pk)
+            # self.update_user_token_by_user_email(self.cleaned_data["email"])
+
+        return self.cleaned_data
 
     @staticmethod
     def send_link_by_user_id(user_id):
@@ -298,13 +319,20 @@ class SubscriberForm(forms.ModelForm):
         :return:
         """
         _token = secrets.token_hex(64)
-        self.cleaned_data["token"] = _token
-        #
+
+        # It will be used on no read only cases
+        # self.cleaned_data["token"] = _token
+
+        # Or
         # Subscriber.objects.filter(pk=user_id).update(token=_token)
-        #
+
+        # Or
         # obj = Subscriber.objects.get(pk=user_id)
         # obj.token = _token
         # obj.save()
+
+        # It will be used on read only cases
+        self.instance.token = _token
 
     def update_user_token_by_user_email(self, _email):
         """
@@ -314,10 +342,17 @@ class SubscriberForm(forms.ModelForm):
         :return:
         """
         _token = secrets.token_hex(64)
-        self.cleaned_data["token"] = _token
-        #
+
+        # It will be used on no read only cases
+        # self.cleaned_data["token"] = _token
+
+        # Or
         # Subscriber.objects.filter(email=_email).update(token=_token)
-        #
+
+        # Or
         # obj = Subscriber.objects.get(email=_email)
         # obj.token = _token
         # obj.save()
+
+        # It will be used on read only cases
+        self.instance.token = _token

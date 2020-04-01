@@ -48,8 +48,8 @@ class SubService(models.Model):
 
 
 class Priority(models.Model):
-    priority_tag = models.CharField(unique=True, max_length=25)  # Field name made lowercase.
-    priority_color = models.CharField(unique=True, max_length=7)  # Field name made lowercase.
+    priority_tag = models.CharField(unique=True, max_length=25)
+    priority_color = models.CharField(unique=True, max_length=7)
 
     class Meta:
         verbose_name = _("Priority Tag")
@@ -78,6 +78,7 @@ class SubServiceServices(models.Model):
 class StatusCategory(models.Model):
     status_category_tag = models.CharField(unique=True, max_length=45, verbose_name='Status')
     status_category_color = models.CharField(unique=True, max_length=7)
+    status_class_design = models.CharField(unique=True, max_length=50)
 
     class Meta:
         verbose_name = _("Status Category")
@@ -124,7 +125,7 @@ class TicketLog(models.Model):
     service_history = models.ForeignKey(Ticket, models.CASCADE)
     service_status = models.ForeignKey(StatusCategory, models.DO_NOTHING)
     action_date = models.DateTimeField()
-    action_notes = models.TextField(blank=True, null=True, verbose_name='Notes')  # Field name made lowercase.
+    action_notes = models.TextField(blank=True, null=True, verbose_name='Notes')
 
     def __str__(self):
         return "{0} in {1}".format(self.service_history.sub_service, self.service_history.ticket_id)
