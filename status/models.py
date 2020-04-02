@@ -1,12 +1,11 @@
 from django.db import models
 
 # Create your models here.
-
 from django.utils.translation import ugettext_lazy as _
 
 
 class Service(models.Model):
-    service_name = models.CharField(unique=True, max_length=100, verbose_name='Services')
+    service_name = models.CharField(unique=True, max_length=100, verbose_name='Service')
     service_description = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -19,17 +18,17 @@ class Service(models.Model):
 
 
 class Region(models.Model):
-    region_name = models.CharField(unique=True, max_length=100, verbose_name='Regions')
+    region_name = models.CharField(unique=True, max_length=100, verbose_name='Region')
     region_description = models.TextField(blank=True, null=True)
     services = models.ManyToManyField(Service)
+
+    def __str__(self):
+        return self.region_name
 
     class Meta:
         verbose_name = _("Region")
         verbose_name_plural = _("Regions")
         ordering = ['region_name']
-
-    def __str__(self):
-        return self.region_name
 
 
 class SubService(models.Model):
@@ -61,7 +60,7 @@ class Priority(models.Model):
 
 
 class SubServiceServices(models.Model):
-    service = models.ForeignKey(Service, models.CASCADE)
+    service = models.ForeignKey(Service, models.CASCADE, verbose_name='Service')
     subservice = models.ForeignKey(SubService, models.CASCADE, verbose_name='Sub-Service')
     priority = models.ForeignKey(Priority, models.DO_NOTHING)
 
@@ -135,8 +134,8 @@ class Subscriber(models.Model):
     name = models.CharField(max_length=45)
     email = models.CharField(max_length=45)
     token = models.CharField(max_length=128, null=True, blank=True)
-    services = models.ManyToManyField(Service, verbose_name='Services', blank=True)
-    subservices = models.ManyToManyField(SubService, verbose_name='Sub - Services', blank=True)
+    services = models.ManyToManyField(Service, verbose_name='Service', blank=True)
+    subservices = models.ManyToManyField(SubService, verbose_name='Sub - Service', blank=True)
 
     class Meta:
         verbose_name = _("Subscriber")

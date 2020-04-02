@@ -13,10 +13,21 @@ from .models import Ticket
 
 
 class TicketForm(forms.ModelForm):
+    NO = False
+    YES = True
+    YES_NO_CHOICES = (
+        (NO, 'No'),
+        (YES, 'Yes')
+    )
 
     class Meta:
         model = Ticket
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(TicketForm, self).__init__(*args, **kwargs)
+        if self.instance.id:
+            self.fields['notify_action'] = forms.ChoiceField(choices=self.YES_NO_CHOICES)
 
     @staticmethod
     def notify_user(sub_service_id):
@@ -79,8 +90,14 @@ class TicketForm(forms.ModelForm):
                 raise ValidationError("There are some errors on the Ticket's dates.")
 
         if self.changed_data:
-            self.instance.notify_action = True
-            self.notify_user(cleaned_data['sub_service'].pk)
+            if self.changed_data == ['notify_action'] and not self.instance.notify_action and \
+                    cleaned_data['notify_action'] == 'True':
+                self.instance.notify_action = True
+                self.notify_user(cleaned_data['sub_service'].pk)
+            elif self.changed_data != ['notify_action'] and \
+                    (cleaned_data['notify_action'] is True or cleaned_data['notify_action'] == 'True'):
+                self.instance.notify_action = True
+                self.notify_user(cleaned_data['sub_service'].pk)
 
 
 class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
