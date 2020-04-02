@@ -89,7 +89,8 @@ a:hover
 
 }
 
-#list_of_services, #list_of_sub_services, #user_services, #user_subservices{
+#list_of_services, #list_of_sub_services,
+#user_subservices, #user_services, #user_services_toadd, #user_subservices_toadd{
     overflow: auto;
     height:8rem;
 }
@@ -181,7 +182,8 @@ a:hover
 }
 
 /* Default size for xs screen sizes */
-.navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe, #user_subservices, #user_services {
+.navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe,
+ #user_subservices, #user_services, #user_services_toadd, #user_subservices_toadd{
         font-size: 0.5rem;
 }
 
@@ -196,7 +198,8 @@ a:hover
 /* Adjusting elements according to screen size. Responsive */
 
 @media (min-width: 576px) {   /*Small*/
-    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe, #user_subservices, #user_services{
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe,
+    #user_subservices, #user_services, #user_services_toadd, #user_subservices_toadd{
         font-size: 0.7rem;
     }
 
@@ -210,7 +213,8 @@ a:hover
 }
 
 @media (min-width: 768px) {   /*Medium*/
-    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe, #user_subservices, #user_services{
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe,
+    #user_subservices, #user_services, #user_services_toadd, #user_subservices_toadd{
         font-size: 0.7rem;
     }
 
@@ -224,7 +228,8 @@ a:hover
 }
 
 @media (min-width: 992px) {  /*Large*/
-    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe, #user_subservices, #user_services{
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe,
+    #user_subservices, #user_services, #user_services_toadd, #user_subservices_toadd{
         font-size: 0.7rem;
     }
 
@@ -244,7 +249,8 @@ a:hover
 
 @media (min-width: 1200px) {   /*Extra Large*/
 
-    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe, #user_subservices, #user_services{
+    .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe,
+     #user_subservices, #user_services, #user_services_toadd, #user_subservices_toadd{
         font-size: 0.8rem;
     }
 
@@ -270,7 +276,7 @@ a:hover
         height: 88vh;
     }
 
-    #user_subservices, #user_services{
+    #user_subservices, #user_services, #user_services_toadd, #user_subservices_toadd{
         height:10rem;
     }
 

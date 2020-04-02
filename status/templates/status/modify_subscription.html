@@ -16,8 +16,8 @@
                 <p class="d-flex justify-content-center" >Below is a summary of the changes you have requested:</p>
 
                 <div class="row mb-5">
-                    <div class="col-2"></div>
-                    <div class="col-8">
+                    <div class="col-1"></div>
+                    <div class="col-10">
                         <div class="row border-top pt-4">
                             <div class="col mr-1 py-3 subscribe_summary">
                                 <p class="bold mb-2">Unsubscribe to the following services:</p>
@@ -35,9 +35,25 @@
                                     {% endfor %}
                                 </div>
                             </div>
+                            <div class="col mr-1 py-3 subscribe_summary">
+                                <p class="bold mb-2">Subscribe to the following services:</p>
+                                <div class="container">
+                                    {% for service in services_list_added %}
+                                    <p class="mb-0">- {{service}}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col mr-1 py-3 subscribe_summary">
+                                <p class="bold mb-2">Subscribe to the following sub-services:</p>
+                                <div class="container">
+                                    {% for subservice in subservices_list_added %}
+                                    <p class="mb-0">- {{subservice}}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-2"></div>
+                    <div class="col-1"></div>
                 </div>
                 <a class="link d-flex justify-content-center" href="/status">
                     <p class="mb-0">Go to services status page</p>
@@ -46,52 +62,100 @@
             {% else %}
             <div class="container mt-5" id="header">
                 <h1>Hi {{user.name}}!</h1>
-                <p class="bold  d-flex justify-content-center">Please select the services and sub-services you would like to delete from your subscription</p>
+                <p class="bold  d-flex justify-content-center">Please select your subscription changes</p>
             </div>
-        <!--    List all services user is currently registered-->
-            <div class="container mt-5" id="form">
-                 <form action="" method="post"> {% csrf_token %}
 
-                    <div class="container">
-                        <lable class="bold">Services</lable>
-                        <div class="container border mt-2" id="user_services">
-                            {% if no_services %}
-                            <p>You are not registered for any service</p>
-                            {% else %}
-                            {% for service in services %}
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="selected_services" value="{{service}}">
-                                <label class="form-check-label">
-                                  {{service.service_name}}
-                                </label>
+            <!-- Subscription modification section-->
+            <div class="container" id="form">
+                <form action="" method="post"> {% csrf_token %}
+                    <div class="row">
+                        <div class="col-6" id="to_remove">
+                            <!--    List all services user is currently registered-->
+                            <div class="container">
+                                <div class="row">
+                                    <lable class="bold">Remove from your subscription:</lable>
+                                </div>
+                                <p class="bold">Services</p>
+                                <div class="container border mt-2" id="user_services">
+                                    {% if no_services %}
+                                    <p>You are not registered for any service</p>
+                                    {% else %}
+                                    {% for service in services %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="selected_services" value="{{service}}">
+                                        <label class="form-check-label">
+                                          {{service.service_name}}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
                             </div>
-                            {% endfor %}
-                            {% endif %}
+                            <!--    List all subservices user is currently registered-->
+                            <div class="container mt-3">
+                                <p class="bold">Sub-services</p>
+                                <div class="container border mt-2" id="user_subservices">
+                                    {% if no_subservices %}
+                                    <p>You are not registered for any sub_service</p>
+                                    {% else %}
+                                    {% for sub_service in sub_services %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="selected_subservices" value="{{sub_service}}">
+                                        <label class="form-check-label">
+                                          {{sub_service.sub_service_name}}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    <div class="col-6" id="to_add">
+                        <!--    List all services user is not registered-->
+                        <div class="container">
+                            <div class="row">
+                                <lable class="bold">Add to your subscription:</lable>
+                            </div>
+                            <p class="bold">Services</p>
+                            <div class="container border mt-2" id="user_services_toadd">
+                                {% if no_services_toadd %}
+                                <p>You are currently registered to all services</p>
+                                {% else %}
+                                {% for service in services_toadd %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="selected_services_toadd" value="{{service}}">
+                                    <label class="form-check-label">
+                                      {{service.service_name}}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!--    List all subservices user is currently registered-->
+                        <div class="container mt-3">
+                            <p class="bold">Sub-services</p>
+                            <div class="container border mt-2" id="user_subservices_toadd">
+                                {% if no_subservices_toadd %}
+                                <p>You are currently registered to all sub-services</p>
+                                {% else %}
+                                {% for sub_service in subservices_toadd %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="selected_subservices_toadd" value="{{sub_service}}">
+                                    <label class="form-check-label">
+                                      {{sub_service.sub_service_name}}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-
-                    <div class="container mt-3">
-                        <lable class="bold">Sub-services</lable>
-                        <div class="container border mt-2" id="user_subservices">
-                            {% if no_subservices %}
-                            <p>You are not registered for any sub_service</p>
-                            {% else %}
-                            {% for sub_service in sub_services %}
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="selected_subservices" value="{{sub_service}}">
-                                <label class="form-check-label">
-                                  {{sub_service.sub_service_name}}
-                                </label>
-                            </div>
-                            {% endfor %}
-                            {% endif %}
-                        </div>
-
-                    </div>
-                     <div class="container ml-0 pl-0 mt-4">
+                    <div class="container ml-0 pl-0 mt-4">
                          <input type="text" name="user_id" hidden value="{{user.id}}">
                          <button type="submit" name="update_subcription" class="btn btn-dark py-0">Submit</button>
                      </div>
+                </div>
                 </form>
             </div>
 

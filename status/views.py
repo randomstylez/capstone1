@@ -179,11 +179,20 @@ class SubscriptionView(View):
             "subscription_active": True
         }
 
+
         if 'subs_updates' in request.POST:
 
             if form.is_valid():
-                subscriber = form.save()
-                context['subscribed'] = True
+                #Getting email entered by user
+                email = form.cleaned_data['email']
+
+                #If the user is not registered before save it
+                if not Subscriber.objects.filter(email=email).exists():
+                    subscriber = form.save()
+                    context['subscribed'] = True
+                else:
+                    context['user_exists'] = True
+                    context['user_exists_email'] = email
 
             if 'one_service' in request.POST:
                 id = request.POST['one_service']
@@ -200,7 +209,11 @@ class SubscriptionView(View):
             SubscriberForm.send_link_by_user_email(str(user_email))
 
             #Email has been sent, update template
-            context['updated'] = True
+
+            if request.POST.get('user_email', None):
+                context['updated_left'] = True
+            else:
+                context['updated_right'] = True
 
         return render(request, self.template_name, context)
 
@@ -322,20 +335,48 @@ class ModifyUserSubscription (ListView):
         }
 
         #Getting the services for this user
-        services = user.services.all()
+        user_services = user.services.all()
 
-        if services:
-            context['services'] = services
+        if user_services:
+            context['services'] = user_services
         else:
             context['no_services'] = True
 
         # Getting the subservices for this user
-        sub_services = user.subservices.all()
+        user_sub_services = user.subservices.all()
 
-        if sub_services:
-            context['sub_services'] = sub_services
+        if user_sub_services:
+            context['sub_services'] = user_sub_services
         else:
             context['no_subservices'] = True
+
+        #Getting the services this user is not registered to
+
+        queryset = Service.objects.all()
+        services_not_registered = []
+
+        for service in queryset:
+            if service not in user_services:
+                services_not_registered.append(service)
+
+        if services_not_registered:
+            context['services_toadd'] = services_not_registered
+        else:
+            context['no_services_toadd'] = True
+
+        # Getting the sub-services this user is not registered to
+
+        queryset = SubService.objects.all()
+        sub_services_not_registered = []
+
+        for sub_service in queryset:
+            if sub_service not in user_sub_services:
+                sub_services_not_registered.append(sub_service)
+
+        if sub_services_not_registered:
+            context['subservices_toadd'] = sub_services_not_registered
+        else:
+            context['no_subservices_toadd'] = True
 
         return render(request, self.template_name, context)
 
@@ -348,23 +389,46 @@ class ModifyUserSubscription (ListView):
         #Getting list of services to delete
         services = request.POST.getlist('selected_services')
 
-        #Deleting the services
-        for service in services:
-            model_service = Service.objects.filter(service_name=service)[:1].get()
-            user.services.remove(model_service)
+        if services:
+            #Deleting the services
+            for service in services:
+                model_service = Service.objects.filter(service_name=service)[:1].get()
+                user.services.remove(model_service)
 
         # Getting list of sub_services to delete
         subservices = request.POST.getlist('selected_subservices')
 
-        # Deleting the subservices
-        for subservice in subservices:
-            model_subservice = SubService.objects.filter(sub_service_name=subservice)[:1].get()
-            user.subservices.remove(model_subservice)
+        if subservices:
+            # Deleting the subservices
+            for subservice in subservices:
+                model_subservice = SubService.objects.filter(sub_service_name=subservice)[:1].get()
+                user.subservices.remove(model_subservice)
+
+        #Getting list of services to add
+        services_add = request.POST.getlist('selected_services_toadd')
+
+        if services_add:
+            #Adding the services
+            for service in services_add:
+                model_service = Service.objects.filter(service_name=service)[:1].get()
+                user.services.add(model_service)
+
+        # Getting list of sub_services to add
+        subservices_add = request.POST.getlist('selected_subservices_toadd')
+
+        if subservices_add:
+            # Adding the subservices
+            for subservice in subservices_add:
+                model_subservice = SubService.objects.filter(sub_service_name=subservice)[:1].get()
+                user.subservices.add(model_subservice)
 
         context = {
-            'completed' : True,
+            'completed': True,
             'user': user,
             'services_list': services,
-            'subservices_list': subservices
+            'subservices_list': subservices,
+            'services_list_added': services_add,
+            'subservices_list_added': subservices_add
+
         }
         return render(request, self.template_name, context)

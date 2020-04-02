@@ -18,6 +18,38 @@
                             <p class=" link mb-0">Go to services status page</p>
                         </a>
                     </div>
+                {% elif user_exists%}
+                    <div class="container mt-4 pt-4" id="user_exists">
+                        <div class="row d-flex justify-content-center">
+                             <h3>This email address is already registered</h3>
+                        </div>
+                        <div class="row d-flex justify-content-center">
+                           <lable>Would you like to review and modify your subscription?</lable>
+                        </div>
+                        <div class="row mt-2 d-flex justify-content-center">
+                            <form action="." method="POST"> {% csrf_token %}
+                                <button type="submit" class="btn btn-primary mb-2" name="update_subs">Yes</button>
+                                <input class="form-control" name="user_email" value="{{user_exists_email}}" hidden>
+                            </form>
+                            <a class="pl-2" href="/status">
+                                <button type="submit" class="btn btn-primary mb-2" name="update_subs">No </button>
+                             </a>
+                        </div>
+                    </div>
+                {% elif updated_left %}
+                <div class="container">
+                    <div class="row d-flex justify-content-center">
+                       <h3>Your request has been submitted</h3>
+                    </div>
+                    <div class="row d-flex justify-content-center">
+                        <p> You will receive an email shortly</p>
+                    </div>
+                    <div class="row d-flex justify-content-center">
+                        <a href="/status">
+                            <p class=" link mb-0">Go to services status page</p>
+                        </a>
+                    </div>
+                </div>
                 {% else %}
                     <form action="." method="POST"> {% csrf_token %}
 
@@ -78,7 +110,7 @@
                 <div class="container mb-3 border-bottom">
                     <h1>Update Subscription</h1>
                 </div>
-                {% if updated %}
+                {% if updated_right %}
                 <div class="container">
                     <h3>Your request has been submitted</h3>
                     <p> You will receive an email shortly</p>
