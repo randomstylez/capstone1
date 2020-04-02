@@ -6,8 +6,10 @@ from validate_email import validate_email
 
 from status.mail_sender import MailSender
 from .models import DomainList
+from .models import Region
 from .models import Service
 from .models import SubService
+from .models import SubServiceServices
 from .models import Subscriber
 from .models import Ticket
 
@@ -20,6 +22,8 @@ class TicketForm(forms.ModelForm):
         (YES, 'Yes')
     )
 
+    cleaned_data = None
+
     class Meta:
         model = Ticket
         fields = '__all__'
@@ -29,16 +33,26 @@ class TicketForm(forms.ModelForm):
         if self.instance.id:
             self.fields['notify_action'] = forms.ChoiceField(choices=self.YES_NO_CHOICES)
 
-    @staticmethod
-    def notify_user(sub_service_id):
+    def notify_user(self, sub_service_id):
         # It gets all the users who belong to that Sub Service
 
         # It gets the list of services that has that Sub Service
         services = Service.objects.filter(subservice=sub_service_id)
+        print(services[0].service_name)
         subservices = SubService.objects.filter(id=sub_service_id)
+        print(subservices[0].sub_service_name)
 
-        users_mail1 = None
-        users_mail2 = None
+        # Information to use in the email Body
+        region = Region.objects.filter(services__subservice__in=subservices)
+        print(region[0].region_name)
+        topology = SubServiceServices.objects.filter(subservice__in=subservices)
+        print(topology[0].priority)
+
+        data = self.changed_data
+        print(self.cleaned_data)
+
+        users_mail1 = []
+        users_mail2 = []
 
         if services.count() != 0:
             # It gets the list of Key ID ot those services
@@ -57,13 +71,23 @@ class TicketForm(forms.ModelForm):
 
         for user in users:
             text = f"""\
-                            Changes on the ticket:
+                            Changes on the ticket {self.cleaned_data['ticket_id']}:
+                            Region: {region[0].region_name}
+                            Priority: {topology[0].priority}
+                            Service: {services[0].service_name}
+                            Sub-Service: {subservices[0].sub_service_name}
                             """
 
             html = f"""\
                             <html>
                               <body>
-                                <p>Changes on the ticket<br>
+                                <p>Changes on the ticket <span style="font-weight: bold;">{self.cleaned_data['ticket_id']}</span>:<br>
+                                    <ul>
+                                        <li><span style="font-weight: bold;">Region:</span> {region[0].region_name}</li>
+                                        <li><span style="font-weight: bold;">Priority:</span> {topology[0].priority}</li>
+                                        <li><span style="font-weight: bold;">Service:</span> {services[0].service_name}</li>
+                                        <li><span style="font-weight: bold;">Sub-Service:</span> {subservices[0].sub_service_name}</li>
+                                    </ul>
                                 </p>
                               </body>
                             </html>
@@ -75,12 +99,12 @@ class TicketForm(forms.ModelForm):
             mail_sender.send_mail()
 
     def clean(self):
-        cleaned_data = super().clean()
+        self.cleaned_data = super().clean()
 
-        begin = cleaned_data['begin'].strftime('%Y-%m-%d %H:%M:%S')
+        begin = self.cleaned_data['begin'].strftime('%Y-%m-%d %H:%M:%S')
 
-        if cleaned_data['end']:
-            end = cleaned_data['end'].strftime('%Y-%m-%d %H:%M:%S')
+        if self.cleaned_data['end']:
+            end = self.cleaned_data['end'].strftime('%Y-%m-%d %H:%M:%S')
 
             if begin > end:
                 self.add_error("begin", "The Begin date {} should follow a chronological order.".format(
@@ -91,13 +115,13 @@ class TicketForm(forms.ModelForm):
 
         if self.changed_data:
             if self.changed_data == ['notify_action'] and not self.instance.notify_action and \
-                    cleaned_data['notify_action'] == 'True':
+                    self.cleaned_data['notify_action'] == 'True':
                 self.instance.notify_action = True
-                self.notify_user(cleaned_data['sub_service'].pk)
+                self.notify_user(self.cleaned_data['sub_service'].pk)
             elif self.changed_data != ['notify_action'] and \
-                    (cleaned_data['notify_action'] is True or cleaned_data['notify_action'] == 'True'):
+                    (self.cleaned_data['notify_action'] is True or self.cleaned_data['notify_action'] == 'True'):
                 self.instance.notify_action = True
-                self.notify_user(cleaned_data['sub_service'].pk)
+                self.notify_user(self.cleaned_data['sub_service'].pk)
 
 
 class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
