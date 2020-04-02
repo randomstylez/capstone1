@@ -1,5 +1,6 @@
+from ckeditor.fields import RichTextField
+from colorfield.fields import ColorField
 from django.db import models
-
 # Create your models here.
 from django.utils.translation import ugettext_lazy as _
 
@@ -49,6 +50,7 @@ class SubService(models.Model):
 class Priority(models.Model):
     priority_tag = models.CharField(unique=True, max_length=25)
     priority_color = models.CharField(unique=True, max_length=7)
+    priority_color_hex = ColorField(unique=True, default='#000000')
 
     class Meta:
         verbose_name = _("Priority Tag")
@@ -77,6 +79,7 @@ class SubServiceServices(models.Model):
 class StatusCategory(models.Model):
     status_category_tag = models.CharField(unique=True, max_length=45, verbose_name='Status')
     status_category_color = models.CharField(unique=True, max_length=7)
+    status_category_color_hex = ColorField(default='#000000')
     status_class_design = models.CharField(unique=True, max_length=50)
 
     class Meta:
@@ -104,8 +107,8 @@ class Ticket(models.Model):
     category_status = models.ForeignKey(StatusCategory, models.DO_NOTHING, null=True, default=3, verbose_name='Status')
     begin = models.DateTimeField()
     end = models.DateTimeField(null=True, blank=True)
-    action_description = models.TextField()
-    action_notes = models.TextField(blank=True, null=True)
+    action_description = RichTextField()
+    action_notes = RichTextField(blank=True, null=True)
     notify_action = models.BooleanField(
         default=NO,
         choices=YES_NO_CHOICES,
@@ -124,7 +127,8 @@ class TicketLog(models.Model):
     service_history = models.ForeignKey(Ticket, models.CASCADE)
     service_status = models.ForeignKey(StatusCategory, models.DO_NOTHING)
     action_date = models.DateTimeField()
-    action_notes = models.TextField(blank=True, null=True, verbose_name='Notes')
+    # action_notes = models.TextField(blank=True, null=True, verbose_name='Notes')
+    action_notes = RichTextField(blank=True, null=True, verbose_name='Notes')
 
     def __str__(self):
         return "{0} in {1}".format(self.service_history.sub_service, self.service_history.ticket_id)

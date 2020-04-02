@@ -44,7 +44,8 @@ class SubServiceAdmin(admin.ModelAdmin):
 
 @admin.register(StatusCategory)
 class StatusCategoryAdmin(admin.ModelAdmin):
-    list_display = ('status_category_tag', 'status_category_color', 'status_class_design')
+    list_display = ('status_category_tag', 'status_category_color', 'status_category_color_hex',
+                    'status_class_design')
     ordering = ['status_category_tag']
 
 
@@ -132,7 +133,7 @@ class SubServiceServicesAdmin(admin.ModelAdmin):
 
 @admin.register(Priority)
 class PriorityAdmin(admin.ModelAdmin):
-    list_display = ('priority_tag', 'priority_color',)
+    list_display = ('priority_tag', 'priority_color', 'priority_color_hex')
     ordering = ['priority_tag']
 
 

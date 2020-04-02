@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     'django_extensions',
     'tinymce',
     'django_admin_listfilter_dropdown',
+    'colorfield',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +144,7 @@ GRAPH_MODELS = {
   'all_applications': True,
   'group_models': True,
 }
+
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+
+CKEDITOR_UPLOAD_PATH = "/uploads/"
