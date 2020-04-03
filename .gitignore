@@ -7,6 +7,7 @@ venv/
 status/migrations
 status/migrations/
 status/migrations/*
+status/mail_sender.py
 
 .DS_Store
 
