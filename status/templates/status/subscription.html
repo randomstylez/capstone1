@@ -31,7 +31,7 @@
                                 <button type="submit" class="btn btn-primary mb-2" name="update_subs">Yes</button>
                                 <input class="form-control" name="user_email" value="{{user_exists_email}}" hidden>
                             </form>
-                            <a class="pl-2" href="/status">
+                            <a class="pl-2" href="/status/subscription/">
                                 <button type="submit" class="btn btn-primary mb-2" name="update_subs">No </button>
                              </a>
                         </div>
@@ -47,6 +47,17 @@
                     <div class="row d-flex justify-content-center">
                         <a href="/status">
                             <p class=" link mb-0">Go to services status page</p>
+                        </a>
+                    </div>
+                </div>
+                {% elif no_selection %}
+                <div class="container">
+                    <div class="row d-flex justify-content-center" style="text-align: center;">
+                        <h3>Please select at least one service or subservice to register</h3>
+                    </div>
+                    <div class="row d-flex justify-content-center">
+                        <a href="/status/subscription/">
+                            <p class=" link mb-0">Update selection</p>
                         </a>
                     </div>
                 </div>
@@ -115,14 +126,26 @@
                     <h3>Your request has been submitted</h3>
                     <p> You will receive an email shortly</p>
                     <a href="/status">
-                            <p class=" link mb-0">Go to services status page</p>
-                        </a>
+                        <p class=" link mb-0">Go to services status page</p>
+                    </a>
                 </div>
                 {%else%}
                 <div class="container">
+                    {% if not_registered %}
+                     <div class="container">
+                        <h3 class="alert">This is email is not registered</h3>
+                        <p> If you would like to receive service updates notifications please register on the left section.</p>
+                         <a href="/status/subscription">
+                             <p class=" link mb-0">Update email</p>
+                        </a>
+                    </div>
+                    {% else %}
                     <form action="." method="POST"> {% csrf_token %}
                         <div class="form-group"> <!--Email info-->
                             <label>Please enter your email address to unsubscribe to one or more services notifications</label>
+                            {% if empty_email %}
+                            <small class="form-text my-0 alert bold">Please enter your email</small>
+                            {% endif %}
                             <input type="email" class="form-control" aria-describedby="emailHelp" name="user_email" id="user_email">
                             <small class="form-text text-muted">You will receive an email shortly</small>
                         </div>
@@ -130,6 +153,7 @@
                             <button type="submit" class="btn btn-primary mb-2" name="update_subs">Submit request</button>
                         </div>
                     </form>
+                    {% endif %}
                 </div>
                 {%endif%}
             </div>

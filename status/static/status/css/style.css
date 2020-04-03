@@ -17,6 +17,10 @@ body{
     text-decoration: underline;
 }
 
+.alert{
+    color: #F00004;
+}
+
 .subscribe_summary{
     background-color: #E9ECEF;
 }
@@ -69,7 +73,7 @@ a:hover
      border-radius: .25rem;
 }
 
-#unsubscribe_page{
+#modify_subscription{
     height:38rem;
 }
 
@@ -187,12 +191,16 @@ a:hover
         font-size: 0.5rem;
 }
 
-#ss_info_section, #modify_subscription {
+h3{
+    font-size: 1rem;
+}
+
+#modify_subscription {
     height: 90vh;
 }
 
-#status_history {
-    height: 83vh;
+#service_subservice_info, #status_history {
+    height: 88vh;
 }
 
 /* Adjusting elements according to screen size. Responsive */
@@ -200,11 +208,15 @@ a:hover
 @media (min-width: 576px) {   /*Small*/
     .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe,
     #user_subservices, #user_services, #user_services_toadd, #user_subservices_toadd{
-        font-size: 0.7rem;
+        font-size: 0.6rem;
     }
 
     h1{
         font-size: 1.8rem;
+    }
+
+    h3{
+        font-size: 1.2rem;
     }
 
     #subscribe, #update{
@@ -222,6 +234,10 @@ a:hover
         font-size: 1.8rem;
     }
 
+    h3{
+        font-size: 1.5rem;
+    }
+
     #subscribe, #update{
         height: 35rem;
     }
@@ -233,12 +249,12 @@ a:hover
         font-size: 0.7rem;
     }
 
-    h1{
-        font-size: 1.8rem;
+    h3{
+        font-size: 1.6rem;
     }
 
     #subscribe, #update{
-        height: 34rem;
+        height: 36rem;
     }
 
       #subscription_page{
@@ -270,6 +286,11 @@ a:hover
      #incidents_data{
         overflow: auto;
         height:30rem;
+    }
+
+    #ticketLogscontent{
+        overflow: auto;
+        height: 30rem;
     }
 
     #status_history {

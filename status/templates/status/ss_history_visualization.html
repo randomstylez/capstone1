@@ -23,7 +23,7 @@
                             </div>
                         </div>
                         <div class="col-2 p-0 m-0">
-                            <button type="submit" name="search_tickets" class="btn"><i class="fas fa-search"></i></button>
+                            <button type="submit" name="search_tickets" class="btn pl-0"><i class="fas fa-search"></i></button>
                         </div>
                     </div>
                 </form>
@@ -39,19 +39,19 @@
 
     <div class="container" id="t_history">
         <div class="row pl-4 py-2 mb-3" id="incidents_heading">
-            <div class="col-1">
+            <div class="col-2 col-lg-1">
                 <p class="bold">Ticket ID</p>
             </div>
-            <div class="col-1">
+            <div class="col-2 col-lg-1">
                  <p class="bold">Status</p>
             </div>
-            <div class="col-1">
+            <div class="col-1 d-none d-lg-block">
                  <p class="bold">Started</p>
             </div>
-            <div class="col-1">
+            <div class="col-1 d-none d-lg-block">
                  <p class="bold">Ended</p>
             </div>
-            <div class="col-7">
+            <div class="col-8 col-lg-7">
                  <p class="bold">Description</p>
             </div>
         </div>
@@ -59,7 +59,7 @@
 
              {% if no_tickets%} <!-- If there are no tickets for this service -->
                 <div class="row d-flex justify-content-center mt-4">
-                    <h3>No incidents have been reported for this service</h3>
+                    <h3 style="text-align: center;">No incidents have been reported for this service</h3>
                 </div>
                 <div class="row d-flex justify-content-center mt-4">
                    <a href="/status">
@@ -83,14 +83,14 @@
                 {% for instance in tickets_list %}
                 <div class="row border-bottom py-2 mb-4"
                      style="border-left: 1.5rem solid {{instance.category_status.status_category_color}};">
-                    <div class="col-1">
+                    <div class="col-2 col-lg-1">
                         <a href="/status/details/{{ instance.id}}">
                            <p class="m-0 link" data-toggle="tooltip" data-placement="top"
                               title="Sub-service affected: {{instance.sub_service.sub_service_name}}" id="ticket_id">
                                {{instance.ticket_id}}</p>
                         </a>
                     </div>
-                    <div class="col-1">
+                    <div class="col-2 col-lg-1">
                           <p class="bold ml-3" data-toggle="tooltip" data-placement="top"
                               title="{{instance.category_status.status_category_tag}}">
                            <span style="color: {{instance.category_status.status_category_color}}">
@@ -108,14 +108,24 @@
                             </span>
                         </p>
                     </div>
-                    <div class="col-1">
+                    <div class="col-1 d-none d-lg-block">
                          <p class="m-0">{{instance.begin | date:'m-d-Y h:i a'}}</p>
                     </div>
-                    <div class="col-1">
+                    <div class="col-1 d-none d-lg-block">
                          <p class="m-0">{{instance.end | date:'m-d-Y h:i a'}}</p>
                     </div>
-                    <div class="col-7">
-                         <p class="m-0">{{instance.action_description}}</p>
+                    <div class="col-8 col-lg-7">
+                        <div class="row d-lg-none mb-1">
+                            <div class="col pl-0 pr-0 mr-2 border-right">
+                                <p class="m-0"><span class="bold">Started:</span> {{instance.begin | date:'m-d-Y h:i a'}}</p>
+                            </div>
+                            <div class="col pl-0">
+                                <p class="m-0"> <span class="bold">Ended:</span> {{instance.end | date:'m-d-Y h:i a'}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <p class="m-0">{{instance.action_description}}</p>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
