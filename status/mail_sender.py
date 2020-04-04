@@ -41,6 +41,7 @@ class MailSender:
             server.login(self.sender_email, self.password)
 
             server.sendmail(self.sender_email, self.receiver_email, self.message.as_string())
+            server.quit()
 
         except Exception as e:
             print(e)

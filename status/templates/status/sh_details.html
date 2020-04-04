@@ -1,0 +1,118 @@
+
+{% extends 'status/base.html' %}
+
+{% block content %}
+
+<div class="container" id="service_subservice_info">
+    <div class="row mt-4 d-flex align-items-center" id="ss_info_section">
+        <div class="col-1 p-0"></div>
+        <div class="col-10">
+
+            <!--Ticket main information section-->
+            <p><span class="bold">Sub-service affected:</span> {{ object.sub_service }}</p>
+            <div class="container mb-1 border-bottom py-2 mb-4"
+                 style="border-left: 0.4rem solid {{object.category_status.status_category_color}};" id="ticket_info">
+                <div class="row px-3 pt-3 d-flex justify-content-between">
+                     <p><span class="bold">Ticket ID:</span> {{object.ticket_id}}</p>
+
+                    <p class="m-0 link" data-toggle="tooltip" data-placement="top"
+                          title="Sub-service affected: {{instance.sub_service.sub_service_name}}" id="ticket_id">
+                           {{instance.ticket_id}}</p>
+
+                    <p class="bold" data-toggle="tooltip" data-placement="top"
+                          title="{{object.category_status.status_category_tag}}">
+                       <span style="color: {{object.category_status.status_category_color}}">
+                        {% if object.category_status.status_category_tag == "Alert" %}
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% elif object.category_status.status_category_tag == "No Issues"%}
+                        <i class="fas fa-check-circle"></i>
+                        {% elif object.category_status.status_category_tag == "In Process"%}
+                        <i class="fas fa-tools"></i>
+                        {% elif object.category_status.status_category_tag == "Outage"%}
+                        <i class="fas fa-times-circle"></i>
+                        {% elif object.category_status.status_category_tag == "Planned"%}
+                        <i class="far fa-calendar-alt"></i>
+                        {% endif %}
+                        </span>
+                    </p>
+                </div>
+                <div class="row">
+                    <div class="col col-lg-4">
+                        <p><span class="bold">Started:</span> {{object.begin}}</p>
+                    </div>
+                    <div class="col col-lg-4">
+                        <p><span class="bold">Ended:</span> {{object.end}}</p>
+                    </div>
+                </div>
+                <div class="row" id="ticket_details">
+                    <div class="container mb-3">
+                        <p class="bold">Description:</p>
+                        <p>{{object.action_description}}</p>
+                    </div>
+                    <div class="container mb-3">
+                        <p class="bold">Notes:</p>
+                        <p>{{object.action_notes}}</p>
+                    </div>
+                </div>
+            </div>
+            <!--End of Ticket main information section-->
+
+            <div class="row justify-content-between" id="control_section">
+                <div class="col">
+                    <a href="/status" class="link">
+                        <p class="mb-0">Go to services status page</p>
+                    </a>
+                </div>
+
+                <div class="col" id="arrows">
+                    {% if prev_ticket %}
+                    <a href="/status/details/{{ prev_ticket.id }}">
+                        <p class="ml-3 border-right pr-2 link">
+                            <i class="fas fa-arrow-left"></i> Prev
+                        </p>
+                    </a>
+                    {% else %}
+                    <p class="ml-3 border-right inactive pr-2 link">
+                        <i class="fas fa-arrow-left"></i> Prev
+                    </p>
+                    {% endif %}
+
+                    {% if next_ticket %}
+                    <a href="/status/details/{{ next_ticket.id }}">
+                        <p class=" ml-3 pr-2 link">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </p>
+                    </a>
+                    {% else %}
+                    <p class="ml-3 inactive pr-2 link">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </p>
+                    {% endif %}
+                </div>
+
+            </div>
+
+            <!--Ticket Logs section-->
+            <div class="row d-flex justify-content-center mb-1" id="ticketLogsHeading">
+                <div class="col-5"><hr></div>
+                <div class="col-2 px-0 px-md-3 d-flex align-items-center justify-content-center">
+                    <p class="mb-0">Ticket Logs</p>
+                </div>
+                <div class="col-5"><hr></div>
+            </div>
+            <div class="container" id="ticketLogscontent">
+                {% for instance in ticket_logs %}
+                <div class="container ticket_log border py-2 my-2">
+                    <p><span class="bold">Service status: </span>{{instance.service_status.status_category_tag}}</p>
+                    <p><span class="bold">Action date: </span>{{instance.action_date}}</p>
+                    <p class="mb-0"><span class="bold">Notes: </span>{{instance.action_notes}}</p>
+                </div>
+                {% endfor %}
+            </div>
+            <!--End of Ticket Logs section-->
+
+        </div>
+        <div class="col-1 p-0"></div>
+    </div>
+</div>
+{% endblock %}
