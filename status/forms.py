@@ -188,35 +188,6 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
         return self.cleaned_data
 
-class SubscriberDataForm (forms.ModelForm):
-
-
-
-    services = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                          queryset=Service.objects.all(), required=False)
-    subservices = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                          queryset=SubService.objects.all(), required=False)
-    name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Full Name", "class": "form-control"}),
-                           max_length=20, required=True)
-    email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
-                             required=True)
-
-    def clean(self):
-        # Create token
-        token = secrets.token_hex(64)
-
-        # Update User's token
-        self.cleaned_data["token"] = token
-
-    class Meta:
-        model = Subscriber
-        fields = [
-            'name',
-            'email',
-            'services',
-            'subservices',
-            'token'
-        ]
 
 class SubscriberForm(forms.ModelForm):
     """
@@ -325,7 +296,7 @@ class SubscriberForm(forms.ModelForm):
         # It gets the user's token given its email
         user = Subscriber.objects.filter(email=_email).values('token')
 
-        token = str(user[0]['token']) #Need to cast, otherwise it will have a nontype error
+        token = user[0]['token']
 
         hostname = 'http://127.0.0.1:8000'
         # we should create a mechanism to get the hostname. This option works on views request
