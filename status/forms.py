@@ -258,9 +258,7 @@ class SubscriberForm(forms.ModelForm):
 
         token = str(user[0]['token']) #Need to cast, otherwise it will have a nontype error
 
-        #hostname = 'http://127.0.0.1:8000'
-        hostname = 'localhost:8000'
-
+        hostname = 'http://127.0.0.1:8000'
         # we should create a mechanism to get the hostname. This option works on views request
         # print(HttpRequest.get_host(self))
 

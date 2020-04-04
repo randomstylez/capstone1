@@ -9,7 +9,7 @@ class MailSender:
     def __init__(self, html, subject, text, to):
 
         self.smtp_server = "smtp.gmail.com"
-        self.port = 465  # For SSL PORT 465
+        self.port = 587  # For starttls
         self.sender_email = "maxprofit900@gmail.com"
         self.password = "Maxgmail1981*"
         self.receiver_email = to
@@ -45,5 +45,5 @@ class MailSender:
 
         except Exception as e:
             print(e)
-        # finally:
-        #     server.quit()
+        finally:
+            server.quit()
