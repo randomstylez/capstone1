@@ -20,4 +20,5 @@ urlpatterns = [
     path('status/', include('status.urls')),
     path('admin/', admin.site.urls),
     path('tinymce/', include('tinymce.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ]

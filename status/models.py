@@ -1,13 +1,13 @@
+from ckeditor.fields import RichTextField
+from colorfield.fields import ColorField
 from django.db import models
-
 # Create your models here.
-
 from django.utils.translation import ugettext_lazy as _
 
 
 class Service(models.Model):
-    service_name = models.CharField(unique=True, max_length=100, verbose_name='Services')  # Field name made lowercase.
-    service_description = models.TextField(blank=True, null=True)  # Field name made lowercase.
+    service_name = models.CharField(unique=True, max_length=100, verbose_name='Service')
+    service_description = models.TextField(blank=True, null=True)
 
     class Meta:
         verbose_name = _("Service")
@@ -19,23 +19,23 @@ class Service(models.Model):
 
 
 class Region(models.Model):
-    region_name = models.CharField(unique=True, max_length=100, verbose_name='Regions')  # Field name made lowercase.
-    region_description = models.TextField(blank=True, null=True)  # Field name made lowercase.
+    region_name = models.CharField(unique=True, max_length=100, verbose_name='Region')
+    region_description = models.TextField(blank=True, null=True)
     services = models.ManyToManyField(Service)
+
+    def __str__(self):
+        return self.region_name
 
     class Meta:
         verbose_name = _("Region")
         verbose_name_plural = _("Regions")
         ordering = ['region_name']
 
-    def __str__(self):
-        return self.region_name
-
 
 class SubService(models.Model):
-    sub_service_name = models.CharField(unique=True, max_length=100, verbose_name='Sub-Service')  # Field name made lowercase.
-    # sub_service_description = HTMLField()  # Field name made lowercase.
-    sub_service_description = models.TextField(blank=True, null=True)  # Field name made lowercase.
+    sub_service_name = models.CharField(unique=True, max_length=100, verbose_name='Sub-Service')
+    # sub_service_description = HTMLField()
+    sub_service_description = models.TextField(blank=True, null=True)
     services = models.ManyToManyField(Service, through='SubServiceServices', verbose_name='Service')
 
     class Meta:
@@ -48,8 +48,9 @@ class SubService(models.Model):
 
 
 class Priority(models.Model):
-    priority_tag = models.CharField(unique=True, max_length=25)  # Field name made lowercase.
-    priority_color = models.CharField(unique=True, max_length=7)  # Field name made lowercase.
+    priority_tag = models.CharField(unique=True, max_length=25)
+    priority_color = models.CharField(unique=True, max_length=7)
+    priority_color_hex = ColorField(unique=True, default='#000000')
 
     class Meta:
         verbose_name = _("Priority Tag")
@@ -61,7 +62,7 @@ class Priority(models.Model):
 
 
 class SubServiceServices(models.Model):
-    service = models.ForeignKey(Service, models.CASCADE)
+    service = models.ForeignKey(Service, models.CASCADE, verbose_name='Service')
     subservice = models.ForeignKey(SubService, models.CASCADE, verbose_name='Sub-Service')
     priority = models.ForeignKey(Priority, models.DO_NOTHING)
 
@@ -69,15 +70,17 @@ class SubServiceServices(models.Model):
         unique_together = ('service', 'subservice')
 
         verbose_name = _("Topology")
-        verbose_name_plural = _("Topology")
+        verbose_name_plural = _("Topologies")
 
     def __str__(self):
         return "about {0} in {1}".format(self.subservice, self.service)
 
 
 class StatusCategory(models.Model):
-    status_category_tag = models.CharField(unique=True, max_length=45, verbose_name='Status')  # Field name made lowercase.
-    status_category_color = models.CharField(unique=True, max_length=7)  # Field name made lowercase.
+    status_category_tag = models.CharField(unique=True, max_length=45, verbose_name='Status')
+    status_category_color = models.CharField(unique=True, max_length=7)
+    status_category_color_hex = ColorField(default='#000000')
+    status_class_design = models.CharField(unique=True, max_length=50)
 
     class Meta:
         verbose_name = _("Status Category")
@@ -96,13 +99,16 @@ class Ticket(models.Model):
     )
 
     ticket_id = models.CharField(unique=True, max_length=10)
-    sub_service = models.ForeignKey(SubService, models.DO_NOTHING, verbose_name='Sub-Service')  # Field name made lowercase.
-    category_status = models.ForeignKey(StatusCategory, models.DO_NOTHING, default=3, verbose_name='Status')  # Field name made lowercase.
-    begin = models.DateTimeField()  # Field name made lowercase.
-    end = models.DateTimeField()  # Field name made lowercase.
-    action_description = models.TextField()  # Field name made lowercase.
-    action_notes = models.TextField(blank=True, null=True)  # Field name made lowercase.
 
+    # This action will allow keeping tickets regardless of the deletion of the sub-service where they belong.
+    # sub_service = models.ForeignKey(SubService, models.SET_NULL, null=True, verbose_name='Sub-Service')
+
+    sub_service = models.ForeignKey(SubService, models.CASCADE, null=True, verbose_name='Sub-Service')
+    category_status = models.ForeignKey(StatusCategory, models.DO_NOTHING, null=True, default=3, verbose_name='Status')
+    begin = models.DateTimeField()
+    end = models.DateTimeField(null=True, blank=True)
+    action_description = RichTextField()
+    action_notes = RichTextField(blank=True, null=True)
     notify_action = models.BooleanField(
         default=NO,
         choices=YES_NO_CHOICES,
@@ -118,21 +124,22 @@ class Ticket(models.Model):
 
 
 class TicketLog(models.Model):
-    service_history = models.ForeignKey(Ticket, models.DO_NOTHING)
+    service_history = models.ForeignKey(Ticket, models.CASCADE)
     service_status = models.ForeignKey(StatusCategory, models.DO_NOTHING)
     action_date = models.DateTimeField()
-    action_notes = models.TextField(blank=True, null=True, verbose_name='Notes')  # Field name made lowercase.
+    # action_notes = models.TextField(blank=True, null=True, verbose_name='Notes')
+    action_notes = RichTextField(blank=True, null=True, verbose_name='Notes')
 
     def __str__(self):
         return "{0} in {1}".format(self.service_history.sub_service, self.service_history.ticket_id)
 
 
 class Subscriber(models.Model):
-    name = models.CharField(max_length=45)                  # Field name made lowercase.
-    email = models.CharField(max_length=45)                 # Field name made lowercase.
-    token = models.CharField(max_length=128, null=True, blank=True)     # Field name made lowercase.
-    services = models.ManyToManyField(Service, verbose_name='Services')
-    subservices = models.ManyToManyField(SubService, verbose_name='Sub - Services')
+    name = models.CharField(max_length=45)
+    email = models.CharField(max_length=45)
+    token = models.CharField(max_length=128, null=True, blank=True)
+    services = models.ManyToManyField(Service, verbose_name='Service', blank=True)
+    subservices = models.ManyToManyField(SubService, verbose_name='Sub - Service', blank=True)
 
     class Meta:
         verbose_name = _("Subscriber")
@@ -143,8 +150,8 @@ class Subscriber(models.Model):
 
 
 class DomainList(models.Model):
-    domain_name = models.CharField(unique=True, max_length=100)  # Field name made lowercase.
-    domain_description = models.TextField(blank=True, null=True)  # Field name made lowercase.
+    domain_name = models.CharField(unique=True, max_length=100)
+    domain_description = models.TextField(blank=True, null=True)
 
     class Meta:
         verbose_name = _("Domain")

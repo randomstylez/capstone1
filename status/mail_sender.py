@@ -8,10 +8,10 @@ class MailSender:
 
     def __init__(self, html, subject, text, to):
 
-        self.smtp_server = "smtp.gmail.com"
+        self.smtp_server = "XXXMAILHOSTXXX"
         self.port = 587  # For starttls
-        self.sender_email = "maxprofit900@gmail.com"
-        self.password = "Maxgmail1981*"
+        self.sender_email = "XXXMAILUSERXXX"
+        self.password = "XXXMAILPASSXXX"
         self.receiver_email = to
 
         self.message = MIMEMultipart("alternative")

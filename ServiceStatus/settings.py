@@ -20,7 +20,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#_5i&=$5b(y^s-iddo-4ethd$oj!81wmq!gre86x0@ew3p3bam'
+# For Django 1.10 and above you can use:
+#   from django.core.management.utils import get_random_secret_key
+#   get_random_secret_key()
+SECRET_KEY = 'XXXSECRETKEYXXX'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,6 +43,10 @@ INSTALLED_APPS = [
     'status.apps.StatusConfig',
     'django_extensions',
     'tinymce',
+    'django_admin_listfilter_dropdown',
+    'colorfield',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -81,10 +88,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'NAME': 'Service-Status',
-        'USER': 'root',
-        'PASSWORD': 'liz.pm3006',
-        'HOST': '127.0.0.1',
+        'NAME': 'XXXDBNAMEXXX',
+        'USER': 'XXXDBUSERXXX',
+        'PASSWORD': 'XXXDBPASSXXX',
+        'HOST': 'XXXDBHOSTXXX',
         'PORT': '3306',
     }
 }
@@ -140,3 +147,7 @@ GRAPH_MODELS = {
   'all_applications': True,
   'group_models': True,
 }
+
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+
+CKEDITOR_UPLOAD_PATH = "/uploads/"

@@ -6,62 +6,122 @@ from validate_email import validate_email
 
 from status.mail_sender import MailSender
 from .models import DomainList
+from .models import Region
 from .models import Service
+from .models import SubService
+from .models import SubServiceServices
 from .models import Subscriber
 from .models import Ticket
-from .models import SubService
 
 
 class TicketForm(forms.ModelForm):
+    NO = False
+    YES = True
+    YES_NO_CHOICES = (
+        (NO, 'No'),
+        (YES, 'Yes')
+    )
+
+    cleaned_data = None
+
     class Meta:
         model = Ticket
         fields = '__all__'
 
-    @staticmethod
-    def notify_user(sub_service_id):
+    def __init__(self, *args, **kwargs):
+        super(TicketForm, self).__init__(*args, **kwargs)
+        if self.instance.id:
+            self.fields['notify_action'] = forms.ChoiceField(choices=self.YES_NO_CHOICES)
+
+    def notify_user(self, sub_service_id):
         # It gets all the users who belong to that Sub Service
 
         # It gets the list of services that has that Sub Service
         services = Service.objects.filter(subservice=sub_service_id)
+        print(services[0].service_name)
+        subservices = SubService.objects.filter(id=sub_service_id)
+        print(subservices[0].sub_service_name)
 
-        # It gets the list of Key ID ot those services
-        users_mail = Subscriber.objects.filter(services__in=services)
+        # Information to use in the email Body
+        region = Region.objects.filter(services__subservice__in=subservices)
+        print(region[0].region_name)
+        topology = SubServiceServices.objects.filter(subservice__in=subservices)
+        print(topology[0].priority)
 
-        # Remove duplicates
-        users_mail = list(dict.fromkeys(users_mail))
+        data = self.changed_data
+        print(self.cleaned_data)
 
-        for user in users_mail:
+        users_mail1 = []
+        users_mail2 = []
+
+        if services.count() != 0:
+            # It gets the list of Key ID ot those services
+            users_mail1 = Subscriber.objects.filter(services__in=services)
+
+            # Remove duplicates
+            users_mail1 = list(dict.fromkeys(users_mail1))
+
+        if subservices.count() != 0:
+            users_mail2 = Subscriber.objects.filter(subservices__in=subservices)
+
+            # Remove duplicates
+            users_mail2 = list(dict.fromkeys(users_mail2))
+
+        users = list(set(users_mail1) | set(users_mail2))
+
+        for user in users:
             text = f"""\
-                            Changes on the ticket:
+                            Changes on the ticket {self.cleaned_data['ticket_id']}:
+                            Region: {region[0].region_name}
+                            Priority: {topology[0].priority}
+                            Service: {services[0].service_name}
+                            Sub-Service: {subservices[0].sub_service_name}
                             """
 
             html = f"""\
                             <html>
                               <body>
-                                <p>Changes on the ticket<br>
+                                <p>Changes on the ticket <span style="font-weight: bold;">{self.cleaned_data['ticket_id']}</span>:<br>
+                                    <ul>
+                                        <li><span style="font-weight: bold;">Region:</span> {region[0].region_name}</li>
+                                        <li><span style="font-weight: bold;">Priority:</span> {topology[0].priority}</li>
+                                        <li><span style="font-weight: bold;">Service:</span> {services[0].service_name}</li>
+                                        <li><span style="font-weight: bold;">Sub-Service:</span> {subservices[0].sub_service_name}</li>
+                                    </ul>
                                 </p>
                               </body>
                             </html>
                             """
 
             subject = "Changes detected!"
-            mail_sender = MailSender(html, text, user.email)
+
+            mail_sender = MailSender(html, subject, text, user.email)
             mail_sender.send_mail()
 
     def clean(self):
-        cleaned_data = super().clean()
+        self.cleaned_data = super().clean()
 
-        begin = cleaned_data['begin'].strftime('%Y-%m-%d %H:%M:%S')
-        end = cleaned_data['end'].strftime('%Y-%m-%d %H:%M:%S')
+        begin = self.cleaned_data['begin'].strftime('%Y-%m-%d %H:%M:%S')
 
-        if begin > end:
-            self.add_error("begin", "The Begin date {} should follow a chronological order.".format(
-                self.cleaned_data["begin"]))
-            self.add_error("end", "The End date {} should follow a chronological order.".format(
-                self.cleaned_data["end"]))
-            raise ValidationError("There are some errors on the Ticket's dates.")
+        if self.cleaned_data['end']:
+            end = self.cleaned_data['end'].strftime('%Y-%m-%d %H:%M:%S')
 
-        self.notify_user(cleaned_data['sub_service'].pk)
+            if begin > end:
+                self.add_error("begin", "The Begin date {} should follow a chronological order.".format(
+                    self.cleaned_data["begin"]))
+                self.add_error("end", "The End date {} should follow a chronological order.".format(
+                    self.cleaned_data["end"]))
+                raise ValidationError("There are some errors on the Ticket's dates.")
+
+        if self.changed_data:
+            if self.changed_data == ['notify_action'] and not self.instance.notify_action and \
+                    self.cleaned_data['notify_action'] == 'True':
+                self.instance.notify_action = True
+                self.notify_user(self.cleaned_data['sub_service'].pk)
+            elif self.changed_data != ['notify_action'] and \
+                    (self.cleaned_data['notify_action'] is True or self.cleaned_data['notify_action'] == 'True'):
+                self.instance.notify_action = True
+                self.notify_user(self.cleaned_data['sub_service'].pk)
 
 
 class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
@@ -72,10 +132,15 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
         form_list = []
         change_detected = False
         service_status = None
+        main_begin = None
 
-        main_begin = self.data['begin_0'] + ' ' + self.data['begin_1']
+        if self.data['begin_0'] and self.data['begin_1']:
+            main_begin = self.data['begin_0'] + ' ' + self.data['begin_1']
 
         for form in self.forms:
+
+            if main_begin is None:
+                main_begin = form.cleaned_data.get('begin').strftime('%Y-%m-%d %H:%M:%S')
 
             service_status = form.cleaned_data.get('service_status')
             status_list.append(service_status.status_category_tag)
@@ -93,8 +158,8 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
                 begin = form.cleaned_data['action_date'].strftime('%Y-%m-%d %H:%M:%S')
                 if begin < main_begin:
                     form.add_error("action_date", "You can not have an action date "
-                                                  "lower than the start day of the ticket {}.".format(
-                        form.cleaned_data["action_date"]))
+                                                  "lower than the start day of the ticket {}.".
+                                   format(form.cleaned_data["action_date"]))
                     my_raises = True
 
             if my_raises:
@@ -120,6 +185,8 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
             if my_raises:
                 raise ValidationError("There are some errors on the Service's Status.")
+
+        return self.cleaned_data
 
 class SubscriberDataForm (forms.ModelForm):
 
@@ -195,12 +262,14 @@ class SubscriberForm(forms.ModelForm):
 
             # Update User's token
             self.cleaned_data["token"] = token
-        # else:
-        #     SubscriberForm.get_user_data(self.cleaned_data["email"], self.cleaned_data["token"])
-        #     SubscriberForm.send_link_by_user_id(self.instance.pk)
-        #     SubscriberForm.send_link_by_user_email(self.cleaned_data["email"])
-        #     self.update_user_token_by_user_id(self.instance.pk)
-        #     self.update_user_token_by_user_email(self.cleaned_data["email"])
+        else:
+            # SubscriberForm.get_user_data(self.cleaned_data["email"], self.cleaned_data["token"])
+            # SubscriberForm.send_link_by_user_id(self.instance.pk)
+            # SubscriberForm.send_link_by_user_email(self.cleaned_data["email"])
+            self.update_user_token_by_user_id(self.instance.pk)
+            # self.update_user_token_by_user_email(self.cleaned_data["email"])
+
+        return self.cleaned_data
 
     @staticmethod
     def send_link_by_user_id(user_id):
@@ -320,13 +389,20 @@ class SubscriberForm(forms.ModelForm):
         :return:
         """
         _token = secrets.token_hex(64)
-        self.cleaned_data["token"] = _token
-        #
+
+        # It will be used on no read only cases
+        # self.cleaned_data["token"] = _token
+
+        # Or
         # Subscriber.objects.filter(pk=user_id).update(token=_token)
-        #
+
+        # Or
         # obj = Subscriber.objects.get(pk=user_id)
         # obj.token = _token
         # obj.save()
+
+        # It will be used on read only cases
+        self.instance.token = _token
 
     def update_user_token_by_user_email(self, _email):
         """
@@ -336,10 +412,17 @@ class SubscriberForm(forms.ModelForm):
         :return:
         """
         _token = secrets.token_hex(64)
-        self.cleaned_data["token"] = _token
-        #
+
+        # It will be used on no read only cases
+        # self.cleaned_data["token"] = _token
+
+        # Or
         # Subscriber.objects.filter(email=_email).update(token=_token)
-        #
+
+        # Or
         # obj = Subscriber.objects.get(email=_email)
         # obj.token = _token
         # obj.save()
+
+        # It will be used on read only cases
+        self.instance.token = _token
