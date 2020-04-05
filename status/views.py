@@ -1,13 +1,16 @@
 import secrets
+from datetime import timedelta
+from itertools import chain
 
 from django.shortcuts import render, get_object_or_404
-from .models import SubService, Ticket, StatusCategory,Service,TicketLog,SubServiceServices,Region,Subscriber
+from django.utils import timezone
 from django.views import View
 from django.views.generic import ListView
-from datetime import datetime, timedelta
-from .forms import SubscriberForm
+
 from .forms import SubscriberDataForm
-from itertools import chain
+from .forms import SubscriberForm
+from .models import SubService, Ticket, StatusCategory, Service, TicketLog, SubServiceServices, Region, Subscriber
+
 
 # Create your views here.
 
@@ -33,7 +36,8 @@ class ServicesStatusView(View):
         context['category_list'] = queryset
 
         # Getting today's date
-        today = datetime.now()
+        # today = datetime.now()
+        today = timezone.now()
         list_of_five_days = [today]
 
         counter = 1
