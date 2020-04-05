@@ -4,6 +4,7 @@ venv/
 /venv/*
 /venv/
 
+/ServiceStatus/settings.py
 /ServiceStatus/settings-dev.py
 
 status/migrations
