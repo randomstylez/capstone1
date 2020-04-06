@@ -59,18 +59,18 @@
 
             <div class="row justify-content-between" id="control_section">
                 <div class="col">
-                    <a href="/status" class="link">
+                    <a href="/" class="link">
                         <p class="mb-0">Go to services status page</p>
                     </a>
                 </div>
 
                 <div class="col" id="arrows">
                     {% if prev_ticket %}
-                    <a href="/status/details/{{ prev_ticket.id }}">
-                        <p class="ml-3 border-right pr-2 link">
-                            <i class="fas fa-arrow-left"></i> Prev
-                        </p>
-                    </a>
+                        <a href="/details/{{ prev_ticket.id }}">
+                            <p class="ml-3 border-right pr-2 link">
+                                <i class="fas fa-arrow-left"></i> Prev
+                            </p>
+                        </a>
                     {% else %}
                     <p class="ml-3 border-right inactive pr-2 link">
                         <i class="fas fa-arrow-left"></i> Prev
@@ -78,11 +78,11 @@
                     {% endif %}
 
                     {% if next_ticket %}
-                    <a href="/status/details/{{ next_ticket.id }}">
-                        <p class=" ml-3 pr-2 link">
-                            Next <i class="fas fa-arrow-right"></i>
-                        </p>
-                    </a>
+                        <a href="/details/{{ next_ticket.id }}">
+                            <p class=" ml-3 pr-2 link">
+                                Next <i class="fas fa-arrow-right"></i>
+                            </p>
+                        </a>
                     {% else %}
                     <p class="ml-3 inactive pr-2 link">
                         Next <i class="fas fa-arrow-right"></i>
