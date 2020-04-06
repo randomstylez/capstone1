@@ -286,10 +286,11 @@ class SubscriberForm(forms.ModelForm):
         token = user[0]['token']
 
         hostname = 'http://127.0.0.1:8000'
+
         # we should create a mechanism to get the hostname. This option works on views request
         # print(HttpRequest.get_host(self))
 
-        view_path = '/admin/status/subscriber'
+        view_path = '/subscriber'
 
         link = hostname + view_path + '/' + email + '/' + token
 
@@ -331,7 +332,7 @@ class SubscriberForm(forms.ModelForm):
         # we should create a mechanism to get the hostname. This option works on views request
         # print(HttpRequest.get_host(self))
 
-        view_path = '/admin/status/subscriber'  # email and toke
+        view_path = '/subscriber'  # email and toke
 
         link = hostname + view_path + '/' + _email + '/' + token
 
