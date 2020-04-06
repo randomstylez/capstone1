@@ -45,13 +45,13 @@
             <div class="col-2 col-lg-1">
                  <p class="bold">Status</p>
             </div>
-            <div class="col-1 d-none d-lg-block">
+            <div class="col-2 d-none d-lg-block">
                  <p class="bold">Started</p>
             </div>
-            <div class="col-1 d-none d-lg-block">
+            <div class="col-2 d-none d-lg-block">
                  <p class="bold">Ended</p>
             </div>
-            <div class="col-8 col-lg-7">
+            <div class="col-7 col-lg-6">
                  <p class="bold">Description</p>
             </div>
         </div>
@@ -62,9 +62,9 @@
                     <h3 style="text-align: center;">No incidents have been reported for this service</h3>
                 </div>
                 <div class="row d-flex justify-content-center mt-4">
-                   <a href="/status">
-                     <p class="mb-0 link">Go to services status page</p>
-                  </a>
+                    <a href="/">
+                        <p class="mb-0 link">Go to services status page</p>
+                    </a>
                 </div>
 
             {% elif no_results %} <!-- If user searched and no results found -->
@@ -73,7 +73,7 @@
                     <h3>No results found for your search criteria</h3>
                 </div>
                 <div class="row mt-4 d-flex justify-content-center">
-                     <a class="link" href="/status/{{object.id}}">
+                    <a class="link" href="/{{object.id}}">
                         <p>See all incidents</p>
                     </a>
                 </div>
@@ -84,10 +84,11 @@
                 <div class="row border-bottom py-2 mb-4"
                      style="border-left: 1.5rem solid {{instance.category_status.status_category_color}};">
                     <div class="col-2 col-lg-1">
-                        <a href="/status/details/{{ instance.id}}">
+                        <a href="/details/{{ instance.id}}">
                            <p class="m-0 link" data-toggle="tooltip" data-placement="top"
                               title="Sub-service affected: {{instance.sub_service.sub_service_name}}" id="ticket_id">
-                               {{instance.ticket_id}}</p>
+                               {{instance.ticket_id}}
+                           </p>
                         </a>
                     </div>
                     <div class="col-2 col-lg-1">
@@ -108,13 +109,13 @@
                             </span>
                         </p>
                     </div>
-                    <div class="col-1 d-none d-lg-block">
+                    <div class="col-2 d-none d-lg-block">
                          <p class="m-0">{{instance.begin | date:'m-d-Y h:i a'}}</p>
                     </div>
-                    <div class="col-1 d-none d-lg-block">
+                    <div class="col-2 d-none d-lg-block">
                          <p class="m-0">{{instance.end | date:'m-d-Y h:i a'}}</p>
                     </div>
-                    <div class="col-8 col-lg-7">
+                    <div class="col-7 col-lg-6">
                         <div class="row d-lg-none mb-1">
                             <div class="col pl-0 pr-0 mr-2 border-right">
                                 <p class="m-0"><span class="bold">Started:</span> {{instance.begin | date:'m-d-Y h:i a'}}</p>
@@ -141,8 +142,9 @@
         <div class="row mt-2">
             <div class="col-6" id="ticket_legend"></div>
             <div class="col-6 d-flex justify-content-end" id="subscribe_to_service">
-                <a href="/status/subscription/{{object.id}}"><button name="subscribe_to_service" class="btn btn-dark">
-                        Subscribe to this service</button></a>
+                <a href="/subscription/{{object.id}}">
+                    <button name="subscribe_to_service" class="btn btn-dark">Subscribe to this service</button>
+                </a>
             </div>
         </div>
     </div>
