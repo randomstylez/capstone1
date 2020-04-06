@@ -14,7 +14,7 @@ from .models import SubService, Ticket, StatusCategory, Service, TicketLog, SubS
 
 # Create your views here.
 
-#Services Status Visualization page
+# Services Status Visualization page
 class ServicesStatusView(View):
 
     template_name = "status/services_status.html"
@@ -45,24 +45,22 @@ class ServicesStatusView(View):
             list_of_five_days.append(today-timedelta(days=counter))
             counter = counter+1
 
-
         context['days'] = list_of_five_days
 
         # Getting list of regions
         regions = Region.objects.all()
         context['region_list'] = regions
 
-
         if 'regions_select' in request.GET:
 
-            #Getting checked regions
+            # Getting checked regions
             regions = request.GET.getlist('regions')
 
             # Getting list of services
             services = []
             for region in regions:
 
-                #Getting list of services
+                # Getting list of services
                 queryset = Region.objects.filter(region_name=region)
                 for e in queryset:
                     services = list(dict.fromkeys(chain(services, e.services.all())))
@@ -78,7 +76,6 @@ class ServicesStatusView(View):
                 if searchfor.lower() in service.service_name.lower():
                     services_list.append(service)
 
-
             if not services_list:
                 context['no_search_results'] = True
 
@@ -87,12 +84,16 @@ class ServicesStatusView(View):
         else:
             # Getting list of services
             services = []
-            for region in regions:
-                services = list(dict.fromkeys(chain(services, region.services.all())))
-
+            services = list(dict.fromkeys(chain(services, Service.objects.all())))
             context['services_list'] = services
 
-        #Declaring an empty dictionary to store status per day for each service
+            # services = []
+            # for region in regions:
+            #     services = list(dict.fromkeys(chain(services, region.services.all())))
+            #
+            # context['services_list'] = services
+
+        # Declaring an empty dictionary to store status per day for each service
         service_status = {}
         no_issues = StatusCategory()
         no_issues.status_category_tag = "No Issues"
@@ -103,7 +104,7 @@ class ServicesStatusView(View):
 
             sub_service_service = SubServiceServices.objects.filter(service=service)
 
-            #Initializing queryset to empty
+            # Initializing queryset to empty
             tickets_list = Ticket.objects.none()
 
             for row in sub_service_service:
@@ -116,7 +117,7 @@ class ServicesStatusView(View):
                 active_tickets_per_day = tickets_list.filter(begin__lte=day, end__gte=day-timedelta(1))
 
                 if active_tickets_per_day:
-                    #Separating tickets in groups by priority
+                    # Separating tickets in groups by priority
                     priority_tickets = []
                     medium_priority_tickets = []
                     low_priority = []
@@ -147,19 +148,16 @@ class ServicesStatusView(View):
 
         return render(request, self.template_name, context)
 
-#Subscription page
+
+# Subscription page
 class SubscriptionView(View):
+
     template_name = "status/subscription.html"
 
     def get(self, request, id=None, *args, **kwargs):
 
         form = SubscriberDataForm()
-        context = {
-            "form": form,
-            "subscription_active": True
-        }
-
-        context['subscribed'] = False
+        context = {"form": form, "subscription_active": True, 'subscribed': False}
 
         if id is not None:
             obj = get_object_or_404(Service, id=id)
@@ -172,7 +170,7 @@ class SubscriptionView(View):
 
     def post(self, request, *args, **kwargs):
 
-        context = {}
+        # context = {}
 
         generate_token = secrets.token_hex(16)
 
@@ -183,20 +181,19 @@ class SubscriptionView(View):
             "subscription_active": True
         }
 
-
         if 'subs_updates' in request.POST:
 
             if form.is_valid():
-                #Getting email entered by user
+                # Getting email entered by user
                 email = form.cleaned_data['email']
 
                 if 'one_service' in request.POST:
                     id = request.POST['one_service']
                     service = get_object_or_404(Service, id=id)
 
-                #If the user selected at least one service or subservice
+                # If the user selected at least one service or subservice
                 if form.cleaned_data['services'] or form.cleaned_data['subservices'] or ('one_service' in request.POST):
-                    #If the user is not registered before save it
+                    # If the user is not registered before save it
                     if not Subscriber.objects.filter(email=email).exists():
                         subscriber = form.save()
                         context['subscribed'] = True
@@ -215,17 +212,17 @@ class SubscriptionView(View):
 
         elif 'update_subs' in request.POST:
 
-            #Getting the email entered by the user
+            # Getting the email entered by the user
             user_email = request.POST.get('user_email', None)
 
             if user_email:
 
-                #Check if this email is registered for notifications
+                # Check if this email is registered for notifications
                 if Subscriber.objects.filter(email=user_email).exists():
-                    #Send the email with the link to update subscription
+                    # Send the email with the link to update subscription
                     SubscriberForm.send_link_by_user_email(str(user_email))
 
-                    #Email has been sent, update template
+                    # Email has been sent, update template
                     context['updated_right'] = True
                 else:
                     context['not_registered'] = True
@@ -235,14 +232,13 @@ class SubscriptionView(View):
         return render(request, self.template_name, context)
 
 
-
-
-
-#Services Status History Visualization page
+# Services Status History Visualization page
 class ServiceHistoryView(View):
+
     template_name = "status/ss_history_visualization.html"
 
     def get(self, request, id=None, *args, **kwargs):
+
         context = {
             "active_nav": 1
         }
@@ -253,10 +249,10 @@ class ServiceHistoryView(View):
             obj = get_object_or_404(Service, id=id)
             context['object'] = obj
 
-            #Getting all tickets affecting this service
+            # Getting all tickets affecting this service
             sub_service_service = SubServiceServices.objects.filter(service=obj)
 
-            #Initializing queryset to empty
+            # Initializing queryset to empty
             tickets_list = Ticket.objects.none()
 
             for row in sub_service_service:
@@ -278,20 +274,20 @@ class ServiceHistoryView(View):
                     tickets_list = aux_list
                     searching = True
 
-
             context['tickets_list'] = tickets_list
 
-            if not(tickets_list) and not(searching):
+            if not tickets_list and not searching:
                 context['no_tickets'] = True
 
-            if not(tickets_list) and searching:
+            if not tickets_list and searching:
                 context['no_results'] = True
-
 
         return render(request, self.template_name, context)
 
-#Services Status History Details page
+
+# Services Status History Details page
 class ServiceHistoryDetailsView(ListView):
+
     template_name = "status/sh_details.html"
 
     def get(self, request, id=None, *args, **kwargs):
@@ -301,27 +297,27 @@ class ServiceHistoryDetailsView(ListView):
         }
 
         if id is not None:
-            #Getting ticket instance
+            # Getting ticket instance
             obj = get_object_or_404(Ticket, id=id)
             context['object'] = obj
 
-            #Getting list of ticket logs associated with this ticket
+            # Getting list of ticket logs associated with this ticket
             queryset = TicketLog.objects.filter(service_history=obj)
             context['ticket_logs'] = queryset
 
-            #Getting list of tickets associated with the service
+            # Getting list of tickets associated with the service
             service_tickets = Ticket.objects.filter(sub_service=obj.sub_service).order_by('pk')
             context['service_tickets'] = list(service_tickets)
 
-            #Getting number of tickets
+            # Getting number of tickets
             count = service_tickets.count()
             context['tickets_count'] = count
 
-            #Getting index of this ticket
-            index = service_tickets.filter(id__lt = obj.id).count()
+            # Getting index of this ticket
+            index = service_tickets.filter(id__lt=obj.id).count()
             context['ticket_index'] = index
 
-            #Getting previous ticket
+            # Getting previous ticket
             prev = index-1
 
             if prev >= 0:
@@ -344,14 +340,14 @@ class ModifyUserSubscription (ListView):
 
     def get(self, request, email, token):
 
-        #Getting user by token
+        # Getting user by token
         user = Subscriber.objects.filter(token=token)[:1].get()
 
         context = {
             'user': user
         }
 
-        #Getting the services for this user
+        # Getting the services for this user
         user_services = user.services.all()
 
         if user_services:
@@ -367,7 +363,7 @@ class ModifyUserSubscription (ListView):
         else:
             context['no_subservices'] = True
 
-        #Getting the services this user is not registered to
+        # Getting the services this user is not registered to
 
         queryset = Service.objects.all()
         services_not_registered = []
@@ -399,16 +395,16 @@ class ModifyUserSubscription (ListView):
 
     def post(self, request, *args, **kwargs):
 
-        #Getting user by userID
+        # Getting user by userID
         user_id = request.POST.get('user_id')
         user = Subscriber.objects.get(id=user_id)
 
-        #Getting list of services to delete
-        services = request.POST.getlist('selected_services')
+        # Getting list of services to delete
+        service_list = request.POST.getlist('selected_services')
 
-        if services:
-            #Deleting the services
-            for service in services:
+        if service_list:
+            # Deleting the services
+            for service in service_list:
                 model_service = Service.objects.filter(service_name=service)[:1].get()
                 user.services.remove(model_service)
 
@@ -421,11 +417,11 @@ class ModifyUserSubscription (ListView):
                 model_subservice = SubService.objects.filter(sub_service_name=subservice)[:1].get()
                 user.subservices.remove(model_subservice)
 
-        #Getting list of services to add
+        # Getting list of services to add
         services_add = request.POST.getlist('selected_services_toadd')
 
         if services_add:
-            #Adding the services
+            # Adding the services
             for service in services_add:
                 model_service = Service.objects.filter(service_name=service)[:1].get()
                 user.services.add(model_service)
@@ -441,15 +437,15 @@ class ModifyUserSubscription (ListView):
 
         context = {
             'user': user,
-            'services_list': services,
+            'services_list': service_list,
             'subservices_list': subservices,
             'services_list_added': services_add,
             'subservices_list_added': subservices_add
 
         }
 
-        #If no changes were selected
-        if not (services or subservices or services_add or subservices_add):
+        # If no changes were selected
+        if not (service_list or subservices or services_add or subservices_add):
             context['no_changes'] = True
         else:
             context['completed'] = True
