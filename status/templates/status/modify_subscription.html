@@ -48,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-                <a class="link d-flex justify-content-center mt-3" href="/status">
+                <a class="link d-flex justify-content-center mt-3" href="/">
                     <p class="mb-0">Go to services status page</p>
                 </a>
             </div>
@@ -61,10 +61,10 @@
                     <h3>Would you like to update your request?</h3>
                 </div>
                 <div class="row mt-2 d-flex justify-content-center">
-                    <a class="link pr-2 border-right" href="/status/subscriber/{{user.email}}/{{user.token}}">
+                    <a class="link pr-2 border-right" href="/subscriber/{{user.email}}/{{user.token}}">
                         <h3 class="mb-0">Yes</h3>
                     </a>
-                    <a class="link ml-2" href="/status">
+                    <a class="link ml-2" href="/">
                         <h3 class="mb-0">No</h3>
                     </a>
                 </div>
@@ -79,10 +79,10 @@
             <div class="container mt-3" id="form">
                 <div class="row">
                     <div class="col d-flex justify-content-center ml-3">
-                        <lable class="bold border-bottom pb-1">Remove from your subscription:</lable>
+                        <label class="bold border-bottom pb-1">Remove from your subscription:</label>
                     </div>
                     <div class="col d-flex justify-content-center  ml-3">
-                        <lable class="bold border-bottom pb-1">Add to your subscription:</lable>
+                        <label class="bold border-bottom pb-1">Add to your subscription:</label>
                     </div>
                 </div>
                 <form action="" method="post"> {% csrf_token %}
