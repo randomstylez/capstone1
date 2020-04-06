@@ -14,7 +14,7 @@
                     <div class="container mt-4 pt-4" id="reg_confirmation">
                         <h3>You have been registered to receive status updates for the selected services</h3>
                         <h1>Thank you!</h1>
-                         <a href="/status">
+                        <a href="/">
                             <p class=" link mb-0">Go to services status page</p>
                         </a>
                     </div>
@@ -24,14 +24,14 @@
                              <h3>This email address is already registered</h3>
                         </div>
                         <div class="row d-flex justify-content-center">
-                           <lable>Would you like to review and modify your subscription?</lable>
+                           <label>Would you like to review and modify your subscription?</label>
                         </div>
                         <div class="row mt-2 d-flex justify-content-center">
                             <form action="." method="POST"> {% csrf_token %}
                                 <button type="submit" class="btn btn-primary mb-2" name="update_subs">Yes</button>
                                 <input class="form-control" name="user_email" value="{{user_exists_email}}" hidden>
                             </form>
-                            <a class="pl-2" href="/status/subscription/">
+                            <a class="pl-2" href="/subscription/">
                                 <button type="submit" class="btn btn-primary mb-2" name="update_subs">No </button>
                              </a>
                         </div>
@@ -45,7 +45,7 @@
                         <p> You will receive an email shortly</p>
                     </div>
                     <div class="row d-flex justify-content-center">
-                        <a href="/status">
+                        <a href="/">
                             <p class=" link mb-0">Go to services status page</p>
                         </a>
                     </div>
@@ -56,7 +56,7 @@
                         <h3>Please select at least one service or subservice to register</h3>
                     </div>
                     <div class="row d-flex justify-content-center">
-                        <a href="/status/subscription/">
+                        <a href="/subscription/">
                             <p class=" link mb-0">Update selection</p>
                         </a>
                     </div>
@@ -77,7 +77,7 @@
                         <div class="form-group">
                             {% if service_specific %}
                                 <div class="row mt-3" id="selected_service">
-                                    <lable> <span class="bold">Service:</span> {{object.service_name}}</lable>
+                                    <label> <span class="bold">Service:</span> {{object.service_name}}</label>
                                     <input type="text" name="one_service" value="{{object.id}}" hidden>
                                 </div>
                             {%else%}
@@ -125,7 +125,7 @@
                 <div class="container">
                     <h3>Your request has been submitted</h3>
                     <p> You will receive an email shortly</p>
-                    <a href="/status">
+                    <a href="/">
                         <p class=" link mb-0">Go to services status page</p>
                     </a>
                 </div>
@@ -133,11 +133,11 @@
                 <div class="container">
                     {% if not_registered %}
                      <div class="container">
-                        <h3 class="alert">This is email is not registered</h3>
-                        <p> If you would like to receive service updates notifications please register on the left section.</p>
-                         <a href="/status/subscription">
+                         <h3 class="alert">This is email is not registered</h3>
+                         <p> If you would like to receive service updates notifications please register on the left section.</p>
+                         <a href="/subscription">
                              <p class=" link mb-0">Update email</p>
-                        </a>
+                         </a>
                     </div>
                     {% else %}
                     <form action="." method="POST"> {% csrf_token %}
