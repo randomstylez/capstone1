@@ -38,18 +38,14 @@ class TicketForm(forms.ModelForm):
 
         # It gets the list of services that has that Sub Service
         services = Service.objects.filter(subservice=sub_service_id)
-        print(services[0].service_name)
         subservices = SubService.objects.filter(id=sub_service_id)
-        print(subservices[0].sub_service_name)
 
         # Information to use in the email Body
         region = Region.objects.filter(services__subservice__in=subservices)
-        print(region[0].region_name)
         topology = SubServiceServices.objects.filter(subservice__in=subservices)
-        print(topology[0].priority)
 
         data = self.changed_data
-        print(self.cleaned_data)
+        # print(self.cleaned_data)
 
         users_mail1 = []
         users_mail2 = []
@@ -69,24 +65,39 @@ class TicketForm(forms.ModelForm):
 
         users = list(set(users_mail1) | set(users_mail2))
 
+        data = dict()
+        data['ticket_id'] = self.cleaned_data['ticket_id']
+        data['region'] = 'None'
+        if region.count() != 0:
+            data['region'] = region[0].region_name
+        data['priority'] = 'None'
+        if topology.count() != 0:
+            data['priority'] = topology[0].priority
+        data['service'] = services[0].service_name
+        if services.count() != 0:
+            data['service'] = services[0].service_name
+        data['subservice'] = 'None'
+        if subservices.count() != 0:
+            data['subservice'] = subservices[0].sub_service_name
+
         for user in users:
             text = f"""\
-                            Changes on the ticket {self.cleaned_data['ticket_id']}:
-                            Region: {region[0].region_name}
-                            Priority: {topology[0].priority}
-                            Service: {services[0].service_name}
-                            Sub-Service: {subservices[0].sub_service_name}
+                            Changes on the ticket {data['ticket_id']}:
+                            Region: {data['region']}
+                            Priority: {data['priority']}
+                            Service: {data['service']}
+                            Sub-Service: {data['subservice']}
                             """
 
             html = f"""\
                             <html>
                               <body>
-                                <p>Changes on the ticket <span style="font-weight: bold;">{self.cleaned_data['ticket_id']}</span>:<br>
+                                <p>Changes on the ticket <span style="font-weight: bold;">{data['ticket_id']}</span>:<br>
                                     <ul>
-                                        <li><span style="font-weight: bold;">Region:</span> {region[0].region_name}</li>
-                                        <li><span style="font-weight: bold;">Priority:</span> {topology[0].priority}</li>
-                                        <li><span style="font-weight: bold;">Service:</span> {services[0].service_name}</li>
-                                        <li><span style="font-weight: bold;">Sub-Service:</span> {subservices[0].sub_service_name}</li>
+                                        <li><span style="font-weight: bold;">Region:</span> {data['region']}</li>
+                                        <li><span style="font-weight: bold;">Priority:</span> {data['priority']}</li>
+                                        <li><span style="font-weight: bold;">Service:</span> {data['service']}</li>
+                                        <li><span style="font-weight: bold;">Sub-Service:</span> {data['subservice']}</li>
                                     </ul>
                                 </p>
                               </body>
@@ -188,9 +199,8 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
         return self.cleaned_data
 
+
 class SubscriberDataForm (forms.ModelForm):
-
-
 
     services = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
                                           queryset=Service.objects.all(), required=False)
@@ -217,6 +227,7 @@ class SubscriberDataForm (forms.ModelForm):
             'subservices',
             'token'
         ]
+
 
 class SubscriberForm(forms.ModelForm):
     """
