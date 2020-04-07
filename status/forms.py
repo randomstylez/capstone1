@@ -44,7 +44,7 @@ class TicketForm(forms.ModelForm):
         region = Region.objects.filter(services__subservice__in=subservices)
         topology = SubServiceServices.objects.filter(subservice__in=subservices)
 
-        data = self.changed_data
+        changed_data = self.changed_data
         # print(self.cleaned_data)
 
         users_mail1 = []
@@ -92,12 +92,22 @@ class TicketForm(forms.ModelForm):
             html = f"""\
                             <html>
                               <body>
-                                <p>Changes on the ticket <span style="font-weight: bold;">{data['ticket_id']}</span>:<br>
+                                <p>Changes on the ticket 
+                                    <span style="font-weight: bold;">{data['ticket_id']}</span>:
+                                    <br>
                                     <ul>
-                                        <li><span style="font-weight: bold;">Region:</span> {data['region']}</li>
-                                        <li><span style="font-weight: bold;">Priority:</span> {data['priority']}</li>
-                                        <li><span style="font-weight: bold;">Service:</span> {data['service']}</li>
-                                        <li><span style="font-weight: bold;">Sub-Service:</span> {data['subservice']}</li>
+                                        <li>
+                                            <span style="font-weight: bold;">Region:</span> {data['region']}
+                                        </li>
+                                        <li>
+                                            <span style="font-weight: bold;">Priority:</span> {data['priority']}
+                                        </li>
+                                        <li>
+                                            <span style="font-weight: bold;">Service:</span> {data['service']}
+                                        </li>
+                                        <li>
+                                            <span style="font-weight: bold;">Sub-Service:</span> {data['subservice']}
+                                        </li>
                                     </ul>
                                 </p>
                               </body>
@@ -203,9 +213,9 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 class SubscriberDataForm (forms.ModelForm):
 
     services = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                          queryset=Service.objects.all(), required=False)
+                                              queryset=Service.objects.all(), required=False)
     subservices = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                          queryset=SubService.objects.all(), required=False)
+                                                 queryset=SubService.objects.all(), required=False)
     name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Full Name", "class": "form-control"}),
                            max_length=20, required=True)
     email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
