@@ -1,6 +1,6 @@
 asgiref==3.2.7
 astroid==2.3.3
-Django==2.0.5
+Django==3.0.5
 gunicorn
 django-admin-list-filter-dropdown==1.0.3
 django-ckeditor==5.9.0
