@@ -22,7 +22,7 @@
             <a href="details/{{ instance.id}}">
                 <p><span class="bold">Sub-service Impacted: </span>{{ instance.sub_service.sub_service_name }}</p>
                 <p><span class="bold">Status: </span>{{ instance.category_status.status_category_tag }}</p>
-                <p>{{ instance.action_description }}</p> <!--Description of the ticket-->
+                <p>{{ instance.action_description | safe }}</p> <!--Description of the ticket-->
             </a>
         </div>
     {% endfor %}
@@ -60,16 +60,16 @@
                       <!--This section will list regions from the database-->
                       <form action="." method="get">
                           {% for instance in region_list %}
-                          <div class="dropdown-item">
-                              {% if instance.region_name in regions_checked  %}
-                              <input class="form-check-input" type="checkbox" name="regions" value="{{instance}}" checked>
-                              {% else %}
-                              <input class="form-check-input" type="checkbox" name="regions" value="{{instance}}">
-                              {% endif %}
-                              <label class="form-check-label">
-                                  {{instance}}
-                              </label>
-                          </div>
+                              <div class="dropdown-item">
+                                  {% if instance.region_name in regions_checked  %}
+                                      <input class="form-check-input" type="checkbox" name="regions" value="{{instance}}" checked>
+                                  {% else %}
+                                      <input class="form-check-input" type="checkbox" name="regions" value="{{instance}}">
+                                  {% endif %}
+                                  <label class="form-check-label">
+                                      {{instance}}
+                                  </label>
+                              </div>
                           {% endfor %}
                           <button type="submit" name="regions_select" class="btn btn-dark py-0">Select Regions</button>
                       </form>
@@ -91,32 +91,32 @@
 <div class="container mt-3 d-lg-none">
   <div class="row py-1 border-top border-bottom d-flex justify-content-center">
       <div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle py-1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Legend
-      </button>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          {% for instance in category_list %}
-          <div class="row m-0 d-flex justify-content-between p-0 dropdown-item">
-              <div class="col-1 d-inline">{{instance.status_category_tag}}</div>
-              <div class="col-1 mr-2 d-inline">
-                   <span style="color: {{instance.status_category_color}}">
-                        {% if instance.status_category_tag == "Alert" %}
-                        <i class="fas fa-exclamation-circle"></i>
-                        {% elif instance.status_category_tag == "No Issues"%}
-                        <i class="fas fa-check-circle"></i>
-                        {% elif instance.status_category_tag == "In Process"%}
-                        <i class="fas fa-tools"></i>
-                        {% elif instance.status_category_tag == "Outage"%}
-                        <i class="fas fa-times-circle"></i>
-                        {% elif instance.status_category_tag == "Planned"%}
-                        <i class="far fa-calendar-alt"></i>
-                        {% endif %}
-                    </span>
-              </div>
+          <button class="btn btn-secondary dropdown-toggle py-1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Legend
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              {% for instance in category_list %}
+                  <div class="row m-0 d-flex justify-content-between p-0 dropdown-item">
+                      <div class="col-1 d-inline">{{instance.status_category_tag}}</div>
+                      <div class="col-1 mr-2 d-inline">
+                           <span style="color: {{instance.status_category_color}}">
+                               {% if instance.status_category_tag == "Alert" %}
+                                   <i class="fas fa-exclamation-circle"></i>
+                               {% elif instance.status_category_tag == "No Issues"%}
+                                   <i class="fas fa-check-circle"></i>
+                               {% elif instance.status_category_tag == "In Process"%}
+                                   <i class="fas fa-tools"></i>
+                               {% elif instance.status_category_tag == "Outage"%}
+                                   <i class="fas fa-times-circle"></i>
+                               {% elif instance.status_category_tag == "Planned"%}
+                                   <i class="far fa-calendar-alt"></i>
+                               {% endif %}
+                           </span>
+                      </div>
+                  </div>
+              {% endfor %}
           </div>
-          {% endfor %}
       </div>
-    </div>
   </div>
 </div>
 <!--End of small legend section-->

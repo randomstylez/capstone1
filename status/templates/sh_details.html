@@ -20,19 +20,19 @@
                            {{instance.ticket_id}}</p>
 
                     <p class="bold" data-toggle="tooltip" data-placement="top"
-                          title="{{object.category_status.status_category_tag}}">
-                       <span style="color: {{object.category_status.status_category_color}}">
-                        {% if object.category_status.status_category_tag == "Alert" %}
-                        <i class="fas fa-exclamation-circle"></i>
-                        {% elif object.category_status.status_category_tag == "No Issues"%}
-                        <i class="fas fa-check-circle"></i>
-                        {% elif object.category_status.status_category_tag == "In Process"%}
-                        <i class="fas fa-tools"></i>
-                        {% elif object.category_status.status_category_tag == "Outage"%}
-                        <i class="fas fa-times-circle"></i>
-                        {% elif object.category_status.status_category_tag == "Planned"%}
-                        <i class="far fa-calendar-alt"></i>
-                        {% endif %}
+                       title="{{object.category_status.status_category_tag}}">
+                        <span style="color: {{object.category_status.status_category_color}}">
+                            {% if object.category_status.status_category_tag == "Alert" %}
+                                <i class="fas fa-exclamation-circle"></i>
+                            {% elif object.category_status.status_category_tag == "No Issues"%}
+                                <i class="fas fa-check-circle"></i>
+                            {% elif object.category_status.status_category_tag == "In Process"%}
+                                <i class="fas fa-tools"></i>
+                            {% elif object.category_status.status_category_tag == "Outage"%}
+                                <i class="fas fa-times-circle"></i>
+                            {% elif object.category_status.status_category_tag == "Planned"%}
+                                <i class="far fa-calendar-alt"></i>
+                            {% endif %}
                         </span>
                     </p>
                 </div>
@@ -47,11 +47,11 @@
                 <div class="row" id="ticket_details">
                     <div class="container mb-3">
                         <p class="bold">Description:</p>
-                        <p>{{object.action_description}}</p>
+                        <p>{{object.action_description | safe}}</p>
                     </div>
                     <div class="container mb-3">
                         <p class="bold">Notes:</p>
-                        <p>{{object.action_notes}}</p>
+                        <p>{{object.action_notes | safe}}</p>
                     </div>
                 </div>
             </div>
@@ -72,9 +72,9 @@
                             </p>
                         </a>
                     {% else %}
-                    <p class="ml-3 border-right inactive pr-2 link">
-                        <i class="fas fa-arrow-left"></i> Prev
-                    </p>
+                        <p class="ml-3 border-right inactive pr-2 link">
+                            <i class="fas fa-arrow-left"></i> Prev
+                        </p>
                     {% endif %}
 
                     {% if next_ticket %}
@@ -84,12 +84,11 @@
                             </p>
                         </a>
                     {% else %}
-                    <p class="ml-3 inactive pr-2 link">
-                        Next <i class="fas fa-arrow-right"></i>
-                    </p>
+                        <p class="ml-3 inactive pr-2 link">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </p>
                     {% endif %}
                 </div>
-
             </div>
 
             <!--Ticket Logs section-->
@@ -102,15 +101,14 @@
             </div>
             <div class="container" id="ticketLogscontent">
                 {% for instance in ticket_logs %}
-                <div class="container ticket_log border py-2 my-2">
-                    <p><span class="bold">Service status: </span>{{instance.service_status.status_category_tag}}</p>
-                    <p><span class="bold">Action date: </span>{{instance.action_date}}</p>
-                    <p class="mb-0"><span class="bold">Notes: </span>{{instance.action_notes}}</p>
-                </div>
+                    <div class="container ticket_log border py-2 my-2">
+                        <p><span class="bold">Service status: </span>{{instance.service_status.status_category_tag}}</p>
+                        <p><span class="bold">Action date: </span>{{instance.action_date}}</p>
+                        <p class="mb-0"><span class="bold">Notes: </span>{{instance.action_notes}}</p>
+                    </div>
                 {% endfor %}
             </div>
             <!--End of Ticket Logs section-->
-
         </div>
         <div class="col-1 p-0"></div>
     </div>
