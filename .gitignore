@@ -18,6 +18,9 @@ status/migrations/*
 /status/migrations/
 /status/migrations/*
 
+status/mail_sender.py
+status/mail_sender-dev.py
+
 /status/mail_sender.py
 /status/mail_sender-dev.py
 
