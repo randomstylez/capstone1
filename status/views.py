@@ -17,7 +17,7 @@ from .models import SubService, Ticket, StatusCategory, Service, TicketLog, SubS
 # Services Status Visualization page
 class ServicesStatusView(View):
 
-    template_name = "status/services_status.html"
+    template_name = "services_status.html"
 
     def get(self, request, *args, **kwargs):
 
@@ -152,7 +152,7 @@ class ServicesStatusView(View):
 # Subscription page
 class SubscriptionView(View):
 
-    template_name = "status/subscription.html"
+    template_name = "subscription.html"
 
     def get(self, request, id=None, *args, **kwargs):
 
@@ -235,7 +235,7 @@ class SubscriptionView(View):
 # Services Status History Visualization page
 class ServiceHistoryView(View):
 
-    template_name = "status/ss_history_visualization.html"
+    template_name = "ss_history_visualization.html"
 
     def get(self, request, id=None, *args, **kwargs):
 
@@ -288,7 +288,7 @@ class ServiceHistoryView(View):
 # Services Status History Details page
 class ServiceHistoryDetailsView(ListView):
 
-    template_name = "status/sh_details.html"
+    template_name = "sh_details.html"
 
     def get(self, request, id=None, *args, **kwargs):
 
@@ -336,7 +336,7 @@ class ServiceHistoryDetailsView(ListView):
 
 class ModifyUserSubscription (ListView):
 
-    template_name = "status/modify_subscription.html"
+    template_name = "modify_subscription.html"
 
     def get(self, request, email, token):
 

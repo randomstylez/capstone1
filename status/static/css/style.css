@@ -44,7 +44,8 @@ body{
 h1 {
     text-align: center;
     font-family: 'Fira Sans', sans-serif;
-    font-weight: Semi-Bold;
+    /*font-weight: Semi-Bold;*/
+    font-weight: Bold;
     font-size: 1.5rem;
 }
 
@@ -109,7 +110,7 @@ a:hover
 }
 
 #dropdownMenuButton{
-    width: 7rem; important!
+    width: 7rem !important;
 }
 
 #ticket_info{
