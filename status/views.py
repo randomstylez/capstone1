@@ -36,7 +36,6 @@ class ServicesStatusView(View):
         context['category_list'] = queryset
 
         # Getting today's date
-        # today = datetime.now()
         today = timezone.now()
         list_of_five_days = [today]
 
@@ -86,12 +85,6 @@ class ServicesStatusView(View):
             services = []
             services = list(dict.fromkeys(chain(services, Service.objects.all())))
             context['services_list'] = services
-
-            # services = []
-            # for region in regions:
-            #     services = list(dict.fromkeys(chain(services, region.services.all())))
-            #
-            # context['services_list'] = services
 
         # Declaring an empty dictionary to store status per day for each service
         service_status = {}
@@ -169,8 +162,6 @@ class SubscriptionView(View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-
-        # context = {}
 
         generate_token = secrets.token_hex(16)
 

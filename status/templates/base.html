@@ -21,41 +21,41 @@
 
     <!--Icons - Font Awesome-->
     <script src="https://kit.fontawesome.com/b446aed76a.js" crossorigin="anonymous"></script>
-
 </head>
-<body>
 
+<body>
     <!-- NavBar -->
     <nav class="navbar navbar-expand navbar-light bg-light py-0 d-flex justify-content-between">
-      <a class="navbar-brand" href="{% url 'services_status_view' %}">
-          <img src="{% static 'img/logo.jpg' %}" id="logo" alt="logo">
-      </a>
-      <div class="d-flex justify-content-end" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-item nav-link nav-ref border-left px-3 {% if service_active %} active {% endif %}"
-             href="{% url 'services_status_view' %} ">Services Status </a>
-          <a class="nav-item nav-link nav-ref border-left px-3 {% if subscription_active %} active {% endif %}"
-             href="{% url 'subscription_view' %} ">Manage subscriptions</a>
-          <a class="nav-item nav-link border-left px-3 py-0" href="#">
+        <a class="navbar-brand" href="{% url 'services_status_view' %}">
+            <img src="{% static 'img/logo.jpg' %}" id="logo" alt="logo">
+        </a>
+        <div class="d-flex justify-content-end" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link nav-ref border-left px-3 {% if service_active %} active {% endif %}"
+                   href="{% url 'services_status_view' %} ">Services Status </a>
+                <a class="nav-item nav-link nav-ref border-left px-3 {% if subscription_active %} active {% endif %}"
+                   href="{% url 'subscription_view' %} ">Manage subscriptions</a>
+                <a class="nav-item nav-link border-left px-3 py-0" href="#">
 
-              <!--Contact Dropdown-->
-              <button class="btn dropdown-toggle p-0 pt-2" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Contact us
-              </button>
+                    <!--Contact Dropdown-->
+                    <button class="btn dropdown-toggle p-0 pt-2" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Contact us
+                    </button>
 
-              <!--Contact info-->
-              <div class="dropdown-menu dropdown-menu-right">
-                      <div class="dropdown-item">
-                          <p><span class="bold">Phone:</span> +1-317-274-7781 ( 24x7x365 )</p>
-                          <p><span class="bold">Email:</span> noc at ampath.net</p>
-                          <p><span class="bold">Website:</span> http://noc.ampath.net/</p>
-                      </div>
-              </div>
+                    <!--Contact info-->
 
-              <!--End of Contact Dropdown-->
-          </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <div class="dropdown-item">
+                            <p><span class="bold">Phone:</span> +1-317-274-7781 ( 24x7x365 )</p>
+                            <p><span class="bold">Email:</span> noc at ampath.net</p>
+                            <p><span class="bold">Website:</span> http://noc.ampath.net/</p>
+                        </div>
+                    </div>
+
+                    <!--End of Contact Dropdown-->
+                </a>
+            </div>
         </div>
-      </div>
     </nav>
     <!-- End of NavBar -->
 
