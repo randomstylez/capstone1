@@ -8,8 +8,8 @@ ServiceStatus/settings.py
 
 status/migrations/0*.py
 
-#status/mail_sender.py
-status/mail_sender-dev.py
+status/mail_sender.py
+# status/mail_sender-dev.py
 
 .DS_Store
 
