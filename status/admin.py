@@ -23,7 +23,8 @@ class RegionAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ('service_name', 'service_description',)
+    # list_display = ('service_name', 'service_description',)
+    list_display = ('service_name', 'description',)
     search_fields = ['service_name', 'service_description', 'subservice__sub_service_name', 'region__region_name']
     list_filter = (('subservice__ticket__category_status__status_category_tag', DropdownFilter),
                    ('region__region_name', DropdownFilter),

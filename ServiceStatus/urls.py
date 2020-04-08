@@ -16,6 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+admin.site.site_header = 'System Status Application admin'
+admin.site.site_title = 'System Status Application admin'
+# admin.site.site_url = 'http://status.amlight.net/'
+admin.site.index_title = 'System Status Application administration'
+
 urlpatterns = [
     path('', include('status.urls')),
     path('admin/', admin.site.urls),

@@ -1,13 +1,21 @@
 from ckeditor.fields import RichTextField
 from colorfield.fields import ColorField
 from django.db import models
+from django.utils.text import Truncator
+
 # Create your models here.
 from django.utils.translation import ugettext_lazy as _
 
 
 class Service(models.Model):
+
+    @property
+    def description(self):
+        return Truncator(self.service_description).chars(55)
+
     service_name = models.CharField(unique=True, max_length=100, verbose_name='Service')
     service_description = models.TextField(blank=True, null=True)
+    # service_description = RichTextField(blank=True, null=True)
 
     class Meta:
         verbose_name = _("Service")
