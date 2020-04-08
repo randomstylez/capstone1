@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # For Django 1.10 and above you can use:
 #   from django.core.management.utils import get_random_secret_key
 #   get_random_secret_key()
-SECRET_KEY = '#_5i&=$5b(y^s-iddo-4ethd$oj!81wmq!gre86x0@ew3p3bam'
+SECRET_KEY = 'XXXSECRETKEYXXX'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -64,7 +64,8 @@ ROOT_URLCONF = 'ServiceStatus.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        ,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,10 +88,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'NAME': 'Service-Status',
-        'USER': 'root',
-        'PASSWORD': 'Arturolocal1981*',
-        'HOST': '127.0.0.1',
+        'NAME': 'XXXDBNAMEXXX',
+        'USER': 'XXXDBUSERXXX',
+        'PASSWORD': 'XXXDBPASSXXX',
+        'HOST': 'XXXDBHOSTXXX',
         'PORT': '3306',
     }
 }
@@ -127,7 +128,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-# USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

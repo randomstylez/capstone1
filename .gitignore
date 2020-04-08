@@ -3,8 +3,8 @@ venv
 venv/
 venv/*
 
-# ServiceStatus/settings.py
-ServiceStatus/settings-dev.py
+ServiceStatus/settings.py
+# ServiceStatus/settings-dev.py
 
 status/migrations/0*.py
 
