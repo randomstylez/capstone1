@@ -3,6 +3,10 @@ venv
 venv/
 venv/*
 
+ServiceStatus/static
+ServiceStatus/static/
+ServiceStatus/static/*
+
 ServiceStatus/settings.py
 # ServiceStatus/settings-dev.py
 
