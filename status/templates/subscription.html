@@ -9,7 +9,7 @@
             <div class="container mb-3 border-bottom">
                 <h1>Subscribe to Services Updates</h1>
             </div>
-            <div class="container">
+            <div class="container mb-3 border-bottom">
                 {% if subscribed %}
                     <div class="container mt-4 pt-4" id="reg_confirmation">
                         <h3>You have been registered to receive status updates for the selected services</h3>
@@ -105,7 +105,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row d-flex justify-content-end" id="subscribe_submit">
+{#                        <div class="row d-flex justify-content-end" id="subscribe_submit">#}
+                        <div class="row mb-3" id="subscribe_submit" style="float: right;">
                             <button type="submit" name="subs_updates" class="btn btn-primary mb-2">Subscribe to updates</button>
                         </div>
 
