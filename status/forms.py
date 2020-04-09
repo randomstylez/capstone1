@@ -217,7 +217,7 @@ class SubscriberDataForm (forms.ModelForm):
     subservices = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
                                                  queryset=SubService.objects.all(), required=False)
     name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Full Name", "class": "form-control"}),
-                           max_length=20, required=True)
+                           max_length=40, required=True)
     email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
                              required=True)
 
@@ -347,7 +347,7 @@ class SubscriberForm(forms.ModelForm):
         # It gets the user's token given its email
         user = Subscriber.objects.filter(email=_email).values('token')
 
-        token = str(user[0]['token']) #Need to cast, otherwise it will have a nontype error
+        token = str(user[0]['token'])  # Need to cast, otherwise it will have a nontype error
 
         hostname = 'http://127.0.0.1:8000'
         # we should create a mechanism to get the hostname. This option works on views request
