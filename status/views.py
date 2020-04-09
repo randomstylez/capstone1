@@ -183,7 +183,8 @@ class SubscriptionView(View):
                     service = get_object_or_404(Service, id=id)
 
                 # If the user selected at least one service or subservice
-                if len(form.cleaned_data['services']) or len(form.cleaned_data['subservices'] )or ('one_service' in request.POST):
+                if len(form.cleaned_data['services']) or len(form.cleaned_data['subservices']) \
+                        or ('one_service' in request.POST):
                     # If the user is not registered before save it
                     if not Subscriber.objects.filter(email=email).exists():
                         subscriber = form.save()
