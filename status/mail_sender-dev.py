@@ -2,16 +2,17 @@ import smtplib
 import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from django.conf import settings
 
 
 class MailSender:
 
     def __init__(self, html, subject, text, to):
 
-        self.smtp_server = "XXXMAILHOSTXXX"
-        self.port = 587  # For starttls
-        self.sender_email = "XXXMAILUSERXXX"
-        self.password = "XXXMAILPASSXXX"
+        self.smtp_server = settings.SMTP_HOST
+        self.port = settings.SMTP_PORT
+        self.sender_email = settings.SMTP_USER
+        self.password = settings.SMTP_PASS
         self.receiver_email = to
 
         self.message = MIMEMultipart("alternative")
