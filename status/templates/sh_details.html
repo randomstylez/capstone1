@@ -94,7 +94,7 @@
                         <div class="container ticket_log border py-2 my-2">
                             <p><span class="bold">Service status: </span>{{instance.service_status.status_category_tag}}</p>
                             <p><span class="bold">Action date: </span>{{instance.action_date}}</p>
-                            <p class="mb-0"><span class="bold">Notes: </span>{{instance.action_notes}}</p>
+                            <p class="mb-0"><span class="bold">Notes: </span>{{instance.action_notes | safe}}</p>
                         </div>
                     {% endfor %}
                 </div>
