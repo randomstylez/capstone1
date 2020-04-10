@@ -245,9 +245,9 @@ class SubscriberDataForm (forms.ModelForm):
         self.cleaned_data["token"] = token
 
         if self.check_mail_domain():
-            print("Good")
+            print("Valid email domain")
         else:
-            print("No Good")
+            print("Invalid email domain")
 
     class Meta:
         model = Subscriber
