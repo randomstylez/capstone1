@@ -10,7 +10,9 @@
                     <h1>Subscribe to Services Updates</h1>
                 </div>
                 <div class="container mb-3 border-bottom">
+
                     {% if subscribed %}
+
                         <div class="container mt-4 pt-4" id="reg_confirmation">
                             <h3>You have been registered to receive status updates for the selected services</h3>
                             <h1>Thank you!</h1>
@@ -18,7 +20,9 @@
                                 <p class=" link mb-0">Go to services status page</p>
                             </a>
                         </div>
+
                     {% elif user_exists%}
+
                         <div class="container mt-4 pt-4" id="user_exists">
                             <div class="row d-flex justify-content-center">
                                  <h3>This email address is already registered</h3>
@@ -36,21 +40,25 @@
                                  </a>
                             </div>
                         </div>
+
                     {% elif updated_left %}
-                    <div class="container">
-                        <div class="row d-flex justify-content-center">
-                           <h3>Your request has been submitted</h3>
+
+                        <div class="container">
+                            <div class="row d-flex justify-content-center">
+                                <h3>Your request has been submitted</h3>
+                            </div>
+                            <div class="row d-flex justify-content-center">
+                                <p> You will receive an email shortly</p>
+                            </div>
+                            <div class="row d-flex justify-content-center">
+                                <a href="/">
+                                    <p class=" link mb-0">Go to services status page</p>
+                                </a>
+                            </div>
                         </div>
-                        <div class="row d-flex justify-content-center">
-                            <p> You will receive an email shortly</p>
-                        </div>
-                        <div class="row d-flex justify-content-center">
-                            <a href="/">
-                                <p class=" link mb-0">Go to services status page</p>
-                            </a>
-                        </div>
-                    </div>
+
                     {% elif no_selection %}
+
                         <div class="container">
                             <div class="row d-flex justify-content-center" style="text-align: center;">
                                 <h3>Please select at least one service or subservice to register</h3>
@@ -61,7 +69,9 @@
                                 </a>
                             </div>
                         </div>
+
                     {% else %}
+
                         <form action="." method="POST"> {% csrf_token %}
                             <div class="form-group form-inline"> <!--Name info-->
                                 <label class="mr-2 bold" >Enter your name</label>
@@ -74,12 +84,16 @@
                             </div>
 
                             <div class="form-group">
+
                                 {% if service_specific %}
+
                                     <div class="row mt-3" id="selected_service">
                                         <label> <span class="bold">Service:</span> {{object.service_name}}</label>
                                         <input type="text" name="one_service" value="{{object.id}}" hidden>
                                     </div>
+
                                 {%else%}
+
                                     <div class="row">
                                         <div class="col my-2 pl-0">
                                             <p class="mb-0  bold">Business Services</p>
@@ -90,7 +104,9 @@
                                             {{form.services}}
                                         </div>
                                     </div>
+
                                 {% endif %}
+
                             </div>
                             <div class="form-group">
                                 <div class="row">
@@ -108,17 +124,21 @@
                             <div class="row d-flex justify-content-end" id="subscribe_submit">
                                 <button type="submit" name="subs_updates" class="btn btn-primary mb-2">Subscribe to updates</button>
                             </div>
-
                         </form>
+
                     {% endif %}
+
                 </div>
             </div>
+
+
             <div class="col d-flex align-items-center justify-content-center" id="update">
                 <div class="container">
                     <div class="container mb-3 border-bottom">
                         <h1>Update Subscription</h1>
                     </div>
                     {% if updated_right %}
+
                         <div class="container">
                             <h3>Your request has been submitted</h3>
                             <p> You will receive an email shortly</p>
@@ -126,9 +146,13 @@
                                 <p class=" link mb-0">Go to services status page</p>
                             </a>
                         </div>
+
                     {%else%}
+
                         <div class="container">
+
                             {% if not_registered %}
+
                                 <div class="container">
                                     <h3 class="alert">This is email is not registered</h3>
                                     <p> If you would like to receive service updates notifications please register on the left section.</p>
@@ -136,7 +160,9 @@
                                         <p class=" link mb-0">Update email</p>
                                     </a>
                                 </div>
+
                             {% else %}
+
                                 <form action="." method="POST"> {% csrf_token %}
                                     <div class="form-group"> <!--Email info-->
                                         <label>Please enter your email address to unsubscribe to one or more services notifications</label>
@@ -150,9 +176,12 @@
                                         <button type="submit" class="btn btn-primary mb-2" name="update_subs">Submit request</button>
                                     </div>
                                 </form>
+
                             {% endif %}
                         </div>
+
                     {%endif%}
+
                 </div>
             </div>
         </div>
