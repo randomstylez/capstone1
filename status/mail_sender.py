@@ -2,6 +2,7 @@ import smtplib
 import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+
 from django.conf import settings
 
 
@@ -42,8 +43,7 @@ class MailSender:
             server.login(self.sender_email, self.password)
 
             server.sendmail(self.sender_email, self.receiver_email, self.message.as_string())
+            server.quit()
 
         except Exception as e:
-            print(e)
-        finally:
-            server.quit()
+            print(e)  # we should log this as an error

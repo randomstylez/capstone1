@@ -142,7 +142,10 @@ class TicketForm(forms.ModelForm):
             elif self.changed_data != ['notify_action'] and \
                     (self.cleaned_data['notify_action'] is True or self.cleaned_data['notify_action'] == 'True'):
                 self.instance.notify_action = True
-                self.notify_user(self.cleaned_data['sub_service'].pk)
+                try:
+                    self.notify_user(self.cleaned_data['sub_service'].pk)
+                except Exception as e:
+                    print(e)  # we should log this as an error
 
 
 class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
@@ -221,12 +224,105 @@ class SubscriberDataForm (forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
                              required=True)
 
+    def check_mail_domain(self):
+        """
+        Method to check if the email provided belong to
+        the list of user domains registered on the system
+        """
+        # Verify that the subscriber email belong to our domain list
+        domain = self.cleaned_data["email"].split('@')[1]
+
+        # It gets the list of services that has that Sub Service
+        domain_exist = DomainList.objects.filter(domain_name=domain).count()
+
+        if domain_exist == 0:
+            return False
+
+        return True
+
+    def notify_user_email(self):
+        """
+        Method to send a mail notification
+        about the subscription requested
+        :param:
+        :return:
+        """
+        email = self.cleaned_data["email"]
+
+        service_list = ''
+        service_list_html = ''
+
+        subservice_list = ''
+        subservice_list_html = ''
+
+        services = self.cleaned_data["services"]
+        subservices = self.cleaned_data["subservices"]
+
+        if len(services):
+            service_list += '<br>'
+            service_list_html += '<ul>'
+            for service in services:
+                service_list += f"""{service}<br>"""
+                service_list_html += f"""<li>{service}</li>"""
+            service_list += '<br>'
+            service_list_html += '</ul>'
+        else:
+            service_list += '<br>None selected<br>'
+            service_list_html += '<ul><li>None selected</li></ul>'
+
+        if len(subservices):
+            subservice_list += '<br>'
+            subservice_list_html += '<ul>'
+            for subservice in subservices:
+                subservice_list += f"""{subservice}<br>"""
+                subservice_list_html += f"""<li>{subservice}</li>"""
+            subservice_list += '<br'
+            subservice_list_html += '</ul>'
+        else:
+            subservice_list += '<br>None selected<br>'
+            subservice_list_html += '<ul><li>None selected</li></ul>'
+
+        # Email content
+        text = f"""\
+                                You have subscribed to receive notifications from the following services:
+                                <br>
+                                {service_list}
+                                You have subscribed to receive notifications from the following sub-services:
+                                {subservice_list}
+                                """
+
+        html = f"""\
+                                <html>
+                                  <body>
+                                    <p>You have subscribed to receive notifications from the following Service(s)
+                                    <br>
+                                    </p>
+                                    {service_list_html}
+                                    <p>You have subscribed to receive notifications from the following Sub-service(s)
+                                    <br>
+                                    </p>
+                                    {subservice_list_html}
+                                  </body>
+                                </html>
+                                """
+
+        subject = "Subscription requested!"
+
+        mail_sender = MailSender(html, subject, text, email)
+        mail_sender.send_mail()
+
     def clean(self):
         # Create token
         token = secrets.token_hex(64)
 
         # Update User's token
         self.cleaned_data["token"] = token
+
+        if self.check_mail_domain():
+            print("Valid email domain")
+            self.notify_user_email()
+        else:
+            print("Invalid email domain")
 
     class Meta:
         model = Subscriber

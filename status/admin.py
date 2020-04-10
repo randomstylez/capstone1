@@ -52,7 +52,6 @@ class StatusCategoryAdmin(admin.ModelAdmin):
 
 def notify_users(modeladmin, request, queryset):
     queryset.update(notify_action=True)
-    # here we should call notify_user creating a query call with the ticket_id
 
 
 notify_users.short_description = "Notify users about ticket"
@@ -76,7 +75,6 @@ class TicketHistoryInline(admin.StackedInline):
 class TicketAdmin(admin.ModelAdmin):
 
     list_display = ('ticket_id', 'sub_service', 'category_status', 'begin', 'end', 'notify_action',)
-    # fields = ['business_service', 'service_category', ('begin', 'end'), 'action_description', 'action_notes']
 
     fieldsets = [
         ('Sub-Service on process', {'fields': ['ticket_id', 'sub_service', 'category_status']}),
@@ -101,8 +99,14 @@ class TicketAdmin(admin.ModelAdmin):
     form = TicketForm
 
     def save_formset(self, request, form, formset, change):
+        # If it is received data related to the ticket's logs, the ticket
+        # will update its status with the last status registered on the logs
         if formset.cleaned_data:
             status_category = formset.cleaned_data[-1]['service_status']
+            # If the last Ticket Log status is 'No Issues,' means that the problem has
+            # updating the Ticket End Time to the value specified on the last Ticket Log
+            if status_category.status_category_tag == 'No Issues':
+                form.instance.end = formset.cleaned_data[-1]['action_date']
             status_category_id = StatusCategory.objects.get(status_category_tag=status_category)
             form.instance.category_status_id = status_category_id.pk
             form.instance.save()

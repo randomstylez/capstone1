@@ -118,7 +118,7 @@ class Ticket(models.Model):
     action_description = RichTextField()
     action_notes = RichTextField(blank=True, null=True)
     notify_action = models.BooleanField(
-        default=NO,
+        default=YES,
         choices=YES_NO_CHOICES,
         verbose_name='Ticket notified')
 
