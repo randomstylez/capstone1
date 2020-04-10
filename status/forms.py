@@ -142,7 +142,10 @@ class TicketForm(forms.ModelForm):
             elif self.changed_data != ['notify_action'] and \
                     (self.cleaned_data['notify_action'] is True or self.cleaned_data['notify_action'] == 'True'):
                 self.instance.notify_action = True
-                self.notify_user(self.cleaned_data['sub_service'].pk)
+                try:
+                    self.notify_user(self.cleaned_data['sub_service'].pk)
+                except Exception as e:
+                    print(e)  # we should log this as an error
 
 
 class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
