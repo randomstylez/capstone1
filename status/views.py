@@ -89,9 +89,7 @@ class ServicesStatusView(View):
 
         # Declaring an empty dictionary to store status per day for each service
         service_status = {}
-        no_issues = StatusCategory()
-        no_issues.status_category_tag = "No Issues"
-        no_issues.status_category_color = "green"
+        no_issues = StatusCategory.objects.filter(status_category_tag='No Issues')[0]
 
         # Getting list of tickets associated with each service
         for service in services:
