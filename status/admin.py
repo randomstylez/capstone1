@@ -75,7 +75,6 @@ class TicketHistoryInline(admin.StackedInline):
 class TicketAdmin(admin.ModelAdmin):
 
     list_display = ('ticket_id', 'sub_service', 'category_status', 'begin', 'end', 'notify_action',)
-    # fields = ['business_service', 'service_category', ('begin', 'end'), 'action_description', 'action_notes']
 
     fieldsets = [
         ('Sub-Service on process', {'fields': ['ticket_id', 'sub_service', 'category_status']}),
