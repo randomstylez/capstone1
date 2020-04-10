@@ -224,12 +224,30 @@ class SubscriberDataForm (forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
                              required=True)
 
+    def check_mail_domain(self):
+
+        # Verify that the subscriber email belong to our domain list
+        domain = self.cleaned_data["email"].split('@')[1]
+
+        # It gets the list of services that has that Sub Service
+        domain_exist = DomainList.objects.filter(domain_name=domain).count()
+
+        if domain_exist == 0:
+            return False
+
+        return True
+
     def clean(self):
         # Create token
         token = secrets.token_hex(64)
 
         # Update User's token
         self.cleaned_data["token"] = token
+
+        if self.check_mail_domain():
+            print("Good")
+        else:
+            print("No Good")
 
     class Meta:
         model = Subscriber
