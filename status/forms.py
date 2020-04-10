@@ -225,7 +225,10 @@ class SubscriberDataForm (forms.ModelForm):
                              required=True)
 
     def check_mail_domain(self):
-
+        """
+        Method to check if the email provided belong to
+        the list of user domains registered on the system
+        """
         # Verify that the subscriber email belong to our domain list
         domain = self.cleaned_data["email"].split('@')[1]
 
@@ -239,8 +242,9 @@ class SubscriberDataForm (forms.ModelForm):
 
     def notify_user_email(self):
         """
-        Method to send a notification link given the User email
-        :param _email:
+        Method to send a mail notification
+        about the subscription requested
+        :param:
         :return:
         """
         email = self.cleaned_data["email"]
