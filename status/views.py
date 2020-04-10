@@ -208,7 +208,6 @@ class SubscriptionView(View):
             user_email = request.POST.get('user_email', None)
 
             if user_email:
-
                 # Check if this email is registered for notifications
                 if Subscriber.objects.filter(email=user_email).exists():
                     # Send the email with the link to update subscription
@@ -356,7 +355,6 @@ class ModifyUserSubscription (ListView):
             context['no_subservices'] = True
 
         # Getting the services this user is not registered to
-
         queryset = Service.objects.all()
         services_not_registered = []
 
@@ -370,7 +368,6 @@ class ModifyUserSubscription (ListView):
             context['no_services_toadd'] = True
 
         # Getting the sub-services this user is not registered to
-
         queryset = SubService.objects.all()
         sub_services_not_registered = []
 

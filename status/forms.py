@@ -237,6 +237,76 @@ class SubscriberDataForm (forms.ModelForm):
 
         return True
 
+    def notify_user_email(self):
+        """
+        Method to send a notification link given the User email
+        :param _email:
+        :return:
+        """
+        email = self.cleaned_data["email"]
+
+        service_list = ''
+        service_list_html = ''
+
+        subservice_list = ''
+        subservice_list_html = ''
+
+        services = self.cleaned_data["services"]
+        subservices = self.cleaned_data["subservices"]
+
+        if len(services):
+            service_list += '<br>'
+            service_list_html += '<ul>'
+            for service in services:
+                service_list += f"""{service}<br>"""
+                service_list_html += f"""<li>{service}</li>"""
+            service_list += '<br>'
+            service_list_html += '</ul>'
+        else:
+            service_list += '<br>None selected<br>'
+            service_list_html += '<ul><li>None selected</li></ul>'
+
+        if len(subservices):
+            subservice_list += '<br>'
+            subservice_list_html += '<ul>'
+            for subservice in subservices:
+                subservice_list += f"""{subservice}<br>"""
+                subservice_list_html += f"""<li>{subservice}</li>"""
+            subservice_list += '<br'
+            subservice_list_html += '</ul>'
+        else:
+            subservice_list += '<br>None selected<br>'
+            subservice_list_html += '<ul><li>None selected</li></ul>'
+
+        # Email content
+        text = f"""\
+                                You have subscribed to receive notifications from the following services:
+                                <br>
+                                {service_list}
+                                You have subscribed to receive notifications from the following sub-services:
+                                {subservice_list}
+                                """
+
+        html = f"""\
+                                <html>
+                                  <body>
+                                    <p>You have subscribed to receive notifications from the following Service(s)
+                                    <br>
+                                    </p>
+                                    {service_list_html}
+                                    <p>You have subscribed to receive notifications from the following Sub-service(s)
+                                    <br>
+                                    </p>
+                                    {subservice_list_html}
+                                  </body>
+                                </html>
+                                """
+
+        subject = "Subscription requested!"
+
+        mail_sender = MailSender(html, subject, text, email)
+        mail_sender.send_mail()
+
     def clean(self):
         # Create token
         token = secrets.token_hex(64)
@@ -246,6 +316,7 @@ class SubscriberDataForm (forms.ModelForm):
 
         if self.check_mail_domain():
             print("Valid email domain")
+            self.notify_user_email()
         else:
             print("Invalid email domain")
 
