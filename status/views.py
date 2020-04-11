@@ -10,7 +10,7 @@ from django.views.generic import ListView
 from .forms import SubscriberDataForm
 from .forms import SubscriberForm
 from .models import SubService, Ticket, StatusCategory, Service, TicketLog, SubServiceServices, Region, Subscriber
-
+from django.db.models import Q
 
 # Create your views here.
 
@@ -106,7 +106,7 @@ class ServicesStatusView(View):
 
             status_per_day = []
             for day in list_of_five_days:
-                active_tickets_per_day = tickets_list.filter(begin__lte=day, end__gte=day-timedelta(1))
+                active_tickets_per_day = tickets_list.filter(begin__lte=day).exclude(end__lte=day)
 
                 if active_tickets_per_day:
                     # Separating tickets in groups by priority
