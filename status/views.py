@@ -9,7 +9,7 @@ from django.views.generic import ListView
 
 from .forms import SubscriberDataForm
 from .forms import SubscriberForm
-from .models import SubService, Ticket, StatusCategory, Service, TicketLog, SubServiceServices, Region, Subscriber
+from .models import SubService, Ticket, StatusCategory, Service, TicketLog, SubServiceServices, Region, Subscriber, DomainList
 from django.db.models import Q
 
 # Create your views here.
@@ -156,7 +156,11 @@ class SubscriptionView(View):
             context['object'] = obj
             context['service_specific'] = True
         else:
-            context['service_specific'] = request.GET.get('service_specific')
+            service_specific = request.GET.get('service_specific')
+            if service_specific is True:
+                context['service_specific'] = True
+            else:
+                context['service_specific'] = False
             context['object_passed'] = request.GET.get('object')
 
             # If an update was requested but the user did not enter a valid email
@@ -189,29 +193,40 @@ class SubscriptionView(View):
                 # Getting email entered by user
                 email = form.cleaned_data['email']
 
-                if 'one_service' in request.POST:
-                    id = request.POST['one_service']
-                    service = get_object_or_404(Service, id=id)
+                #Verify if email belongs to the Domain list
+                if not form.check_mail_domain():
+                    context['email_notin_domailist'] = True
 
-                # If the user selected at least one service or subservice
-                if len(form.cleaned_data['services']) or len(form.cleaned_data['subservices']) \
-                        or ('one_service' in request.POST):
-                    # If the user is not registered before save it
-                    if not Subscriber.objects.filter(email=email).exists():
-                        subscriber = form.save()
-                        context['subscribed'] = True
+                    #Getting list of approved domains
+                    domain_list = DomainList.objects.all()
 
-                        if 'one_service' in request.POST:
-                            subscriber.services.add(service)
-                            subscriber.save()
-                    else:  # Liz, can you check this?
-                        context['user_exists'] = True
-                        context['user_exists_email'] = email
-                        context['updated_left'] = True
+                    #Passing list ot template
+                    context['domain_list'] = domain_list
 
                 else:
-                    context['no_selection'] = True
-                    context['subscribed'] = False
+                    if 'one_service' in request.POST:
+                        id = request.POST['one_service']
+                        service = get_object_or_404(Service, id=id)
+
+                    # If the user selected at least one service or subservice
+                    if len(form.cleaned_data['services']) or len(form.cleaned_data['subservices']) \
+                            or ('one_service' in request.POST):
+                        # If the user is not registered before save it
+                        if not Subscriber.objects.filter(email=email).exists():
+                            subscriber = form.save()
+                            context['subscribed'] = True
+
+                            if 'one_service' in request.POST:
+                                subscriber.services.add(service)
+                                subscriber.save()
+                        else:  # Liz, can you check this?
+                            context['user_exists'] = True
+                            context['user_exists_email'] = email
+                            context['updated_left'] = True
+
+                    else:
+                        context['no_selection'] = True
+                        context['subscribed'] = False
 
         elif 'update_subs' in request.POST:
 
