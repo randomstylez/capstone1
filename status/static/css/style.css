@@ -186,6 +186,10 @@ a:hover
     text-align: center;
 }
 
+.red{
+    color: red;
+}
+
 /* Default size for xs screen sizes */
 .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control,#subscribe,
  #user_subservices, #user_services, #user_services_toadd, #user_subservices_toadd{

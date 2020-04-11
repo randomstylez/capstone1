@@ -57,6 +57,7 @@
                             <form action="." method="POST"> {% csrf_token %}
                                 <button type="submit" class="btn btn-primary mb-2" name="update_subs">Yes</button>
                                 <input class="form-control" name="user_email" value="{{user_exists_email}}" hidden>
+                                <input class="form-control" name="updated_left" value="{{updated_left}}" hidden>
                             </form>
                             <a class="pl-2" href="/subscription/?service_specific={{service_specific}}&object={{object_passed}}">
                                 <button type="submit" class="btn btn-primary mb-2" name="update_subs">No </button>

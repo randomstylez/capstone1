@@ -208,25 +208,54 @@ class SubscriptionView(View):
                         id = request.POST['one_service']
                         service = get_object_or_404(Service, id=id)
 
-                    # If the user selected at least one service or subservice
-                    if len(form.cleaned_data['services']) or len(form.cleaned_data['subservices']) \
-                            or ('one_service' in request.POST):
                         # If the user is not registered before save it
                         if not Subscriber.objects.filter(email=email).exists():
-                            subscriber = form.save()
-                            context['subscribed'] = True
 
-                            if 'one_service' in request.POST:
-                                subscriber.services.add(service)
-                                subscriber.save()
-                        else:  # Liz, can you check this?
-                            context['user_exists'] = True
-                            context['user_exists_email'] = email
-                            context['updated_left'] = True
+                            #************HERE WE NEED TO VERIFY USER EMAIL FIRST*******************
+
+                            subscriber = form.save()
+                            #Add service to the user account
+                            subscriber.services.add(service)
+                            subscriber.save()
+
+                        else:
+                            #If the user is already registered we just need to add the selected services and sub-services to the subscription
+                            #Get user from database
+                            user = Subscriber.objects.filter(email=email)[:1].get()
+                            #Get user subservices
+                            user_subservices = user.subservices.all()
+                            #Get list of subservices to add
+                            subservices_toadd=form.cleaned_data["subservices"]
+                            # Add service to the user account
+                            user.services.add(service)
+                            user.save()
+                            #Add subservices to the user account
+                            for subservice_toadd in subservices_toadd:
+                                if subservice_toadd not in user_subservices:
+                                    user.subservices.add(subservice_toadd)
+                                    user.save()
+
+                        context['subscribed'] = True
 
                     else:
-                        context['no_selection'] = True
-                        context['subscribed'] = False
+                        # If the user selected at least one service or subservice
+                        if len(form.cleaned_data['services']) or len(form.cleaned_data['subservices']):
+                            # If the user is not registered before save it
+                            if not Subscriber.objects.filter(email=email).exists():
+
+                                # ************HERE WE NEED TO VERIFY USER EMAIL FIRST*******************
+
+                                subscriber = form.save()
+                                context['subscribed'] = True
+
+                            else:
+                                context['user_exists'] = True
+                                context['user_exists_email'] = email
+                                context['updated_left'] = True
+
+                        else:
+                            context['no_selection'] = True
+                            context['subscribed'] = False
 
         elif 'update_subs' in request.POST:
 
@@ -240,7 +269,10 @@ class SubscriptionView(View):
                     SubscriberForm.send_link_by_user_email(str(user_email))
 
                     # Email has been sent, update template
-                    context['updated_right'] = True
+                    if request.POST.get('updated_left', None):
+                        context['updated_left'] = True
+                    else:
+                        context['updated_right'] = True
                 else:
                     context['not_registered'] = True
                     context['email_entered'] = user_email
