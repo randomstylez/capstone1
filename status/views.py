@@ -148,7 +148,16 @@ class SubscriptionView(View):
 
     def get(self, request, id=None, *args, **kwargs):
 
-        form = SubscriberDataForm()
+        #Getting values previously entered by user if any
+        user_name = request.GET.get('user_name')
+        user_email = request.GET.get('subscriber_email')
+
+        #If the user did a registration attempt before show entered values
+        if user_email:
+            form = SubscriberDataForm(initial={'name':user_name, 'email':user_email})
+        else:
+            form = SubscriberDataForm()
+
         context = {"form": form, "subscription_active": True, 'subscribed': False}
 
         if id is not None:
@@ -181,7 +190,12 @@ class SubscriptionView(View):
             "subscription_active": True
         }
 
-        context['service_specific'] = request.POST.get('service_specific')
+        service_specific = request.POST.get('service_specific')
+
+        if service_specific == 'True':
+            context['service_specific'] = True
+        else:
+            context['service_specific'] = False
 
         object_passed = request.POST.get('object')
         if object_passed:
@@ -192,6 +206,12 @@ class SubscriptionView(View):
             if form.is_valid():
                 # Getting email entered by user
                 email = form.cleaned_data['email']
+                # Passing email to template
+                context["subscriber_email"] = email
+                #Getting name entered by the user
+                name = form.cleaned_data['name']
+                # Passing email to template
+                context["user_name"] = name
 
                 #Verify if email belongs to the Domain list
                 if not form.check_mail_domain():
@@ -202,6 +222,7 @@ class SubscriptionView(View):
 
                     #Passing list ot template
                     context['domain_list'] = domain_list
+
 
                 else:
                     if 'one_service' in request.POST:
