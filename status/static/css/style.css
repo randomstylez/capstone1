@@ -1,5 +1,5 @@
 
-body{
+html,body{
     font-family: 'Roboto', sans-serif;
 }
 
@@ -39,6 +39,7 @@ body{
     text-align: center;
     color: white;
     bottom:0;
+    position:relative;
 }
 
 h1 {
@@ -204,7 +205,7 @@ h3{
     height: 90vh;
 }
 
-#service_subservice_info, #status_history {
+#service_subservice_info,#sshistory_content{
     height: 88vh;
 }
 
@@ -298,18 +299,9 @@ h3{
         height: 30rem;
     }
 
-    #status_history {
-        height: 88vh;
-    }
-
     #user_subservices, #user_services, #user_services_toadd, #user_subservices_toadd{
         height:10rem;
     }
-
-    #status_history {
-        height: 88vh;
-    }
-
 
 }
 

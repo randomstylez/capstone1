@@ -166,8 +166,12 @@ class SubscriptionView(View):
             context['service_specific'] = True
         else:
             service_specific = request.GET.get('service_specific')
-            if service_specific is True:
-                context['service_specific'] = True
+
+            if service_specific:
+                if service_specific == "False":
+                    context['service_specific'] = False
+                else:
+                    context['service_specific'] = True
             else:
                 context['service_specific'] = False
             context['object_passed'] = request.GET.get('object')

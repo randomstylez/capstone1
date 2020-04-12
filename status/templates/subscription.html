@@ -163,11 +163,11 @@
                 {%else%}
                     <div class="container">
                         {% if not_registered %}
-                            <div class="container">
+                            <div class="container" id="not_registered">
                                 <h3 class="alert">This email is not registered</h3>
                          <p> If you would like to receive service updates notifications please register on the left section.
                              Otherwise click the link below to update your input.</p>
-                         <a href="/subscription/?email={{email_entered}}">
+                         <a href="/subscriptions/?email={{email_entered}}">
                                     <p class=" link mb-0">Update email</p>
                                 </a>
                             </div>
