@@ -244,8 +244,6 @@ class SubscriberDataForm (forms.ModelForm):
         """
         Method to send a mail notification
         about the subscription requested
-        :param:
-        :return:
         """
         email = self.cleaned_data["email"]
 
