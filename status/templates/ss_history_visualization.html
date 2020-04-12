@@ -4,14 +4,14 @@
 {% block content %}
 
     <!--PAGE CONTENT GOES HERE-->
-<div class="container" id="sshistory_content">
 
-    <div class="container mt-4" id="page_heading">
-        <h1>Service Status History</h1>
-    </div>
+    <div class="container" id="sshistory_content">
+        <div class="container mt-4" id="page_heading">
+            <h1>Service Status History</h1>
+        </div>
 
-    <!--Search section-->
-    <div class="container my-4" id="search_and_serviceName">
+        <!--Search section-->
+        <div class="container my-4" id="search_and_serviceName">
         <div class="row">
             <div class="col-3" id="search">
                 <form action="." method="GET">
@@ -36,10 +36,10 @@
             </div>
         </div>
     </div>
-    <!--End of Search section-->
+        <!--End of Search section-->
 
-    <!--Tickets history section-->
-    <div class="container" id="status_history">
+        <!--Tickets history section-->
+        <div class="container" id="status_history">
         <div class="row pl-4 py-2 mb-3" id="incidents_heading">
             <div class="col-2 col-lg-1">
                 <p class="bold">Ticket ID</p>
@@ -128,24 +128,22 @@
             {%endif%}
         </div>
     </div>
-    <!--End of tickets history section-->
+        <!--End of tickets history section-->
 
-    <div class="container py-2 mb-4">
-        <div class="row mt-2">
-            <div class="col-6" id="ticket_legend"></div>
-            <div class="col-6 d-flex justify-content-end" id="subscribe_to_service">
-                <a href="/subscription/{{object.id}}">
-                    <button name="subscribe_to_service" class="btn btn-dark">Subscribe to this service</button>
-                </a>
+        <div class="container py-2 mb-4">
+            <div class="row mt-2">
+                <div class="col-6" id="ticket_legend"></div>
+                <div class="col-6 d-flex justify-content-end" id="subscribe_to_service">
+                    <a href="/subscription/{{object.id}}">
+                        <button name="subscribe_to_service" class="btn btn-dark">Subscribe to this service</button>
+                    </a>
+                </div>
             </div>
         </div>
+
+        <!--Subscription and legend section-->
+
+        <!--End of subscription and legend section-->
     </div>
-
-    <!--Subscription and legend section-->
-
-    <!--End of subscription and legend section-->
-
-</div>
-
 
 {% endblock %}
