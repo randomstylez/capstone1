@@ -9,8 +9,8 @@ from django.views.generic import ListView
 
 from .forms import SubscriberDataForm
 from .forms import SubscriberForm
-from .models import SubService, Ticket, StatusCategory, Service, TicketLog, SubServiceServices, Region, Subscriber
-
+from .models import SubService, Ticket, StatusCategory, Service, TicketLog, SubServiceServices, Region, Subscriber, DomainList
+from django.db.models import Q
 
 # Create your views here.
 
@@ -79,6 +79,7 @@ class ServicesStatusView(View):
                 context['no_search_results'] = True
 
             context['services_list'] = services_list
+            context['searchfor'] = searchfor
 
         else:
             # Getting list of services
@@ -88,9 +89,7 @@ class ServicesStatusView(View):
 
         # Declaring an empty dictionary to store status per day for each service
         service_status = {}
-        no_issues = StatusCategory()
-        no_issues.status_category_tag = "No Issues"
-        no_issues.status_category_color = "green"
+        no_issues = StatusCategory.objects.filter(status_category_tag='No Issues')[0]
 
         # Getting list of tickets associated with each service
         for service in services:
@@ -107,7 +106,7 @@ class ServicesStatusView(View):
 
             status_per_day = []
             for day in list_of_five_days:
-                active_tickets_per_day = tickets_list.filter(begin__lte=day, end__gte=day-timedelta(1))
+                active_tickets_per_day = tickets_list.filter(begin__lte=day).exclude(end__lte=day)
 
                 if active_tickets_per_day:
                     # Separating tickets in groups by priority
@@ -149,7 +148,16 @@ class SubscriptionView(View):
 
     def get(self, request, id=None, *args, **kwargs):
 
-        form = SubscriberDataForm()
+        #Getting values previously entered by user if any
+        user_name = request.GET.get('user_name')
+        user_email = request.GET.get('subscriber_email')
+
+        #If the user did a registration attempt before show entered values
+        if user_email:
+            form = SubscriberDataForm(initial={'name':user_name, 'email':user_email})
+        else:
+            form = SubscriberDataForm()
+
         context = {"form": form, "subscription_active": True, 'subscribed': False}
 
         if id is not None:
@@ -157,7 +165,21 @@ class SubscriptionView(View):
             context['object'] = obj
             context['service_specific'] = True
         else:
-            context['service_specific'] = False
+            service_specific = request.GET.get('service_specific')
+
+            if service_specific:
+                if service_specific == "False":
+                    context['service_specific'] = False
+                else:
+                    context['service_specific'] = True
+            else:
+                context['service_specific'] = False
+            context['object_passed'] = request.GET.get('object')
+
+            # If an update was requested but the user did not enter a valid email
+            update_email = request.GET.get('email')
+
+            context['update_email'] = update_email
 
         return render(request, self.template_name, context)
 
@@ -172,35 +194,93 @@ class SubscriptionView(View):
             "subscription_active": True
         }
 
+        service_specific = request.POST.get('service_specific')
+
+        if service_specific == 'True':
+            context['service_specific'] = True
+        else:
+            context['service_specific'] = False
+
+        object_passed = request.POST.get('object')
+        if object_passed:
+            context['object_passed'] = object_passed
+
         if 'subs_updates' in request.POST:
 
             if form.is_valid():
                 # Getting email entered by user
                 email = form.cleaned_data['email']
+                # Passing email to template
+                context["subscriber_email"] = email
+                #Getting name entered by the user
+                name = form.cleaned_data['name']
+                # Passing email to template
+                context["user_name"] = name
 
-                if 'one_service' in request.POST:
-                    id = request.POST['one_service']
-                    service = get_object_or_404(Service, id=id)
+                #Verify if email belongs to the Domain list
+                if not form.check_mail_domain():
+                    context['email_notin_domailist'] = True
 
-                # If the user selected at least one service or subservice
-                if len(form.cleaned_data['services']) or len(form.cleaned_data['subservices']) \
-                        or ('one_service' in request.POST):
-                    # If the user is not registered before save it
-                    if not Subscriber.objects.filter(email=email).exists():
-                        subscriber = form.save()
-                        context['subscribed'] = True
+                    #Getting list of approved domains
+                    domain_list = DomainList.objects.all()
 
-                        if 'one_service' in request.POST:
-                            subscriber.services.add(service)
-                            subscriber.save()
-                    else:  # Liz, can you check this?
-                        context['user_exists'] = True
-                        context['user_exists_email'] = email
-                        context['updated_left'] = True
+                    #Passing list ot template
+                    context['domain_list'] = domain_list
+
 
                 else:
-                    context['no_selection'] = True
-                    context['subscribed'] = False
+                    if 'one_service' in request.POST:
+                        id = request.POST['one_service']
+                        service = get_object_or_404(Service, id=id)
+
+                        # If the user is not registered before save it
+                        if not Subscriber.objects.filter(email=email).exists():
+
+                            #************HERE WE NEED TO VERIFY USER EMAIL FIRST*******************
+
+                            subscriber = form.save()
+                            #Add service to the user account
+                            subscriber.services.add(service)
+                            subscriber.save()
+
+                        else:
+                            #If the user is already registered we just need to add the selected services and sub-services to the subscription
+                            #Get user from database
+                            user = Subscriber.objects.filter(email=email)[:1].get()
+                            #Get user subservices
+                            user_subservices = user.subservices.all()
+                            #Get list of subservices to add
+                            subservices_toadd=form.cleaned_data["subservices"]
+                            # Add service to the user account
+                            user.services.add(service)
+                            user.save()
+                            #Add subservices to the user account
+                            for subservice_toadd in subservices_toadd:
+                                if subservice_toadd not in user_subservices:
+                                    user.subservices.add(subservice_toadd)
+                                    user.save()
+
+                        context['subscribed'] = True
+
+                    else:
+                        # If the user selected at least one service or subservice
+                        if len(form.cleaned_data['services']) or len(form.cleaned_data['subservices']):
+                            # If the user is not registered before save it
+                            if not Subscriber.objects.filter(email=email).exists():
+
+                                # ************HERE WE NEED TO VERIFY USER EMAIL FIRST*******************
+
+                                subscriber = form.save()
+                                context['subscribed'] = True
+
+                            else:
+                                context['user_exists'] = True
+                                context['user_exists_email'] = email
+                                context['updated_left'] = True
+
+                        else:
+                            context['no_selection'] = True
+                            context['subscribed'] = False
 
         elif 'update_subs' in request.POST:
 
@@ -214,9 +294,13 @@ class SubscriptionView(View):
                     SubscriberForm.send_link_by_user_email(str(user_email))
 
                     # Email has been sent, update template
-                    context['updated_right'] = True
+                    if request.POST.get('updated_left', None):
+                        context['updated_left'] = True
+                    else:
+                        context['updated_right'] = True
                 else:
                     context['not_registered'] = True
+                    context['email_entered'] = user_email
             else:
                 context['empty_email'] = True
 
@@ -264,6 +348,7 @@ class ServiceHistoryView(View):
 
                     tickets_list = aux_list
                     searching = True
+                    context['searchfor'] = searchfor
 
             context['tickets_list'] = tickets_list
 

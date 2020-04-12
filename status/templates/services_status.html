@@ -15,7 +15,8 @@
             <p class="bold">Recent Events</p>
         </div>
         {% for instance in ticket_list %}
-            <div class="container mt-4 py-3" id="list_events" style="border-left: 0.6rem solid {{instance.category_status.status_category_color}};">
+            <div class="container mt-4 py-3" id="list_events"
+                 style="border-left: 0.6rem solid {{instance.category_status.status_category_color_hex}};">
                 <a href="details/{{ instance.id}}">
                     <p><span class="bold">Sub-service Impacted: </span>{{ instance.sub_service.sub_service_name }}</p>
                     <p><span class="bold">Status: </span>{{ instance.category_status.status_category_tag }}</p>
@@ -24,8 +25,8 @@
             </div>
         {% endfor %}
     </section>
-    <!--End of Recent events section-->
 
+    <!--End of Recent events section-->
 
     <!--Services List section-->
 
@@ -37,7 +38,8 @@
                     <div class="row">
                         <div class="col-10 p-0">
                             <div class="form-group m-0">
-                                <input type="text" name="search" placeholder="Search..." class="form-control">
+                                <input type="text" name="search" placeholder="Search..." class="form-control"
+                                {% if searchfor %} value="{{searchfor}}" {% endif %}>
                                 <input type="text" name="region_list" hidden value="{{region_list}}" >
                             </div>
                         </div>
@@ -94,18 +96,8 @@
                         <div class="row m-0 d-flex justify-content-between p-0 dropdown-item">
                             <div class="col-1 d-inline">{{instance.status_category_tag}}</div>
                             <div class="col-1 mr-2 d-inline">
-                                <span style="color: {{instance.status_category_color}}">
-                                    {% if instance.status_category_tag == "Alert" %}
-                                        <i class="fas fa-exclamation-circle"></i>
-                                    {% elif instance.status_category_tag == "No Issues"%}
-                                        <i class="fas fa-check-circle"></i>
-                                    {% elif instance.status_category_tag == "In Process"%}
-                                        <i class="fas fa-tools"></i>
-                                    {% elif instance.status_category_tag == "Outage"%}
-                                        <i class="fas fa-times-circle"></i>
-                                    {% elif instance.status_category_tag == "Planned"%}
-                                        <i class="far fa-calendar-alt"></i>
-                                    {% endif %}
+                               <span style="color: {{instance.status_category_color_hex}}">
+                               <i class="{{instance.status_class_design}}"></i>
                                 </span>
                             </div>
                         </div>
@@ -142,84 +134,66 @@
                 </div>
                 <!--End of Table headings-->
 
-                <!--Table Data-->
-                <div id="list_of_services_data">
-                    {% if no_search_results %}
-                        <div class="row mt-4 d-flex justify-content-center">
-                            <p class="bold">No results found for your search criteria</p>
-                        </div>
-                        <div class="row mt-4 d-flex justify-content-center">
-                            <a class="link" href="/">
-                                <p>See all services</p>
+            <!--Table Data-->
+            <div id="list_of_services_data">
+                {% if no_search_results %}
+                    <div class="row mt-4 d-flex justify-content-center">
+                        <p class="bold">No results found for your search criteria</p>
+                    </div>
+                    <div class="row mt-4 d-flex justify-content-center">
+                        <a class="link" href="/">
+                            <p>See all services</p>
+                        </a>
+                    </div>
+                {% else %}
+                    {% for instance in services_list %}
+                    <div class="row">
+                        <div class="col-5">
+                            <a href="{{instance.id}}">
+                                <p>{{instance}}</p>
                             </a>
                         </div>
-                    {% else %}
-                        {% for instance in services_list %}
-                            <div class="row">
-                                <div class="col-5">
-                                    <a href="{{instance.id}}">
-                                        <p>{{instance}}</p>
-                                    </a>
-                                </div>
-                                {% for status_day in service_status|get_value:instance %}
-                                    <div class="col">
-                                        <p class="m-0 mt-1" style="color: {{status_day.status_category_color}}">
-                                            {% if status_day.status_category_tag == "Alert" %}
-                                                <i class="fas fa-exclamation-circle"></i>
-                                            {% elif status_day.status_category_tag == "No Issues"%}
-                                                <i class="fas fa-check-circle"></i>
-                                            {% elif status_day.status_category_tag == "In Process"%}
-                                                <i class="fas fa-tools"></i>
-                                            {% elif status_day.status_category_tag == "Outage"%}
-                                                <i class="fas fa-times-circle"></i>
-                                            {% elif status_day.status_category_tag == "Planned"%}
-                                                <i class="far fa-calendar-alt"></i>
-                                            {% endif %}
-                                        </p>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-                <!--End of Table Data-->
-            </div>
-            <div class="col-2 d-none d-lg-inline ">
-                <!--Legend section-->
-                <div class="container ml-2 border-left border-right border-bottom">
-                    <div class="row py-1 border legend_heading">
-                        <p class="bold my-1 pl-2">Legend</p>
-                    </div>
-                    <!--Legend items-->
-                    {% for instance in category_list %}
-                        <div class="row pl-2" id="legend_items">
-                            <div class="col-10">
-                                <p class="my-1">{{instance.status_category_tag}}</p>
-                            </div>
-                            <div class="col-2 px-0">
-                                <p class="m-0 mt-1" style="color: {{instance.status_category_color}}">
-                                    {% if instance.status_category_tag == "Alert" %}
-                                        <i class="fas fa-exclamation-circle"></i>
-                                    {% elif instance.status_category_tag == "No Issues"%}
-                                        <i class="fas fa-check-circle"></i>
-                                    {% elif instance.status_category_tag == "In Process"%}
-                                        <i class="fas fa-tools"></i>
-                                    {% elif instance.status_category_tag == "Outage"%}
-                                        <i class="fas fa-times-circle"></i>
-                                    {% elif instance.status_category_tag == "Planned"%}
-                                        <i class="far fa-calendar-alt"></i>
-                                    {% endif %}
-                                </p>
-                            </div>
+                        {% for status_day in service_status|get_value:instance %}
+                        <div class="col">
+                            <p class="m-0 mt-1" style="color: {{status_day.status_category_color_hex}}">
+                                <i class="{{status_day.status_class_design}}"></i>
+                            </p>
                         </div>
+                        {% endfor %}
+                    </div>
                     {% endfor %}
-                    <!--End of Legend items-->
-                </div>
-                <!--End ofLegend section-->
+                {% endif %}
             </div>
+            <!--End of Table Data-->
+        </div>
+        <div class="col-2 d-none d-lg-inline ">
+            <!--Legend section-->
+            <div class="container ml-2 border-left border-right border-bottom">
+                <div class="row py-1 border legend_heading">
+                    <p class="bold my-1 pl-2">Legend</p>
+                </div>
+                <!--Legend items-->
+                {% for instance in category_list %}
+                <div class="row pl-2" id="legend_items">
+                    <div class="col-10">
+                        <p class="my-1">{{instance.status_category_tag}}</p>
+                    </div>
+                    <div class="col-2 px-0">
+                       <p class="m-0 mt-1" style="color: {{instance.status_category_color_hex}}">
+                            <i class="{{instance.status_class_design}}"></i>
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            <!--End of Legend items-->
+            </div>
+            <!--End ofLegend section-->
         </div>
     </div>
-    <!--End of Services List section-->
+
+</div>
+<!--End of Services List section-->
+
 
 {% endblock %}
 

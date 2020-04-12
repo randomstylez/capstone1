@@ -4,6 +4,7 @@
 {% block content %}
 
     <!--PAGE CONTENT GOES HERE-->
+<div class="container" id="sshistory_content">
 
     <div class="container mt-4" id="page_heading">
         <h1>Service Status History</h1>
@@ -17,7 +18,8 @@
                     <div class="row">
                         <div class="col-10 p-0">
                             <div class="form-group m-0">
-                                <input type="text" name="search" placeholder="Search..." class="form-control">
+                                <input type="text" name="search" placeholder="Search..." class="form-control"
+                                {% if searchfor %} value="{{searchfor}}" {% endif %}>
                             </div>
                         </div>
                         <div class="col-2 p-0 m-0">
@@ -26,7 +28,10 @@
                     </div>
                 </form>
             </div>
-            <div class="col-9" id="service_name">
+            <div class="col-2">
+                <a class="link" href="/{{object.id}}"><p>Reset search</p></a>
+            </div>
+            <div class="col-7" id="service_name">
                 <p><span class="bold">Business Service: </span>{{ object.service_name }}</p>
             </div>
         </div>
@@ -34,7 +39,7 @@
     <!--End of Search section-->
 
     <!--Tickets history section-->
-    <div class="container" id="t_history">
+    <div class="container" id="status_history">
         <div class="row pl-4 py-2 mb-3" id="incidents_heading">
             <div class="col-2 col-lg-1">
                 <p class="bold">Ticket ID</p>
@@ -79,7 +84,8 @@
             {% else %}
 
                 {% for instance in tickets_list %}
-                    <div class="row border-bottom py-2 mb-4" style="border-left: 1.5rem solid {{instance.category_status.status_category_color}};">
+                    <div class="row border-bottom py-2 mb-4"
+                         style="border-left: 1.5rem solid {{instance.category_status.status_category_color_hex}};">
                         <div class="col-2 col-lg-1">
                             <a href="/details/{{ instance.id}}">
                                 <p class="m-0 link" data-toggle="tooltip" data-placement="top"
@@ -91,18 +97,8 @@
                         <div class="col-2 col-lg-1">
                             <p class="bold ml-3" data-toggle="tooltip" data-placement="top"
                                title="{{instance.category_status.status_category_tag}}">
-                                 <span style="color: {{instance.category_status.status_category_color}}">
-                                     {% if instance.category_status.status_category_tag == "Alert" %}
-                                         <i class="fas fa-exclamation-circle"></i>
-                                     {% elif instance.category_status.status_category_tag == "No Issues"%}
-                                         <i class="fas fa-check-circle"></i>
-                                     {% elif instance.category_status.status_category_tag == "In Process"%}
-                                         <i class="fas fa-tools"></i>
-                                     {% elif instance.category_status.status_category_tag == "Outage"%}
-                                         <i class="fas fa-times-circle"></i>
-                                     {% elif instance.category_status.status_category_tag == "Planned"%}
-                                         <i class="far fa-calendar-alt"></i>
-                                     {% endif %}
+                                  <span style="color: {{instance.category_status.status_category_color_hex}}">
+                                  <i class="{{instance.category_status.status_class_design}}"></i>
                                  </span>
                             </p>
                         </div>
@@ -148,5 +144,8 @@
     <!--Subscription and legend section-->
 
     <!--End of subscription and legend section-->
+
+</div>
+
 
 {% endblock %}

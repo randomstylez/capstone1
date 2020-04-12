@@ -8,7 +8,7 @@ ServiceStatus/static/
 ServiceStatus/static/*
 
 ServiceStatus/settings.py
-# ServiceStatus/settings-dev.py
+# ServiceStatus/settings.py
 
 status/migrations/0*.py
 
