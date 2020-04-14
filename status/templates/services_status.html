@@ -9,28 +9,29 @@
         <h1>Services Status</h1>
     </div>
 
-    <!--Recent events section-->
-    <section id="recent_events"> <!--this section will show all events in the last five days-->
+    <!--  Recent events section  -->
+    <section id="recent_events"> <!--  This section will show all events in the last five days  -->
         <div class="container" id="events_heading">
             <p class="bold">Recent Events</p>
         </div>
+        {#Describe this "for" statement functionality#}
         {% for instance in ticket_list %}
             <div class="container mt-4 py-3" id="list_events"
                  style="border-left: 0.6rem solid {{instance.category_status.status_category_color_hex}};">
                 <a href="details/{{ instance.id}}">
                     <p><span class="bold">Sub-service Impacted: </span>{{ instance.sub_service.sub_service_name }}</p>
                     <p><span class="bold">Status: </span>{{ instance.category_status.status_category_tag }}</p>
-                    <p>{{ instance.action_description | safe }}</p> <!--Description of the ticket-->
+                    <p>{{ instance.action_description | safe }}</p> <!--  Description of the ticket  -->
                 </a>
             </div>
         {% endfor %}
     </section>
 
-    <!--End of Recent events section-->
+    <!--  End of Recent events section  -->
 
-    <!--Services List section-->
+    <!--  Services List section  -->
 
-    <!--Search and filter section-->
+    <!--  Search and filter section  -->
     <div class="container" id="search_and_filter">
         <div class="row mt-4">
             <div class="col-3" id="search">
@@ -39,6 +40,7 @@
                         <div class="col-10 p-0">
                             <div class="form-group m-0">
                                 <input type="text" name="search" placeholder="Search..." class="form-control"
+                                {#Describe this conditional statement functionality#}
                                 {% if searchfor %} value="{{searchfor}}" {% endif %}>
                                 <input type="text" name="region_list" hidden value="{{region_list}}" >
                             </div>
@@ -52,15 +54,16 @@
                 </form>
             </div>
             <div class="col-5 pl-1">
-                <!--Regions Dropdown-->
+                <!--  Regions Dropdown  -->
                 <div class="dropdown">
                     <button class="btn dropdown-toggle p-0 pt-2" type="button" id="dropdownMenu1"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         List services by regions
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                        <!--This section will list regions from the database-->
+                        <!--  This section will list regions from the database  -->
                         <form action="." method="get">
+                            {#Describe this "for" statement functionality#}
                             {% for instance in region_list %}
                                 <div class="dropdown-item">
                                     <input class="form-check-input" type="checkbox" name="regions" value="{{instance}}"
@@ -71,10 +74,10 @@
                             {% endfor %}
                             <button type="submit" name="regions_select" class="btn btn-dark py-0">Select Regions</button>
                         </form>
-                        <!--End of list of regions from DB-->
+                        <!--  End of list of regions from DB  -->
                     </div>
                 </div>
-                <!--End of Regions Dropdown-->
+                <!--  End of Regions Dropdown  -->
             </div>
             <div class="col-4 border-left d-flex align-items-center">
                 <a href="/" class="link">
@@ -83,9 +86,9 @@
             </div>
         </div>
     </div>
-    <!--End of Search and filter section-->
+    <!--  End of Search and filter section  -->
 
-    <!--Small legend section-->
+    <!--  Small legend section  -->
     <div class="container mt-3 d-lg-none">
         <div class="row py-1 border-top border-bottom d-flex justify-content-center">
             <div class="dropdown">
@@ -94,6 +97,7 @@
                     Legend
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {#Describe this "for" statement functionality#}
                     {% for instance in category_list %}
                         <div class="row m-0 d-flex justify-content-between p-0 dropdown-item">
                             <div class="col-1 d-inline">{{instance.status_category_tag}}</div>
@@ -108,11 +112,11 @@
             </div>
         </div>
     </div>
-    <!--End of small legend section-->
+    <!--  End of small legend section  -->
 
     <div class="row">
         <div class="col-12 col-lg-10 mb-2 border">
-            <!--Table headings-->
+            <!--  Table headings  -->
             <div class="row border-top border-bottom bold pt-2 mb-2" id="list_of_services_heading">
                 <div class="col-5">
                     <p>Business Services</p>
@@ -133,10 +137,11 @@
                     <p>{{days.0 | date:'M-d'}}</p>
                 </div>
             </div>
-            <!--End of Table headings-->
+            <!--  End of Table headings  -->
 
-            <!--Table Data-->
+            <!--  Table Data  -->
             <div id="list_of_services_data">
+                {#Describe this conditional statement functionality#}
                 {% if no_search_results %}
                     <div class="row mt-4 d-flex justify-content-center">
                         <p class="bold">No results found for your search criteria</p>
@@ -146,7 +151,9 @@
                             <p>See all services</p>
                         </a>
                     </div>
+                {#Describe this conditional statement functionality#}
                 {% else %}
+                    {#Describe this "for" statement functionality#}
                     {% for instance in services_list %}
                         <div class="row">
                             <div class="col-5">
@@ -154,6 +161,7 @@
                                     <p>{{instance}}</p>
                                 </a>
                             </div>
+                            {#Describe this "for" statement functionality#}
                             {% for status_day in service_status|get_value:instance %}
                                 <div class="col">
                                     <p class="m-0 mt-1" style="color: {{status_day.status_category_color_hex}}">
@@ -165,15 +173,16 @@
                     {% endfor %}
                 {% endif %}
             </div>
-            <!--End of Table Data-->
+            <!--  End of Table Data  -->
         </div>
         <div class="col-2 d-none d-lg-inline ">
-            <!--Legend section-->
+            <!--  Legend section  -->
             <div class="container ml-2 border-left border-right border-bottom">
                 <div class="row py-1 border legend_heading">
                     <p class="bold my-1 pl-2">Legend</p>
                 </div>
-                <!--Legend items-->
+                <!--  Legend items  -->
+                {#Describe this "for" statement functionality#}
                 {% for instance in category_list %}
                     <div class="row pl-2" id="legend_items">
                         <div class="col-10">
@@ -186,14 +195,13 @@
                         </div>
                     </div>
                 {% endfor %}
-                <!--End of Legend items-->
+                <!--  End of Legend items  -->
             </div>
-            <!--End ofLegend section-->
+            <!--  End ofLegend section  -->
         </div>
     </div>
 
-    <!--End of Services List section-->
-
+    <!--  End of Services List section  -->
 
 {% endblock %}
 
