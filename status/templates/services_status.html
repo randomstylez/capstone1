@@ -126,108 +126,110 @@
         </div>
     </div>
     <!--  End of small legend section  -->
+
     <div class="container mt-4 mb-2">
         <div class="row">
-        <div class="col-12 col-lg-10 mb-2 border">
-            <!--Table headings-->
-            <div class="row border-top border-bottom bold pt-2 mb-2" id="list_of_services_heading">
-                <div class="col-5">
-                    <p>Business Services</p>
-                </div>
-                <div class="col pl-1">
-                    <p>{{days.4 | date:'M-d'}}</p>
-                </div>
-                <div class="col pl-1">
-                    <p>{{days.3 | date:'M-d'}}</p>
-                </div>
-                <div class="col pl-1">
-                    <p>{{days.2 | date:'M-d'}}</p>
-                </div>
-                <div class="col pl-1">
-                    <p>{{days.1 | date:'M-d'}}</p>
-                </div>
-                <div class="col pl-1">
-                    <p>{{days.0 | date:'M-d'}}</p>
-                </div>
-            </div>
-            <!--  End of Table headings  -->
-
-            <!--  Table Data  -->
-            <div id="list_of_services_data">
-
-                {#Describe this conditional statement functionality#}
-                {% if no_search_results %}
-
-                    <div class="row mt-4 d-flex justify-content-center">
-                        <p class="bold">No results found for your search criteria</p>
+            <div class="col-12 col-lg-10 mb-2 border">
+                <!-- Table headings -->
+                <div class="row border-top border-bottom bold pt-2 mb-2" id="list_of_services_heading">
+                    <div class="col-5">
+                        <p>Business Services</p>
                     </div>
-                    <div class="row mt-4 d-flex justify-content-center">
-                        <a class="link" href="/">
-                            <p>See all services</p>
-                        </a>
+                    <div class="col pl-1">
+                        <p>{{days.4 | date:'M-d'}}</p>
                     </div>
+                    <div class="col pl-1">
+                        <p>{{days.3 | date:'M-d'}}</p>
+                    </div>
+                    <div class="col pl-1">
+                        <p>{{days.2 | date:'M-d'}}</p>
+                    </div>
+                    <div class="col pl-1">
+                        <p>{{days.1 | date:'M-d'}}</p>
+                    </div>
+                    <div class="col pl-1">
+                        <p>{{days.0 | date:'M-d'}}</p>
+                    </div>
+                </div>
+                <!--  End of Table headings  -->
 
-                {#Describe this conditional statement functionality#}
-                {% else %}
+                <!--  Table Data  -->
+                <div id="list_of_services_data">
 
-                    {#Describe this "for" statement functionality#}
-                    {% for instance in services_list %}
+                    {#Describe this conditional statement functionality#}
+                    {% if no_search_results %}
 
-                        <div class="row">
-                            <div class="col-5">
-                                <a href="{{instance.id}}">
-                                    <p>{{instance}}</p>
-                                </a>
-                            </div>
+                        <div class="row mt-4 d-flex justify-content-center">
+                            <p class="bold">No results found for your search criteria</p>
+                        </div>
+                        <div class="row mt-4 d-flex justify-content-center">
+                            <a class="link" href="/">
+                                <p>See all services</p>
+                            </a>
+                        </div>
 
-                            {#Describe this "for" statement functionality#}
-                            {% for status_day in service_status|get_value:instance %}
+                    {#Describe this conditional statement functionality#}
+                    {% else %}
 
-                                <div class="col">
-                                    <p class="m-0 mt-1" style="color: {{status_day.status_category_color_hex}}">
-                                        <i class="{{status_day.status_class_design}}"></i>
-                                    </p>
+                        {#Describe this "for" statement functionality#}
+                        {% for instance in services_list %}
+
+                            <div class="row">
+                                <div class="col-5">
+                                    <a href="{{instance.id}}">
+                                        <p>{{instance}}</p>
+                                    </a>
                                 </div>
 
-                            {% endfor %}
+                                {#Describe this "for" statement functionality#}
+                                {% for status_day in service_status|get_value:instance %}
 
+                                    <div class="col">
+                                        <p class="m-0 mt-1" style="color: {{status_day.status_category_color_hex}}">
+                                            <i class="{{status_day.status_class_design}}"></i>
+                                        </p>
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endfor %}
+                    {% endif %}
+
+                </div>
+                <!--  End of Table Data  -->
+            </div>
+            <div class="col-2 d-none d-lg-inline">
+                <!--  Legend section  -->
+                <div class="container ml-2 border-left border-right border-bottom">
+                    <div class="row py-1 border legend_heading">
+                        <p class="bold my-1 pl-2">Legend</p>
+                    </div>
+
+                    <!--  Legend items  -->
+
+                    {#Describe this "for" statement functionality#}
+                    {% for instance in category_list %}
+
+                        <div class="row pl-2" id="legend_items">
+                            <div class="col-10">
+                                <p class="my-1">{{instance.status_category_tag}}</p>
+                            </div>
+                            <div class="col-2 px-0">
+                                <p class="m-0 mt-1" style="color: {{instance.status_category_color_hex}}">
+                                    <i class="{{instance.status_class_design}}"></i>
+                                </p>
+                            </div>
                         </div>
 
                     {% endfor %}
-                {% endif %}
 
-            </div>
-            <!--  End of Table Data  -->
-        </div>
-        <div class="col-2 d-none d-lg-inline">
-            <!--  Legend section  -->
-            <div class="container ml-2 border-left border-right border-bottom">
-                <div class="row py-1 border legend_heading">
-                    <p class="bold my-1 pl-2">Legend</p>
+                    <!--  End of Legend items  -->
                 </div>
-                <!--  Legend items  -->
-
-                {#Describe this "for" statement functionality#}
-                {% for instance in category_list %}
-
-                    <div class="row pl-2" id="legend_items">
-                        <div class="col-10">
-                            <p class="my-1">{{instance.status_category_tag}}</p>
-                        </div>
-                        <div class="col-2 px-0">
-                            <p class="m-0 mt-1" style="color: {{instance.status_category_color_hex}}">
-                                <i class="{{instance.status_class_design}}"></i>
-                            </p>
-                        </div>
-                    </div>
-
-                {% endfor %}
-
-                <!--  End of Legend items  -->
+                <!--  End ofLegend section  -->
             </div>
-            <!--  End ofLegend section  -->
         </div>
-    </div>
     </div>
     <!--  End of Services List section  -->
 
