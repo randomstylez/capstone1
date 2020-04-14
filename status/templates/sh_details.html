@@ -8,10 +8,11 @@
             <div class="col-1 p-0"></div>
             <div class="col-10">
 
-                <!--Ticket main information section-->
+                <!--  Ticket main information section  -->
                 <p><span class="bold">Sub-service affected:</span> {{ object.sub_service }}</p>
                 <div class="container mb-1 border-bottom py-2 mb-4"
-                     style="border-left: 0.4rem solid {{object.category_status.status_category_color_hex}};" id="ticket_info">
+                     style="border-left: 0.4rem solid {{object.category_status.status_category_color_hex}};"
+                     id="ticket_info">
                     <div class="row px-3 pt-3 d-flex justify-content-between">
                         <p><span class="bold">Ticket ID:</span> {{object.ticket_id}}</p>
                         <p class="m-0 link" data-toggle="tooltip" data-placement="top"
@@ -44,7 +45,7 @@
                         </div>
                     </div>
                 </div>
-                <!--End of Ticket main information section-->
+                <!--  End of Ticket main information section  -->
 
                 <div class="row justify-content-between" id="control_section">
                     <div class="col">
@@ -72,7 +73,7 @@
                     </div>
                 </div>
 
-                <!--Ticket Logs section-->
+                <!--  Ticket Logs section  -->
                 <div class="row d-flex justify-content-center mb-1" id="ticketLogsHeading">
                     <div class="col-5"><hr></div>
                     <div class="col-2 px-0 px-md-3 d-flex align-items-center justify-content-center">
@@ -81,6 +82,8 @@
                     <div class="col-5"><hr></div>
                 </div>
                 <div class="container" id="ticketLogscontent">
+
+                    {#Describe this "for" statement functionality#}
                     {% for instance in ticket_logs %}
                         <div class="container ticket_log border py-2 my-2">
                             <p><span class="bold">Service status: </span>{{instance.service_status.status_category_tag}}</p>
@@ -88,10 +91,12 @@
                             <p class="mb-0"><span class="bold">Notes: </span>{{instance.action_notes | safe}}</p>
                         </div>
                     {% endfor %}
+
                 </div>
-                <!--End of Ticket Logs section-->
+                <!--  End of Ticket Logs section  -->
             </div>
             <div class="col-1 p-0"></div>
         </div>
     </div>
+
 {% endblock %}

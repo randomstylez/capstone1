@@ -7,18 +7,23 @@
         <div class="row d-flex justify-content-center">
             <div class="col-sm-12 {% if not service_specific %}col-lg-6{% endif %} m-4 pt-4" id="subscribe">
                 <div class="container mb-3 border-bottom">
-                    <h1>Subscribe to Services Updates</h1>]
+                    <h1>Subscribe to Services Updates</h1>
                 </div>
                 <div class="container mb-3">
-                    {%if email_notin_domailist%}
+
+                    {#Describe this conditional statement functionality#}
+                    {% if email_notin_domailist %}
+
                         <div class="container mt-4 pt-4" id="not_in_domainlist">
                             <h3>Sorry, your email domain is not approved</h3>
                             <div class="row mt-4">
                                 <p class="bold mb-2">See the list of approved domains below:</p>
                                 <div class="container border" id="domain_list">
+
                                     {% for domain in domain_list %}
                                         <p class="mb-0">- {{domain.domain_name}}</p>
                                     {% endfor %}
+
                                 </div>
                             </div>
                             <div class="row mt-3">
@@ -35,13 +40,19 @@
                                 </div>
                             </div>
                         </div>
+
+                    {#Describe this conditional statement functionality#}
                     {% elif subscribed %}
+
                         <div class="container mt-4 pt-4" id="reg_confirmation">
                             <h3>You have been registered to receive status updates for the selected services</h3>
                             <h1>Thank you!</h1>
                             <a href="/"><p class="link mb-0">Go to services status page</p></a>
                         </div>
+
+                    {#Describe this conditional statement functionality#}
                     {% elif user_exists%}
+
                         <div class="container mt-4 pt-4" id="user_exists">
                             <div class="row d-flex justify-content-center">
                                 <h3>This email address is already registered</h3>
@@ -60,7 +71,10 @@
                                 </a>
                             </div>
                         </div>
+
+                    {#Describe this conditional statement functionality#}
                     {% elif updated_left %}
+
                         <div class="container">
                             <div class="row d-flex justify-content-center">
                                 <h3>Your request has been submitted</h3>
@@ -72,7 +86,10 @@
                                 <a href="/"><p class="link mb-0">Go to services status page</p></a>
                             </div>
                         </div>
+
+                    {#Describe this conditional statement functionality#}
                     {% elif no_selection %}
+
                         <div class="container">
                             <div class="row d-flex justify-content-center" style="text-align: center;">
                                 <h3>Please select at least one service or subservice to register</h3>
@@ -83,7 +100,10 @@
                                 </a>
                             </div>
                         </div>
+
+                    {#Describe this conditional statement functionality#}
                     {% else %}
+
                         <form action="." method="POST"> {% csrf_token %}
                             <div class="form-group form-inline"> <!--Name info-->
                                 <label class="mr-2 bold" >Enter your name</label>
@@ -94,7 +114,10 @@
                                 {{form.email}}
                             </div>
                             <div class="form-group">
+
+                                {#Describe this conditional statement functionality#}
                                 {% if service_specific %}
+
                                     <div class="row mt-3" id="selected_service">
                                         <label> <span class="bold">Service:</span>
                                             {% if object_passed %}
@@ -105,7 +128,10 @@
                                         </label>
                                         <input type="text" name="one_service" value="{{object.id}}" hidden>
                                     </div>
-                                {%else%}
+
+                                {#Describe this conditional statement functionality#}
+                                {% else %}
+
                                     <div class="row">
                                         <div class="col my-2 pl-0">
                                             <p class="mb-0 bold">Business Services</p>
@@ -116,7 +142,9 @@
                                             {{form.services}}
                                         </div>
                                     </div>
+
                                 {% endif %}
+
                             </div>
                             <div class="form-group">
                                 <div class="row">
@@ -124,7 +152,7 @@
                                         <p class="mb-0 bold">Sub-Services</p>
                                     </div>
                                 </div>
-                                <div class="row border" id="{%if service_specific%}specific_service{%else%}list_of_sub_services{%endif%}">
+                                <div class="row border" id="{% if service_specific %}specific_service{% else %}list_of_sub_services{% endif %}">
                                     <div class="ml-2">
                                         {{form.subservices}}
                                     </div>
@@ -136,16 +164,24 @@
                                 <input class="form-control" name="object" value="{{object}}" hidden>
                             </div>
                         </form>
+
                     {% endif %}
+
                 </div>
             </div>
+
+            {#Describe this conditional statement functionality#}
             {% if not service_specific %}
+
                 <div class="col d-flex align-items-center justify-content-center" id="update">
                     <div class="container">
                         <div class="container mb-3 border-bottom">
                             <h1>Update Subscription</h1>
                         </div>
+
+                        {#Describe this conditional statement functionality#}
                         {% if updated_right %}
+
                             <div class="container">
                                 <h3>Your request has been submitted</h3>
                                 <p> You will receive an email shortly</p>
@@ -153,9 +189,15 @@
                                     <p class="link mb-0">Go to services status page</p>
                                 </a>
                             </div>
-                        {%else%}
+
+                        {#Describe this conditional statement functionality#}
+                        {% else %}
+
                             <div class="container">
+
+                                {#Describe this conditional statement functionality#}
                                 {% if not_registered %}
+
                                     <div class="container" id="not_registered">
                                         <h3 class="alert">This email is not registered</h3>
                                         <p> If you would like to receive service updates notifications please register on the left section.
@@ -164,27 +206,38 @@
                                             <p class="link mb-0">Update email</p>
                                         </a>
                                     </div>
+
+                                {#Describe this conditional statement functionality#}
                                 {% else %}
+
                                     <form action="." method="POST"> {% csrf_token %}
                                         <div class="form-group"> <!--Email info-->
                                             <label>Please enter your email address to add or delete services notifications</label>
                                             {% if empty_email %}
                                                 <small class="form-text my-0 alert bold">Please enter your email</small>
                                             {% endif %}
-                                            <input type="email" class="form-control" aria-describedby="emailHelp" name="user_email"
-                                                    {% if update_email %} value="{{update_email}}" {% endif %} id="user_email">
+                                            <input type="email" class="form-control" aria-describedby="emailHelp"
+                                                   name="user_email"
+                                                    {% if update_email %} value="{{update_email}}" {% endif %}
+                                                   id="user_email">
                                             <small class="form-text text-muted">You will receive an email shortly</small>
                                         </div>
                                         <div class="row d-flex justify-content-end" id="unsubscribe_submit">
                                             <button type="submit" class="btn btn-primary mb-2" name="update_subs">Submit request</button>
                                         </div>
                                     </form>
+
                                 {% endif %}
+
                             </div>
-                        {%endif%}
+
+                        {% endif %}
+
                     </div>
                 </div>
+
             {% endif %}
+
         </div>
     </div>
 
