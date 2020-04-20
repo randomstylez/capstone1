@@ -10,7 +10,7 @@ from django.views.generic import ListView
 from .forms import SubscriberDataForm
 from .forms import SubscriberForm
 from .models import SubService, Ticket, StatusCategory, Service, TicketLog, SubServiceServices, Region, Subscriber, \
-    DomainList
+    EmailDomainList
 
 
 # Create your views here.
@@ -62,7 +62,11 @@ class ServicesStatusView(View):
                 # Getting list of services
                 queryset = Region.objects.filter(region_name=region)
                 for e in queryset:
-                    services = list(dict.fromkeys(chain(services, e.services.all())))
+                    # services = list(dict.fromkeys(chain(services, e.services.all())))
+                    client_domain_services = e.client_domains.all().values('services__service_name')
+                    # services = list(dict.fromkeys(chain(services, tmp.all())))
+                    services = list(chain(services, client_domain_services.all().values_list('services__service_name',
+                                                                                             flat=True)))
                 context['services_list'] = services
 
             context['regions_checked'] = regions
@@ -94,7 +98,8 @@ class ServicesStatusView(View):
         # Getting list of tickets associated with each service
         for service in services:
 
-            sub_service_service = SubServiceServices.objects.filter(service=service)
+            # sub_service_service = SubServiceServices.objects.filter(service=service)
+            sub_service_service = SubServiceServices.objects.filter(service__service_name=service)
 
             # Initializing queryset to empty
             tickets_list = Ticket.objects.none()
@@ -220,10 +225,10 @@ class SubscriptionView(View):
                     context['email_notin_domailist'] = True
 
                     # Getting list of approved domains
-                    domain_list = DomainList.objects.all()
+                    email_domain_list = EmailDomainList.objects.all()
 
                     # Passing list ot template
-                    context['domain_list'] = domain_list
+                    context['domain_list'] = email_domain_list
 
                 else:
                     if 'one_service' in request.POST:
