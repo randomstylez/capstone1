@@ -26,10 +26,25 @@ class Service(models.Model):
         return self.service_name
 
 
+class ClientDomain(models.Model):
+    client_domain_name = models.CharField(unique=True, max_length=100, verbose_name='Client Domain')
+    client_domain_description = models.TextField(blank=True, null=True)
+    services = models.ManyToManyField(Service)
+
+    class Meta:
+        verbose_name = _("Client Domain")
+        verbose_name_plural = _("Client Domains")
+        ordering = ['client_domain_name']
+
+    def __str__(self):
+        return self.client_domain_name
+
+
 class Region(models.Model):
     region_name = models.CharField(unique=True, max_length=100, verbose_name='Region')
     region_description = models.TextField(blank=True, null=True)
-    services = models.ManyToManyField(Service)
+    # services = models.ManyToManyField(Service)
+    client_domains = models.ManyToManyField(ClientDomain)
 
     def __str__(self):
         return self.region_name
@@ -157,13 +172,13 @@ class Subscriber(models.Model):
         return self.name
 
 
-class DomainList(models.Model):
-    domain_name = models.CharField(unique=True, max_length=100)
-    domain_description = models.TextField(blank=True, null=True)
+class EmailDomainList(models.Model):
+    email_domain_name = models.CharField(unique=True, max_length=100)
+    email_domain_description = models.TextField(blank=True, null=True)
 
     class Meta:
-        verbose_name = _("Domain")
-        verbose_name_plural = _("Domains")
+        verbose_name = _("Email Domain")
+        verbose_name_plural = _("Email Domains")
 
     def __str__(self):
-        return self.domain_name
+        return self.email_domain_name
