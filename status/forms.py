@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from validate_email import validate_email
 
 from status.mail_sender import MailSender
-from .models import DomainList
+from .models import EmailDomainList
 from .models import Region
 from .models import Service
 from .models import SubService
@@ -41,7 +41,8 @@ class TicketForm(forms.ModelForm):
         subservices = SubService.objects.filter(id=sub_service_id)
 
         # Information to use in the email Body
-        region = Region.objects.filter(services__subservice__in=subservices)
+        # region = Region.objects.filter(services__subservice__in=subservices)
+        region = Region.objects.filter(client_domains__services__subservice__in=subservices)
         topology = SubServiceServices.objects.filter(subservice__in=subservices)
 
         changed_data = self.changed_data
@@ -232,8 +233,8 @@ class SubscriberDataForm (forms.ModelForm):
         # Verify that the subscriber email belong to our domain list
         domain = self.cleaned_data["email"].split('@')[1]
 
-        # It gets the list of services that has that Sub Service
-        domain_exist = DomainList.objects.filter(domain_name=domain).count()
+        # It verifies the existence or not of that email domain
+        domain_exist = EmailDomainList.objects.filter(domain_name=domain).count()
 
         if domain_exist == 0:
             return False
@@ -362,8 +363,8 @@ class SubscriberForm(forms.ModelForm):
         # Verify that the subscriber email belong to our domain list
         domain = email.split('@')[1]
 
-        # It gets the list of services that has that Sub Service
-        domain_exist = DomainList.objects.filter(domain_name=domain).count()
+        # It verifies the existence or not of that email domain
+        domain_exist = EmailDomainList.objects.filter(domain_name=domain).count()
 
         if domain_exist == 0:
             self.add_error("email", "{} does not belong to our Users' domain.".format(
