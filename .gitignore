@@ -9,8 +9,6 @@ ServiceStatus/static/*
 
 ServiceStatus/settings.py
 
-status/migrations/0*.py
-
 .DS_Store
 
 .idea
