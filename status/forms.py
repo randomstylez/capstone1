@@ -30,6 +30,7 @@ class TicketForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TicketForm, self).__init__(*args, **kwargs)
+
         if self.instance.id:
             self.fields['notify_action'] = forms.ChoiceField(choices=self.YES_NO_CHOICES)
 
@@ -151,6 +152,11 @@ class TicketForm(forms.ModelForm):
 
 class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
+    def __init__(self, *args, **kwargs):
+        super(TicketHistoryInlineFormset, self).__init__(*args, **kwargs)
+        for form in self.forms:
+            form.empty_permitted = False
+
     def clean(self):
 
         status_list = []
@@ -163,17 +169,20 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
             main_begin = self.data['begin_0'] + ' ' + self.data['begin_1']
 
         for form in self.forms:
+            if form.cleaned_data != {}:
+                if main_begin is None:
+                    main_begin = form.cleaned_data.get('begin').strftime('%Y-%m-%d %H:%M:%S')
 
-            if main_begin is None:
-                main_begin = form.cleaned_data.get('begin').strftime('%Y-%m-%d %H:%M:%S')
+                service_status = form.cleaned_data.get('service_status')
+                if service_status is not None:
+                    status_list.append(service_status.status_category_tag)
+                else:
+                    break
 
-            service_status = form.cleaned_data.get('service_status')
-            status_list.append(service_status.status_category_tag)
+                if form.has_changed():
+                    change_detected = True
 
-            if form.has_changed():
-                change_detected = True
-
-            form_list.append(form)
+                form_list.append(form)
 
         if change_detected:
 
@@ -211,7 +220,7 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
             if my_raises:
                 raise ValidationError("There are some errors on the Service's Status.")
 
-        return self.cleaned_data
+        # return self.cleaned_data
 
 
 class SubscriberDataForm (forms.ModelForm):
