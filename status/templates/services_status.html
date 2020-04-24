@@ -157,7 +157,7 @@
                 <div id="list_of_services_data">
 
                     {#Describe this conditional statement functionality#}
-                    {% if no_search_results %}
+                    {% if no_search_results or services_list|length == 0%}
 
                         <div class="row mt-4 d-flex justify-content-center">
                             <p class="bold">No results found for your search criteria</p>
