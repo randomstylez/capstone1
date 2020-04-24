@@ -243,7 +243,7 @@ class SubscriberDataForm (forms.ModelForm):
         domain = self.cleaned_data["email"].split('@')[1]
 
         # It verifies the existence or not of that email domain
-        domain_exist = EmailDomainList.objects.filter(domain_name=domain).count()
+        domain_exist = EmailDomainList.objects.filter(email_domain_name=domain).count()
 
         if domain_exist == 0:
             return False
@@ -411,7 +411,7 @@ class SubscriberForm(forms.ModelForm):
         token = user[0]['token']
 
         # hostname = 'http://127.0.0.1:8000'
-        hostname = 'http://service2.amlight.net'
+        hostname = 'http://status2.amlight.net'
 
         # we should create a mechanism to get the hostname. This option works on views request
         # print(HttpRequest.get_host(self))
@@ -455,7 +455,7 @@ class SubscriberForm(forms.ModelForm):
         token = str(user[0]['token'])  # Need to cast, otherwise it will have a nontype error
 
         # hostname = 'http://127.0.0.1:8000'
-        hostname = 'http://service2.amlight.net'
+        hostname = 'http://status2.amlight.net'
 
         # we should create a mechanism to get the hostname. This option works on views request
         # print(HttpRequest.get_host(self))
