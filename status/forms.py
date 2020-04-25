@@ -201,8 +201,8 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
             if not my_raises:
                 for form in form_list:
-                    if [item for item in set(status_list) if status_list.count(item) > 1].count('Completed'):
-                        if form.cleaned_data['service_status'].status_category_tag == 'Completed':
+                    if [item for item in set(status_list) if status_list.count(item) > 1].count('No Issues'):
+                        if form.cleaned_data['service_status'].status_category_tag == 'No Issues':
                             form.add_error("service_status", "You can not have {} status multiple times.".format(
                                 form.cleaned_data["service_status"]))
                             my_raises = True
@@ -211,8 +211,8 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
                 raise ValidationError("There are some errors on the Service's Status.")
 
             for form in form_list:
-                if service_status.status_category_tag != 'Completed' and 'Completed' in status_list \
-                        and form.cleaned_data['service_status'].status_category_tag == 'Completed':
+                if service_status.status_category_tag != 'No Issues' and 'No Issues' in status_list \
+                        and form.cleaned_data['service_status'].status_category_tag == 'No Issues':
                     form.add_error("service_status", "{} is an status available only as a final stage.".format(
                         form.cleaned_data["service_status"]))
                     my_raises = True
@@ -373,7 +373,7 @@ class SubscriberForm(forms.ModelForm):
         domain = email.split('@')[1]
 
         # It verifies the existence or not of that email domain
-        domain_exist = EmailDomainList.objects.filter(domain_name=domain).count()
+        domain_exist = EmailDomainList.objects.filter(email_domain_name=domain).count()
 
         if domain_exist == 0:
             self.add_error("email", "{} does not belong to our Users' domain.".format(
