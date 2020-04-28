@@ -229,7 +229,7 @@ class EmailActions:
     def check_email_domain(domain):
 
         # It verifies the existence or not of that email domain
-        domain_exist = EmailDomainList.objects.filter(email_domain_name=domain).count()
+        domain_exist = EmailDomainList.objects.filter(domain=domain).count()
 
         if domain_exist == 0:
             return False
@@ -477,7 +477,7 @@ class SubscriberForm(forms.ModelForm):
         domain = email.split('@')[1]
 
         # It verifies the existence or not of that email domain
-        domain_exist = EmailDomainList.objects.filter(email_domain_name=domain).count()
+        domain_exist = EmailDomainList.objects.filter(domain=domain).count()
 
         if domain_exist == 0:
             self.add_error("email", "{} does not belong to our Users' domain.".format(
