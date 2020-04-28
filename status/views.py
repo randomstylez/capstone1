@@ -64,7 +64,7 @@ class ServicesStatusView(View):
                 for e in queryset:
                     # services = list(dict.fromkeys(chain(services, e.services.all())))
                     client_domain_services = e.client_domains.all().exclude(services__name=None). \
-                        values('services__service_name')
+                        values('services__name')
                     # services = list(dict.fromkeys(chain(services, tmp.all())))
                     services = list(chain(services, client_domain_services.all().exclude(services__name=None).
                                           values_list('services__name', flat=True)))
@@ -74,17 +74,17 @@ class ServicesStatusView(View):
 
         elif 'search_services' in request.GET:
 
-            searchfor = request.GET['search']
+            search_value = request.GET['search']
             services_list = []
             for service in services:
-                if searchfor.lower() in service.name.lower():
+                if search_value.lower() in service.name.lower():
                     services_list.append(service)
 
             if not services_list:
                 context['no_search_results'] = True
 
             context['services_list'] = services_list
-            context['searchfor'] = searchfor
+            context['search_value'] = search_value
 
         else:
             # Getting list of services
@@ -376,19 +376,19 @@ class ServiceHistoryView(View):
                     tickets_list = tickets_list | queryset
 
             if 'search_tickets' in request.GET:
-                searchfor = request.GET['search']
+                search_value = request.GET['search']
                 aux_list = []
 
-                if searchfor is not '':
+                if search_value is not '':
                     for ticket in tickets_list:
-                        if (searchfor.lower() in ticket.ticket_id.lower()
-                                or searchfor.lower() in ticket.action_description.lower()
-                                or searchfor.lower() in ticket.status.tag.lower()):
+                        if (search_value.lower() in ticket.ticket_id.lower()
+                                or search_value.lower() in ticket.action_description.lower()
+                                or search_value.lower() in ticket.status.tag.lower()):
                             aux_list.append(ticket)
 
                     tickets_list = aux_list
                     searching = True
-                    context['searchfor'] = searchfor
+                    context['search_value'] = search_value
 
             context['tickets_list'] = tickets_list
 
