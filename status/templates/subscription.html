@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 {% block content %}
@@ -32,17 +31,20 @@
                                     <p>Would you like to add a different email?</p>
                                 </div>
                                 <div class="container d-flex justify-content-center">
-                                    <a class="pl-2" href="/subscription/?service_specific={{ service_specific }}&object={{ object_passed }}&user_name={{ user_name }}&subscriber_email={{ subscriber_email }}">
-                                        <button type="submit" class="btn btn-primary mb-2" name="update_subs">Yes </button>
+                                    <a class="pl-2"
+                                       href="/subscription/?service_specific={{ service_specific }}&object={{ object_passed }}&user_name={{ user_name }}&subscriber_email={{ subscriber_email }}">
+                                        <button type="submit" class="btn btn-primary mb-2" name="update_subs">Yes
+                                        </button>
                                     </a>
                                     <a class="pl-2" href="/">
-                                        <button type="submit" class="btn btn-primary mb-2" name="update_subs">No </button>
+                                        <button type="submit" class="btn btn-primary mb-2" name="update_subs">No
+                                        </button>
                                     </a>
                                 </div>
                             </div>
                         </div>
 
-                    {#Describe this conditional statement functionality#}
+                        {#Describe this conditional statement functionality#}
                     {% elif subscribed %}
 
                         <div class="container mt-4 pt-4" id="reg_confirmation">
@@ -51,7 +53,7 @@
                             <a href="/"><p class="link mb-0">Go to services status page</p></a>
                         </div>
 
-                    {#Describe this conditional statement functionality#}
+                        {#Describe this conditional statement functionality#}
                     {% elif user_exists %}
 
                         <div class="container mt-4 pt-4" id="user_exists">
@@ -64,17 +66,19 @@
                             <div class="row mt-2 d-flex justify-content-center">
                                 <form action="." method="POST"> {% csrf_token %}
                                     <button type="submit" class="btn btn-primary mb-2" name="update_subs">Yes</button>
-                                    <input class="form-control" name="user_email" value="{{ user_exists_email }}" hidden>
+                                    <input class="form-control" name="user_email" value="{{ user_exists_email }}"
+                                           hidden>
                                     <input class="form-control" name="updated_left" value="{{ updated_left }}" hidden>
                                 </form>
-                                <a class="pl-2" href="/subscription/?service_specific={{ service_specific}}&object={{ object_passed }}&user_name={{ user_name }}&subscriber_email={{ subscriber_email }}">
-                                    <button type="submit" class="btn btn-primary mb-2" name="update_subs">No </button>
+                                <a class="pl-2"
+                                   href="/subscription/?service_specific={{ service_specific }}&object={{ object_passed }}&user_name={{ user_name }}&subscriber_email={{ subscriber_email }}">
+                                    <button type="submit" class="btn btn-primary mb-2" name="update_subs">No</button>
                                 </a>
                             </div>
                         </div>
 
-                    {# It covers the subscription action from a user already #}
-                    {# registered and willing to modify its subscription #}
+                        {# It covers the subscription action from a user already #}
+                        {# registered and willing to modify its subscription #}
                     {% elif updated_left %}
 
                         <div class="container">
@@ -89,8 +93,8 @@
                             </div>
                         </div>
 
-                    {# The user has not selected any service or sub-service #}
-                    {# as part of its actualization process #}
+                        {# The user has not selected any service or sub-service #}
+                        {# as part of its actualization process #}
                     {% elif no_selection %}
 
                         <div class="container">
@@ -104,7 +108,7 @@
                             </div>
                         </div>
 
-                    {#Describe this conditional statement functionality#}
+                        {#Describe this conditional statement functionality#}
                     {% else %}
 
                         <form action="." method="POST"> {% csrf_token %}
@@ -132,7 +136,7 @@
                                         <input type="text" name="one_service" value="{{ object.id }}" hidden>
                                     </div>
 
-                                {#Describe this conditional statement functionality#}
+                                    {#Describe this conditional statement functionality#}
                                 {% else %}
 
                                     <div class="row">
@@ -155,15 +159,19 @@
                                         <p class="mb-0 bold">Sub-Services</p>
                                     </div>
                                 </div>
-                                <div class="row border" id="{% if service_specific %}specific_service{% else %}list_of_sub_services{% endif %}">
+                                <div class="row border"
+                                     id="{% if service_specific %}specific_service{% else %}list_of_sub_services{% endif %}">
                                     <div class="ml-2">
-                                        {{form.subservices}}
+                                        {{ form.subservices }}
                                     </div>
                                 </div>
                             </div>
                             <div class="row d-flex justify-content-end" id="subscribe_submit">
-                                <button type="submit" name="subs_updates" class="btn btn-primary mb-2">Subscribe to updates</button>
-                                <input class="form-control" name="service_specific" value="{{ service_specific }}" hidden>
+                                <button type="submit" name="subs_updates" class="btn btn-primary mb-2">Subscribe to
+                                    updates
+                                </button>
+                                <input class="form-control" name="service_specific" value="{{ service_specific }}"
+                                       hidden>
                                 <input class="form-control" name="object" value="{{ object }}" hidden>
                             </div>
                         </form>
@@ -193,7 +201,7 @@
                                 </a>
                             </div>
 
-                        {#Describe this conditional statement functionality#}
+                            {#Describe this conditional statement functionality#}
                         {% else %}
 
                             <div class="container">
@@ -203,19 +211,21 @@
 
                                     <div class="container" id="not_registered">
                                         <h3 class="alert">This email is not registered</h3>
-                                        <p> If you would like to receive service updates notifications please register on the left section.
+                                        <p> If you would like to receive service updates notifications please register
+                                            on the left section.
                                             Otherwise click the link below to update your input.</p>
                                         <a href="/subscription/?email={{ email_entered }}">
                                             <p class="link mb-0">Update email</p>
                                         </a>
                                     </div>
 
-                                {#Describe this conditional statement functionality#}
+                                    {#Describe this conditional statement functionality#}
                                 {% else %}
 
                                     <form action="." method="POST"> {% csrf_token %}
                                         <div class="form-group"> <!--Email info-->
-                                            <label>Please enter your email address to add or delete services notifications</label>
+                                            <label>Please enter your email address to add or delete services
+                                                notifications</label>
                                             {% if empty_email %}
                                                 <small class="form-text my-0 alert bold">Please enter your email</small>
                                             {% endif %}
@@ -223,10 +233,13 @@
                                                    name="user_email"
                                                     {% if update_email %} value="{{ update_email }}" {% endif %}
                                                    id="user_email">
-                                            <small class="form-text text-muted">You will receive an email shortly</small>
+                                            <small class="form-text text-muted">You will receive an email
+                                                shortly</small>
                                         </div>
                                         <div class="row d-flex justify-content-end" id="unsubscribe_submit">
-                                            <button type="submit" class="btn btn-primary mb-2" name="update_subs">Submit request</button>
+                                            <button type="submit" class="btn btn-primary mb-2" name="update_subs">Submit
+                                                request
+                                            </button>
                                         </div>
                                     </form>
 

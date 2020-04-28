@@ -104,7 +104,6 @@ class TicketHistoryInline(admin.StackedInline):
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
-
     list_display = ('ticket_id', 'sub_service', 'status', 'begin', 'end', 'notify_action',)
 
     fieldsets = [

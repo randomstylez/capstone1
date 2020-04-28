@@ -15,6 +15,7 @@ class Service(models.Model):
 
     name = models.CharField(unique=True, max_length=100, verbose_name='Service')
     description = models.TextField(blank=True, null=True)
+
     # service_description = RichTextField(blank=True, null=True)
 
     class Meta:

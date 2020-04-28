@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('status', '0004_auto_20200408_1638'),
     ]
@@ -36,6 +35,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='ticket',
             name='notify_action',
-            field=models.BooleanField(choices=[(False, 'No'), (True, 'Yes')], default=True, verbose_name='Ticket notified'),
+            field=models.BooleanField(choices=[(False, 'No'), (True, 'Yes')], default=True,
+                                      verbose_name='Ticket notified'),
         ),
     ]

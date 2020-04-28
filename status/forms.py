@@ -323,7 +323,6 @@ class EmailActions:
 
 
 class SubscriberDataForm(forms.ModelForm):
-
     services = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
                                               queryset=Service.objects.all(), required=False)
     subservices = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
@@ -451,6 +450,7 @@ class SubscriberForm(forms.ModelForm):
     """
     This methods is related with the insertion and update process that belong to the admin
     """
+
     class Meta:
         model = Subscriber
         fields = '__all__'

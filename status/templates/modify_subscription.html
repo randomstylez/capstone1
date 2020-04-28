@@ -62,7 +62,7 @@
                     </a>
                 </div>
 
-            {#Describe this condition statement functionality#}
+                {#Describe this condition statement functionality#}
             {% elif no_changes %}
 
                 <div class="container mt-5">
@@ -82,7 +82,7 @@
                     </div>
                 </div>
 
-            {#Describe this condition statement functionality#}
+                {#Describe this condition statement functionality#}
             {% else %}
 
                 <div class="container mt-5" id="header">
@@ -111,7 +111,7 @@
                                         {#Describe this condition statement functionality#}
                                         {% if no_services %}
                                             <p>You are not registered for any service</p>
-                                        {#Describe this conditional statement functionality#}
+                                            {#Describe this conditional statement functionality#}
                                         {% else %}
                                             {#Describe this "for" statement functionality#}
                                             {% for service in services %}
@@ -135,7 +135,7 @@
                                         {#Describe this condition statement functionality#}
                                         {% if no_subservices %}
                                             <p>You are not registered for any sub_service</p>
-                                        {#Describe this conditional statement functionality#}
+                                            {#Describe this conditional statement functionality#}
                                         {% else %}
                                             {#Describe this "for" statement functionality#}
                                             {% for sub_service in sub_services %}
@@ -162,7 +162,7 @@
                                         {#Describe this condition statement functionality#}
                                         {% if no_services_to_add %}
                                             <p>You are currently registered to all services</p>
-                                        {#Describe this conditional statement functionality#}
+                                            {#Describe this conditional statement functionality#}
                                         {% else %}
                                             {#Describe this "for" statement functionality#}
                                             {% for service in services_to_add %}
@@ -187,7 +187,7 @@
                                         {% if no_subservices_to_add %}
                                             <p>You are currently registered to all sub-services</p>
 
-                                        {#Describe this conditional statement functionality#}
+                                            {#Describe this conditional statement functionality#}
                                         {% else %}
 
                                             {#Describe this condition statement functionality#}
@@ -209,7 +209,8 @@
                             <div class="container d-flex justify-content-center ml-0 pl-0 mt-4">
                                 <input type="text" name="user_id" hidden value="{{ user.id }}">
                                 <button type="submit" name="update_subscription"
-                                        class="btn btn-dark py-1 px-4">Submit</button>
+                                        class="btn btn-dark py-1 px-4">Submit
+                                </button>
                             </div>
                         </div>
                     </form>

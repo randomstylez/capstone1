@@ -1,9 +1,8 @@
-
 {% extends 'base.html' %}
 
 {% block content %}
 
-{% load extra_filters %}
+    {% load extra_filters %}
 
     <div class="container mt-4" id="service_status_heading">
         <h1>Services Status</h1>
@@ -45,8 +44,8 @@
                             <div class="form-group m-0">
                                 <input type="text" name="search" placeholder="Search..." class="form-control"
 
-                                {#Describe this conditional statement functionality#}
-                                {% if searchfor %} value="{{ searchfor }}" {% endif %}>
+                                        {#Describe this conditional statement functionality#}
+                                        {% if searchfor %} value="{{ searchfor }}" {% endif %}>
 
                                 <input type="text" name="region_list" hidden value="{{ region_list }}">
                             </div>
@@ -81,7 +80,8 @@
 
                             {% endfor %}
 
-                            <button type="submit" name="regions_select" class="btn btn-dark py-0">Select Regions</button>
+                            <button type="submit" name="regions_select" class="btn btn-dark py-0">Select Regions
+                            </button>
                         </form>
                         <!--  End of list of regions from DB  -->
                     </div>
@@ -157,7 +157,7 @@
                 <div id="list_of_services_data">
 
                     {#Describe this conditional statement functionality#}
-                    {% if no_search_results or services_list|length == 0%}
+                    {% if no_search_results or services_list|length == 0 %}
 
                         <div class="row mt-4 d-flex justify-content-center">
                             <p class="bold">No results found for your search criteria</p>
@@ -168,7 +168,7 @@
                             </a>
                         </div>
 
-                    {#Describe this conditional statement functionality#}
+                        {#Describe this conditional statement functionality#}
                     {% else %}
 
                         {#Describe this "for" statement functionality#}

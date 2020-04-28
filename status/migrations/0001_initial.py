@@ -2,12 +2,11 @@
 
 import ckeditor.fields
 import colorfield.fields
-from django.db import migrations, models
 import django.db.models.deletion
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -112,8 +111,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('priority', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='status.Priority')),
-                ('service', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='status.Service', verbose_name='Service')),
-                ('subservice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='status.SubService', verbose_name='Sub-Service')),
+                ('service', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='status.Service',
+                                              verbose_name='Service')),
+                ('subservice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='status.SubService',
+                                                 verbose_name='Sub-Service')),
             ],
             options={
                 'verbose_name': 'Topology',
@@ -129,9 +130,14 @@ class Migration(migrations.Migration):
                 ('end', models.DateTimeField(blank=True, null=True)),
                 ('action_description', ckeditor.fields.RichTextField()),
                 ('action_notes', ckeditor.fields.RichTextField(blank=True, null=True)),
-                ('notify_action', models.BooleanField(choices=[(False, 'No'), (True, 'Yes')], default=False, verbose_name='Ticket notified')),
-                ('category_status', models.ForeignKey(default=3, null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='status.StatusCategory', verbose_name='Status')),
-                ('sub_service', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='status.SubService', verbose_name='Sub-Service')),
+                ('notify_action', models.BooleanField(choices=[(False, 'No'), (True, 'Yes')], default=False,
+                                                      verbose_name='Ticket notified')),
+                ('category_status',
+                 models.ForeignKey(default=3, null=True, on_delete=django.db.models.deletion.DO_NOTHING,
+                                   to='status.StatusCategory', verbose_name='Status')),
+                ('sub_service',
+                 models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='status.SubService',
+                                   verbose_name='Sub-Service')),
             ],
             options={
                 'verbose_name': 'Ticket',
@@ -145,13 +151,15 @@ class Migration(migrations.Migration):
                 ('action_date', models.DateTimeField()),
                 ('action_notes', ckeditor.fields.RichTextField(blank=True, null=True, verbose_name='Notes')),
                 ('service_history', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='status.Ticket')),
-                ('service_status', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='status.StatusCategory')),
+                ('service_status',
+                 models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='status.StatusCategory')),
             ],
         ),
         migrations.AddField(
             model_name='subservice',
             name='services',
-            field=models.ManyToManyField(through='status.SubServiceServices', to='status.Service', verbose_name='Service'),
+            field=models.ManyToManyField(through='status.SubServiceServices', to='status.Service',
+                                         verbose_name='Service'),
         ),
         migrations.AddField(
             model_name='subscriber',
