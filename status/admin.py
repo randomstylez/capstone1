@@ -140,7 +140,7 @@ class TicketAdmin(admin.ModelAdmin):
         # If it is received data related to the ticket's logs, the ticket
         # will update its status with the last status registered on the logs
         if formset.cleaned_data:
-            status_category = formset.cleaned_data[-1]['service_status']
+            status_category = formset.cleaned_data[-1]['event_status']
             # If the last Ticket Log status is 'No Issues,' means that the problem has
             # updating the Ticket End Time to the value specified on the last Ticket Log
             if status_category.status_category_tag == 'No Issues':
