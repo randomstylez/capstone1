@@ -15,13 +15,13 @@
                     {# provided on the email domain list stored on the database. #}
                     {% if email_domain_forbidden %}
 
-                        <div class="container mt-4 pt-4" id="not_in_domain_list">
+                        <div class="container mt-4 pt-4" id="not_in_email_domain_list">
                             <h3>Sorry, your email domain is not approved</h3>
                             <div class="row mt-4">
                                 <p class="bold mb-2">See the list of approved domains below:</p>
-                                <div class="container border" id="domain_list">
+                                <div class="container border" id="email_domain_list">
 
-                                    {% for email_domain in domain_list %}
+                                    {% for email_domain in email_domain_list %}
                                         <p class="mb-0">- {{email_domain.domain}}</p>
                                     {% endfor %}
 
