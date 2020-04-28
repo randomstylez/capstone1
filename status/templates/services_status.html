@@ -182,7 +182,7 @@
                                 </div>
 
                                 {#Describe this "for" statement functionality#}
-                                {% for status_day in event_status|get_value:instance %}
+                                {% for status_day in status|get_value:instance %}
 
                                     <div class="col">
                                         <p class="m-0 mt-1" style="color: {{status_day.status_category_color_hex}}">

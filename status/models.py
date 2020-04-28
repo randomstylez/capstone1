@@ -149,7 +149,7 @@ class Ticket(models.Model):
 
 class TicketLog(models.Model):
     ticket = models.ForeignKey(Ticket, models.CASCADE)
-    event_status = models.ForeignKey(StatusCategory, models.DO_NOTHING)
+    status = models.ForeignKey(StatusCategory, models.DO_NOTHING)
     action_date = models.DateTimeField()
     # action_notes = models.TextField(blank=True, null=True, verbose_name='Notes')
     action_notes = RichTextField(blank=True, null=True, verbose_name='Notes')

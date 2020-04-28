@@ -162,7 +162,7 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
         status_list = []
         form_list = []
         change_detected = False
-        event_status = None
+        status = None
         main_begin = None
 
         if self.data['begin_0'] and self.data['begin_1']:
@@ -173,9 +173,9 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
                 if main_begin is None:
                     main_begin = form.cleaned_data.get('begin').strftime('%Y-%m-%d %H:%M:%S')
 
-                event_status = form.cleaned_data.get('event_status')
-                if event_status is not None:
-                    status_list.append(event_status.status_category_tag)
+                status = form.cleaned_data.get('status')
+                if status is not None:
+                    status_list.append(status.status_category_tag)
                 else:
                     break
 
@@ -202,19 +202,19 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
             if not my_raises:
                 for form in form_list:
                     if [item for item in set(status_list) if status_list.count(item) > 1].count('No Issues'):
-                        if form.cleaned_data['event_status'].status_category_tag == 'No Issues':
-                            form.add_error("event_status", "You can not have {} status multiple times.".format(
-                                form.cleaned_data["event_status"]))
+                        if form.cleaned_data['status'].status_category_tag == 'No Issues':
+                            form.add_error("status", "You can not have {} status multiple times.".format(
+                                form.cleaned_data["status"]))
                             my_raises = True
 
             if my_raises:
                 raise ValidationError("There are some errors on the Service's Status.")
 
             for form in form_list:
-                if event_status.status_category_tag != 'No Issues' and 'No Issues' in status_list \
-                        and form.cleaned_data['event_status'].status_category_tag == 'No Issues':
-                    form.add_error("event_status", "{} is an status available only as a final stage.".format(
-                        form.cleaned_data["event_status"]))
+                if status.status_category_tag != 'No Issues' and 'No Issues' in status_list \
+                        and form.cleaned_data['status'].status_category_tag == 'No Issues':
+                    form.add_error("status", "{} is an status available only as a final stage.".format(
+                        form.cleaned_data["status"]))
                     my_raises = True
 
             if my_raises:
