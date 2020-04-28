@@ -10,7 +10,7 @@ from django.views.generic import ListView
 from .forms import SubscriberDataForm
 from .forms import SubscriberForm
 from .models import SubService, Ticket, StatusCategory, Service, TicketLog, SubServiceServices, Region, Subscriber, \
-    EmailDomainList
+    EmailDomain
 
 
 # Create your views here.
@@ -256,10 +256,10 @@ class SubscriptionView(View):
                     context['email_domain_forbidden'] = True
 
                     # Getting list of approved domains
-                    email_domain_list = EmailDomainList.objects.all()
+                    email_domain_list = EmailDomain.objects.all()
 
                     # Passing list ot template
-                    context['domain_list'] = email_domain_list
+                    context['email_domain_list'] = email_domain_list
 
                 else:
                     if 'one_service' in request.POST:
