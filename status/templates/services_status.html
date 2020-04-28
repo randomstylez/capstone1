@@ -108,13 +108,13 @@
                 <div class="dropdown-menu" aria-labelledby="dropdown_menu_button">
 
                     {#Describe this "for" statement functionality#}
-                    {% for instance in category_list %}
+                    {% for status in status_list %}
 
                         <div class="row m-0 d-flex justify-content-between p-0 dropdown-item">
-                            <div class="col-1 d-inline">{{instance.status_category_tag}}</div>
+                            <div class="col-1 d-inline">{{status.status_category_tag}}</div>
                             <div class="col-1 mr-2 d-inline">
-                               <span style="color: {{instance.status_category_color_hex}}">
-                               <i class="{{instance.status_class_design}}"></i>
+                               <span style="color: {{status.status_category_color_hex}}">
+                               <i class="{{status.status_class_design}}"></i>
                                 </span>
                             </div>
                         </div>
@@ -210,15 +210,15 @@
                     <!--  Legend items  -->
 
                     {#Describe this "for" statement functionality#}
-                    {% for instance in category_list %}
+                    {% for status in status_list %}
 
                         <div class="row pl-2" id="legend_items">
                             <div class="col-10">
-                                <p class="my-1">{{instance.status_category_tag}}</p>
+                                <p class="my-1">{{status.status_category_tag}}</p>
                             </div>
                             <div class="col-2 px-0">
-                                <p class="m-0 mt-1" style="color: {{instance.status_category_color_hex}}">
-                                    <i class="{{instance.status_class_design}}"></i>
+                                <p class="m-0 mt-1" style="color: {{status.status_category_color_hex}}">
+                                    <i class="{{status.status_class_design}}"></i>
                                 </p>
                             </div>
                         </div>

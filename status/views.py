@@ -9,7 +9,7 @@ from django.views.generic import ListView
 
 from .forms import SubscriberDataForm
 from .forms import SubscriberForm
-from .models import SubService, Ticket, StatusCategory, Service, TicketLog, SubServiceServices, Region, Subscriber, \
+from .models import SubService, Ticket, Status, Service, TicketLog, SubServiceServices, Region, Subscriber, \
     EmailDomain
 
 
@@ -32,8 +32,8 @@ class ServicesStatusView(View):
         }
 
         # Getting list of status for legend
-        queryset = StatusCategory.objects.all()
-        context['category_list'] = queryset
+        status_list = Status.objects.all()
+        context['status_list'] = status_list
 
         # Getting today's date
         today = timezone.now()
@@ -94,7 +94,7 @@ class ServicesStatusView(View):
 
         # Declaring an empty dictionary to store status per day for each service
         status = {}
-        no_issues = StatusCategory.objects.filter(status_category_tag='No Issues')[0]
+        no_issues = Status.objects.filter(status_category_tag='No Issues')[0]
 
         # Getting list of tickets associated with each service
         for service in services:

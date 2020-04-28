@@ -99,7 +99,7 @@ class SubServiceServices(models.Model):
         return "about {0} in {1}".format(self.subservice, self.service)
 
 
-class StatusCategory(models.Model):
+class Status(models.Model):
     status_category_tag = models.CharField(unique=True, max_length=45, verbose_name='Status')
     status_category_color = models.CharField(unique=True, max_length=7)
     status_category_color_hex = ColorField(default='#000000')
@@ -127,7 +127,7 @@ class Ticket(models.Model):
     # sub_service = models.ForeignKey(SubService, models.SET_NULL, null=True, verbose_name='Sub-Service')
 
     sub_service = models.ForeignKey(SubService, models.CASCADE, null=True, verbose_name='Sub-Service')
-    status = models.ForeignKey(StatusCategory, models.DO_NOTHING, null=True, default=3, verbose_name='Status')
+    status = models.ForeignKey(Status, models.DO_NOTHING, null=True, default=3, verbose_name='Status')
     begin = models.DateTimeField()
     end = models.DateTimeField(null=True, blank=True)
     action_description = RichTextField()
@@ -149,7 +149,7 @@ class Ticket(models.Model):
 
 class TicketLog(models.Model):
     ticket = models.ForeignKey(Ticket, models.CASCADE)
-    status = models.ForeignKey(StatusCategory, models.DO_NOTHING)
+    status = models.ForeignKey(Status, models.DO_NOTHING)
     action_date = models.DateTimeField()
     # action_notes = models.TextField(blank=True, null=True, verbose_name='Notes')
     action_notes = RichTextField(blank=True, null=True, verbose_name='Notes')

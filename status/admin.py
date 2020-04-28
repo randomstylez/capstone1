@@ -7,7 +7,7 @@ from .models import EmailDomain
 # Register your models here.
 from .models import Priority
 from .models import Region
-from .models import StatusCategory
+from .models import Status
 from .models import SubService
 from .models import SubServiceServices
 from .models import TicketLog
@@ -75,8 +75,8 @@ class SubServiceAdmin(admin.ModelAdmin):
     ordering = ['sub_service_name']
 
 
-@admin.register(StatusCategory)
-class StatusCategoryAdmin(admin.ModelAdmin):
+@admin.register(Status)
+class StatusAdmin(admin.ModelAdmin):
     list_display = ('status_category_tag', 'status_category_color', 'status_category_color_hex',
                     'status_class_design')
     ordering = ['status_category_tag']
@@ -145,7 +145,7 @@ class TicketAdmin(admin.ModelAdmin):
             # updating the Ticket End Time to the value specified on the last Ticket Log
             if status_category.status_category_tag == 'No Issues':
                 form.instance.end = formset.cleaned_data[-1]['action_date']
-            status_category_id = StatusCategory.objects.get(status_category_tag=status_category)
+            status_category_id = Status.objects.get(status_category_tag=status_category)
             form.instance.category_status_id = status_category_id.pk
             form.instance.save()
         formset.save()
