@@ -78,7 +78,7 @@ class SubServiceAdmin(admin.ModelAdmin):
 @admin.register(Status)
 class StatusAdmin(admin.ModelAdmin):
     list_display = ('status_category_tag', 'status_category_color', 'status_category_color_hex',
-                    'status_class_design')
+                    'class_design')
     ordering = ['status_category_tag']
 
 

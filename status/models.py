@@ -103,7 +103,7 @@ class Status(models.Model):
     status_category_tag = models.CharField(unique=True, max_length=45, verbose_name='Status')
     status_category_color = models.CharField(unique=True, max_length=7)
     status_category_color_hex = ColorField(default='#000000')
-    status_class_design = models.CharField(unique=True, max_length=50)
+    class_design = models.CharField(unique=True, max_length=50)
 
     class Meta:
         verbose_name = _("Status Category")
