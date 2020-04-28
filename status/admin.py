@@ -189,6 +189,6 @@ class PriorityAdmin(admin.ModelAdmin):
 
 @admin.register(EmailDomainList)
 class EmailDomainListAdmin(admin.ModelAdmin):
-    list_display = ('email_domain_name', 'email_domain_description')
-    search_fields = ['email_domain_name', 'email_domain_description']
-    ordering = ['email_domain_name']
+    list_display = ('domain', 'description')
+    search_fields = ['domain', 'description']
+    ordering = ['domain']
