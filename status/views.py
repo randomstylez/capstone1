@@ -120,7 +120,7 @@ class ServicesStatusView(View):
                     medium_priority_tickets = []
                     low_priority = []
                     for ticket in active_tickets_per_day:
-                        status = ticket.category_status.status_category_tag
+                        status = ticket.status.status_category_tag
                         if status == "In Process" or status == "Alert" or status == "Outage":
                             priority_tickets.append(ticket)
                         elif status == "Planned":
@@ -129,11 +129,11 @@ class ServicesStatusView(View):
                             low_priority.append(ticket)
 
                     if priority_tickets:
-                        status_per_day.append(priority_tickets[0].category_status)
+                        status_per_day.append(priority_tickets[0].status)
                     elif medium_priority_tickets:
-                        status_per_day.append(medium_priority_tickets[0].category_status)
+                        status_per_day.append(medium_priority_tickets[0].status)
                     elif low_priority:
-                        status_per_day.append(low_priority[0].category_status)
+                        status_per_day.append(low_priority[0].status)
                     else:
                         status_per_day.append(no_issues)
                 else:
@@ -383,7 +383,7 @@ class ServiceHistoryView(View):
                     for ticket in tickets_list:
                         if (searchfor.lower() in ticket.ticket_id.lower()
                                 or searchfor.lower() in ticket.action_description.lower()
-                                or searchfor.lower() in ticket.category_status.status_category_tag.lower()):
+                                or searchfor.lower() in ticket.status.status_category_tag.lower()):
                             aux_list.append(ticket)
 
                     tickets_list = aux_list
