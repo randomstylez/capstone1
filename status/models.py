@@ -147,14 +147,14 @@ class Ticket(models.Model):
 
 
 class TicketLog(models.Model):
-    service_history = models.ForeignKey(Ticket, models.CASCADE)
+    ticket = models.ForeignKey(Ticket, models.CASCADE)
     service_status = models.ForeignKey(StatusCategory, models.DO_NOTHING)
     action_date = models.DateTimeField()
     # action_notes = models.TextField(blank=True, null=True, verbose_name='Notes')
     action_notes = RichTextField(blank=True, null=True, verbose_name='Notes')
 
     def __str__(self):
-        return "{0} in {1}".format(self.service_history.sub_service, self.service_history.ticket_id)
+        return "{0} in {1}".format(self.ticket.sub_service, self.ticket.ticket_id)
 
 
 class Subscriber(models.Model):
