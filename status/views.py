@@ -416,9 +416,9 @@ class ServiceHistoryDetailsView(ListView):
             obj = get_object_or_404(Ticket, id=ticket_id)
             context['object'] = obj
 
-            # Getting list of ticket logs associated with this ticket
-            queryset = TicketLog.objects.filter(ticket=obj)
-            context['ticket_logs'] = queryset
+            # Getting list of events associated with this ticket
+            ticket_events = TicketLog.objects.filter(ticket=obj)
+            context['ticket_events'] = ticket_events
 
             # Getting list of tickets associated with the service
             service_tickets = Ticket.objects.filter(sub_service=obj.sub_service).order_by('pk')

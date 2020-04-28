@@ -125,11 +125,11 @@ a:hover {
     margin: 0;
 }
 
-#ticket_logs_heading p {
+#ticket_events_heading p {
     text-align: center;
 }
 
-#ticket_logs_content {
+#ticket_events_content {
     overflow: auto;
     height: 17rem;
 }
@@ -295,7 +295,7 @@ h3 {
         height: 30rem;
     }
 
-    #ticket_logs_content {
+    #ticket_events_content {
         overflow: auto;
         height: 30rem;
     }

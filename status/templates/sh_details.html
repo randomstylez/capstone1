@@ -78,17 +78,17 @@
                 </div>
 
                 <!--  Ticket Logs section  -->
-                <div class="row d-flex justify-content-center mb-1" id="ticket_logs_heading">
+                <div class="row d-flex justify-content-center mb-1" id="ticket_events_heading">
                     <div class="col-5"><hr></div>
                     <div class="col-2 px-0 px-md-3 d-flex align-items-center justify-content-center">
                         <p class="mb-0">Ticket Logs</p>
                     </div>
                     <div class="col-5"><hr></div>
                 </div>
-                <div class="container" id="ticket_logs_content">
+                <div class="container" id="ticket_events_content">
 
                     {#Describe this "for" statement functionality#}
-                    {% for instance in ticket_logs %}
+                    {% for instance in ticket_events %}
                         <div class="container ticket_log border py-2 my-2">
                             <p><span class="bold">Service status: </span>{{instance.service_status.status_category_tag}}</p>
                             <p><span class="bold">Action date: </span>{{instance.action_date}}</p>
