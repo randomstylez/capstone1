@@ -151,8 +151,19 @@ class ServicesStatusView(View):
 class SubscriptionView(View):
     template_name = "subscription.html"
 
-    def get(self, request, id=None, *args, **kwargs):
-
+    def get(self, request, service_id=None, *args, **kwargs):
+        """
+        Method to:
+        - update a process in case a user requested a
+        subscription without selecting any services or sub-services
+        - update a subscription given a service
+        (coming from the service status history page and taking a service value by default)
+        :param request:
+        :param _id:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         # Getting values previously entered by user if any
         user_name = request.GET.get('user_name')
         user_email = request.GET.get('subscriber_email')
@@ -165,8 +176,8 @@ class SubscriptionView(View):
 
         context = {"form": form, "subscription_active": True, 'subscribed': False}
 
-        if id is not None:
-            obj = get_object_or_404(Service, id=id)
+        if service_id is not None:
+            obj = get_object_or_404(Service, id=service_id)
             context['object'] = obj
             context['service_specific'] = True
         else:
@@ -179,6 +190,7 @@ class SubscriptionView(View):
                     context['service_specific'] = True
             else:
                 context['service_specific'] = False
+
             context['object_passed'] = request.GET.get('object')
 
             # If an update was requested but the user did not enter a valid email
@@ -189,7 +201,20 @@ class SubscriptionView(View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
+        """
+        Method to support the creation of a subscription.
+        Here it will done all the verifications related to a new subscription
+        1.0 - No service or sub-service selected
+        2.0 - New subscriber, wrong email domain
+        3.0 - Existing subscriber (existing email)
+        3.1.- Existing subscriber (existing email, wrong Name) ## This one is not developed
+        4.0 - New subscriber, proper information
 
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         generate_token = secrets.token_hex(16)
 
         form = SubscriberDataForm(request.POST, initial={'token': generate_token})
@@ -209,21 +234,26 @@ class SubscriptionView(View):
         if object_passed:
             context['object_passed'] = object_passed
 
+        # It requests to create a subscription
         if 'subs_updates' in request.POST:
 
             if form.is_valid():
+
                 # Getting email entered by user
                 email = form.cleaned_data['email']
+
                 # Passing email to template
                 context["subscriber_email"] = email
+
                 # Getting name entered by the user
                 name = form.cleaned_data['name']
-                # Passing email to template
+
+                # Passing user name to template
                 context["user_name"] = name
 
-                # Verify if email belongs to the Domain list
+                # It verifies if the email belongs to the Email Domain list
                 if not form.check_mail_domain():
-                    context['email_notin_domailist'] = True
+                    context['email_domain_forbidden'] = True
 
                     # Getting list of approved domains
                     email_domain_list = EmailDomainList.objects.all()
@@ -233,8 +263,8 @@ class SubscriptionView(View):
 
                 else:
                     if 'one_service' in request.POST:
-                        id = request.POST['one_service']
-                        service = get_object_or_404(Service, id=id)
+                        _id = request.POST['one_service']
+                        service = get_object_or_404(Service, id=_id)
 
                         # If the user is not registered before save it
                         if not Subscriber.objects.filter(email=email).exists():
@@ -246,18 +276,23 @@ class SubscriptionView(View):
                             subscriber.save()
 
                         else:
-                            # If the user is already registered we just need to add the selected services and sub-services to the subscription
+                            # If the user is already registered we just need to add the selected
+                            # services and sub-services to the subscription
                             # Get user from database
                             user = Subscriber.objects.filter(email=email)[:1].get()
+
                             # Get user subservices
                             user_subservices = user.subservices.all()
+
                             # Get list of subservices to add
-                            subservices_toadd = form.cleaned_data["subservices"]
+                            subservices_to_add = form.cleaned_data["subservices"]
+
                             # Add service to the user account
                             user.services.add(service)
                             user.save()
+
                             # Add subservices to the user account
-                            for subservice_toadd in subservices_toadd:
+                            for subservice_toadd in subservices_to_add:
                                 if subservice_toadd not in user_subservices:
                                     user.subservices.add(subservice_toadd)
                                     user.save()
@@ -270,9 +305,13 @@ class SubscriptionView(View):
                             # If the user is not registered before save it
                             if not Subscriber.objects.filter(email=email).exists():
                                 # ************HERE WE NEED TO VERIFY USER EMAIL FIRST*******************
-                                subscriber = form.save()
+                                # subscriber = form.save()
+                                form.save()
+                                SubscriberDataForm.notify_user_email(form)
                                 context['subscribed'] = True
                             else:
+                                # Here we know that the email exist,
+                                # but we have not verified the username
                                 context['user_exists'] = True
                                 context['user_exists_email'] = email
                                 context['updated_left'] = True
@@ -281,6 +320,8 @@ class SubscriptionView(View):
                             context['no_selection'] = True
                             context['subscribed'] = False
 
+        # It requests to update the subscription information
+        # after having requested a subscription
         elif 'update_subs' in request.POST:
 
             # Getting the email entered by the user
@@ -289,6 +330,7 @@ class SubscriptionView(View):
             if user_email:
                 # Check if this email is registered for notifications
                 if Subscriber.objects.filter(email=user_email).exists():
+
                     # Send the email with the link to update subscription
                     SubscriberForm.send_link_by_user_email(str(user_email))
 
@@ -310,7 +352,7 @@ class SubscriptionView(View):
 class ServiceHistoryView(View):
     template_name = "ss_history_visualization.html"
 
-    def get(self, request, id=None, *args, **kwargs):
+    def get(self, request, service_id=None, *args, **kwargs):
 
         context = {
             "active_nav": 1
@@ -318,8 +360,8 @@ class ServiceHistoryView(View):
 
         searching = False
 
-        if id is not None:
-            obj = get_object_or_404(Service, id=id)
+        if service_id is not None:
+            obj = get_object_or_404(Service, id=service_id)
             context['object'] = obj
 
             # Getting all tickets affecting this service
@@ -363,15 +405,15 @@ class ServiceHistoryView(View):
 class ServiceHistoryDetailsView(ListView):
     template_name = "sh_details.html"
 
-    def get(self, request, id=None, *args, **kwargs):
+    def get(self, request, ticket_id=None, *args, **kwargs):
 
         context = {
             "active_nav": 1
         }
 
-        if id is not None:
+        if ticket_id is not None:
             # Getting ticket instance
-            obj = get_object_or_404(Ticket, id=id)
+            obj = get_object_or_404(Ticket, id=ticket_id)
             context['object'] = obj
 
             # Getting list of ticket logs associated with this ticket
@@ -398,10 +440,10 @@ class ServiceHistoryDetailsView(ListView):
                 context['prev_ticket'] = ticket
 
             # Getting index of previous ticket
-            next = index + 1
+            _next = index + 1
 
-            if next <= count - 1:
-                ticket = service_tickets[next]
+            if _next <= count - 1:
+                ticket = service_tickets[_next]
                 context['next_ticket'] = ticket
 
         return render(request, self.template_name, context)
@@ -444,9 +486,9 @@ class ModifyUserSubscription(ListView):
                 services_not_registered.append(service)
 
         if services_not_registered:
-            context['services_toadd'] = services_not_registered
+            context['services_to_add'] = services_not_registered
         else:
-            context['no_services_toadd'] = True
+            context['no_services_to_add'] = True
 
         # Getting the sub-services this user is not registered to
         queryset = SubService.objects.all()
@@ -457,65 +499,68 @@ class ModifyUserSubscription(ListView):
                 sub_services_not_registered.append(sub_service)
 
         if sub_services_not_registered:
-            context['subservices_toadd'] = sub_services_not_registered
+            context['subservices_to_add'] = sub_services_not_registered
         else:
-            context['no_subservices_toadd'] = True
+            context['no_subservices_to_add'] = True
 
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
+        """
+        Method to modify subscription.
+        This will allow to add and remove services and sub-services
+        """
 
         # Getting user by userID
         user_id = request.POST.get('user_id')
         user = Subscriber.objects.get(id=user_id)
 
         # Getting list of services to delete
-        service_list = request.POST.getlist('selected_services')
+        services_deleted = request.POST.getlist('selected_services')
 
-        if service_list:
+        if services_deleted:
             # Deleting the services
-            for service in service_list:
+            for service in services_deleted:
                 model_service = Service.objects.filter(service_name=service)[:1].get()
                 user.services.remove(model_service)
 
         # Getting list of sub_services to delete
-        subservices = request.POST.getlist('selected_subservices')
+        subservices_deleted = request.POST.getlist('selected_subservices')
 
-        if subservices:
+        if subservices_deleted:
             # Deleting the subservices
-            for subservice in subservices:
+            for subservice in subservices_deleted:
                 model_subservice = SubService.objects.filter(sub_service_name=subservice)[:1].get()
                 user.subservices.remove(model_subservice)
 
         # Getting list of services to add
-        services_add = request.POST.getlist('selected_services_toadd')
+        services_added = request.POST.getlist('selected_services_to_add')
 
-        if services_add:
+        if services_added:
             # Adding the services
-            for service in services_add:
+            for service in services_added:
                 model_service = Service.objects.filter(service_name=service)[:1].get()
                 user.services.add(model_service)
 
         # Getting list of sub_services to add
-        subservices_add = request.POST.getlist('selected_subservices_toadd')
+        subservices_added = request.POST.getlist('selected_subservices_to_add')
 
-        if subservices_add:
+        if subservices_added:
             # Adding the subservices
-            for subservice in subservices_add:
+            for subservice in subservices_added:
                 model_subservice = SubService.objects.filter(sub_service_name=subservice)[:1].get()
                 user.subservices.add(model_subservice)
 
         context = {
             'user': user,
-            'services_list': service_list,
-            'subservices_list': subservices,
-            'services_list_added': services_add,
-            'subservices_list_added': subservices_add
-
+            'services_list': services_deleted,
+            'subservices_list': subservices_deleted,
+            'services_list_added': services_added,
+            'subservices_list_added': subservices_added
         }
 
         # If no changes were selected
-        if not (service_list or subservices or services_add or subservices_add):
+        if not (services_deleted or subservices_deleted or services_added or subservices_added):
             context['no_changes'] = True
         else:
             context['completed'] = True
