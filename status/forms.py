@@ -71,11 +71,11 @@ class TicketForm(forms.ModelForm):
         data['ticket_id'] = self.cleaned_data['ticket_id']
         data['region'] = 'None'
         if region.count() != 0:
-            data['region'] = region[0].region_name
+            data['region'] = region[0].name
         data['priority'] = 'None'
         if topology.count() != 0:
             data['priority'] = topology[0].priority
-        data['service'] = services[0].service_name
+        data['service'] = None
         if services.count() != 0:
             data['service'] = services[0].service_name
         data['subservice'] = 'None'

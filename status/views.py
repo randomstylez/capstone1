@@ -60,7 +60,7 @@ class ServicesStatusView(View):
             for region in regions:
 
                 # Getting list of services
-                queryset = Region.objects.filter(region_name=region)
+                queryset = Region.objects.filter(name=region)
                 for e in queryset:
                     # services = list(dict.fromkeys(chain(services, e.services.all())))
                     client_domain_services = e.client_domains.all().exclude(services__service_name=None).\

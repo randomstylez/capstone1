@@ -16,14 +16,14 @@
         </div>
 
         {#Describe this "for" statement functionality#}
-        {% for instance in ticket_list %}
+        {% for ticket in ticket_list %}
 
             <div class="container mt-4 py-3" id="list_events"
-                 style="border-left: 0.6rem solid {{instance.status.color_hex}};">
-                <a href="details/{{ instance.id}}">
-                    <p><span class="bold">Sub-service Impacted: </span>{{ instance.sub_service.name }}</p>
-                    <p><span class="bold">Status: </span>{{ instance.status.tag }}</p>
-                    <p>{{ instance.action_description | safe }}</p> <!--  Description of the ticket  -->
+                 style="border-left: 0.6rem solid {{ ticket.status.color_hex }};">
+                <a href="details/{{ ticket.id }}">
+                    <p><span class="bold">Sub-service Impacted: </span>{{ ticket.sub_service.name }}</p>
+                    <p><span class="bold">Status: </span>{{ ticket.status.tag }}</p>
+                    <p>{{ ticket.action_description | safe }}</p> <!--  Description of the ticket  -->
                 </a>
             </div>
 
@@ -46,9 +46,9 @@
                                 <input type="text" name="search" placeholder="Search..." class="form-control"
 
                                 {#Describe this conditional statement functionality#}
-                                {% if searchfor %} value="{{searchfor}}" {% endif %}>
+                                {% if searchfor %} value="{{ searchfor }}" {% endif %}>
 
-                                <input type="text" name="region_list" hidden value="{{region_list}}">
+                                <input type="text" name="region_list" hidden value="{{ region_list }}">
                             </div>
                         </div>
                         <div class="col-2 p-0 m-0">
@@ -71,12 +71,12 @@
                         <form action="." method="get">
 
                             {#Describe this "for" statement functionality#}
-                            {% for instance in region_list %}
+                            {% for region in region_list %}
 
                                 <div class="dropdown-item">
-                                    <input class="form-check-input" type="checkbox" name="regions" value="{{instance}}"
-                                           {% if instance.region_name in regions_checked %}checked{% endif %}>
-                                    <label class="form-check-label">{{instance}}</label>
+                                    <input class="form-check-input" type="checkbox" name="regions" value="{{ region }}"
+                                           {% if region.name in regions_checked %}checked{% endif %}>
+                                    <label class="form-check-label">{{ region }}</label>
                                 </div>
 
                             {% endfor %}
@@ -111,10 +111,10 @@
                     {% for status in status_list %}
 
                         <div class="row m-0 d-flex justify-content-between p-0 dropdown-item">
-                            <div class="col-1 d-inline">{{status.tag}}</div>
+                            <div class="col-1 d-inline">{{ status.tag }}</div>
                             <div class="col-1 mr-2 d-inline">
-                               <span style="color: {{status.color_hex}}">
-                               <i class="{{status.class_design}}"></i>
+                               <span style="color: {{ status.color_hex }}">
+                               <i class="{{ status.class_design }}"></i>
                                 </span>
                             </div>
                         </div>
@@ -136,19 +136,19 @@
                         <p>Business Services</p>
                     </div>
                     <div class="col pl-1">
-                        <p>{{days.4 | date:'M-d'}}</p>
+                        <p>{{ days.4 | date:'M-d' }}</p>
                     </div>
                     <div class="col pl-1">
-                        <p>{{days.3 | date:'M-d'}}</p>
+                        <p>{{ days.3 | date:'M-d' }}</p>
                     </div>
                     <div class="col pl-1">
-                        <p>{{days.2 | date:'M-d'}}</p>
+                        <p>{{ days.2 | date:'M-d' }}</p>
                     </div>
                     <div class="col pl-1">
-                        <p>{{days.1 | date:'M-d'}}</p>
+                        <p>{{ days.1 | date:'M-d' }}</p>
                     </div>
                     <div class="col pl-1">
-                        <p>{{days.0 | date:'M-d'}}</p>
+                        <p>{{ days.0 | date:'M-d' }}</p>
                     </div>
                 </div>
                 <!--  End of Table headings  -->
@@ -176,8 +176,8 @@
 
                             <div class="row">
                                 <div class="col-5">
-                                    <a href="{{instance.id}}">
-                                        <p>{{instance}}</p>
+                                    <a href="{{ instance.id }}">
+                                        <p>{{ instance }}</p>
                                     </a>
                                 </div>
 
@@ -185,8 +185,8 @@
                                 {% for status_day in status|get_value:instance %}
 
                                     <div class="col">
-                                        <p class="m-0 mt-1" style="color: {{status_day.color_hex}}">
-                                            <i class="{{status_day.class_design}}"></i>
+                                        <p class="m-0 mt-1" style="color: {{ status_day.color_hex }}">
+                                            <i class="{{ status_day.class_design }}"></i>
                                         </p>
                                     </div>
 
@@ -214,11 +214,11 @@
 
                         <div class="row pl-2" id="legend_items">
                             <div class="col-10">
-                                <p class="my-1">{{status.tag}}</p>
+                                <p class="my-1">{{ status.tag }}</p>
                             </div>
                             <div class="col-2 px-0">
-                                <p class="m-0 mt-1" style="color: {{status.color_hex}}">
-                                    <i class="{{status.class_design}}"></i>
+                                <p class="m-0 mt-1" style="color: {{ status.color_hex }}">
+                                    <i class="{{ status.class_design }}"></i>
                                 </p>
                             </div>
                         </div>
