@@ -11,10 +11,11 @@
                 </div>
                 <div class="container mb-3">
 
-                    {#Describe this conditional statement functionality#}
-                    {% if email_notin_domailist %}
+                    {# It will describe the no existence of the email domain #}
+                    {# provided on the email domain list stored on the database. #}
+                    {% if email_domain_forbidden %}
 
-                        <div class="container mt-4 pt-4" id="not_in_domainlist">
+                        <div class="container mt-4 pt-4" id="not_in_domain_list">
                             <h3>Sorry, your email domain is not approved</h3>
                             <div class="row mt-4">
                                 <p class="bold mb-2">See the list of approved domains below:</p>
@@ -51,7 +52,7 @@
                         </div>
 
                     {#Describe this conditional statement functionality#}
-                    {% elif user_exists%}
+                    {% elif user_exists %}
 
                         <div class="container mt-4 pt-4" id="user_exists">
                             <div class="row d-flex justify-content-center">
@@ -72,7 +73,8 @@
                             </div>
                         </div>
 
-                    {#Describe this conditional statement functionality#}
+                    {# It covers the subscription action from a user already #}
+                    {# registered and willing to modify its subscription #}
                     {% elif updated_left %}
 
                         <div class="container">
@@ -87,7 +89,8 @@
                             </div>
                         </div>
 
-                    {#Describe this conditional statement functionality#}
+                    {# The user has not selected any service or sub-service #}
+                    {# as part of its actualization process #}
                     {% elif no_selection %}
 
                         <div class="container">
@@ -105,11 +108,11 @@
                     {% else %}
 
                         <form action="." method="POST"> {% csrf_token %}
-                            <div class="form-group form-inline"> <!--Name info-->
+                            <div class="form-group form-inline"> <!-- Name info -->
                                 <label class="mr-2 bold">Enter your name</label>
                                 {{form.name}}
                             </div>
-                            <div class="form-group form-inline mb-0"> <!--Email info-->
+                            <div class="form-group form-inline mb-0"> <!-- Email info -->
                                 <label class="mr-2 bold">Email address</label>
                                 {{form.email}}
                             </div>
@@ -119,7 +122,7 @@
                                 {% if service_specific %}
 
                                     <div class="row mt-3" id="selected_service">
-                                        <label> <span class="bold">Service:</span>
+                                        <label><span class="bold">Service:</span>
                                             {% if object_passed %}
                                                 {{object_passed}}
                                             {% else %}
