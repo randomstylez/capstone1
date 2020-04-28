@@ -132,6 +132,7 @@ class Ticket(models.Model):
     end = models.DateTimeField(null=True, blank=True)
     action_description = RichTextField()
     action_notes = RichTextField(blank=True, null=True)
+
     notify_action = models.BooleanField(
         default=YES,
         choices=YES_NO_CHOICES,
@@ -173,12 +174,12 @@ class Subscriber(models.Model):
 
 
 class EmailDomainList(models.Model):
-    email_domain_name = models.CharField(unique=True, max_length=100)
-    email_domain_description = models.TextField(blank=True, null=True)
+    domain = models.CharField(unique=True, max_length=100, verbose_name='Email Domain')
+    description = models.TextField(blank=True, null=True)
 
     class Meta:
         verbose_name = _("Email Domain")
         verbose_name_plural = _("Email Domains")
 
     def __str__(self):
-        return self.email_domain_name
+        return self.domain
