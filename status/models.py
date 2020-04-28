@@ -101,7 +101,7 @@ class SubServiceServices(models.Model):
 
 class Status(models.Model):
     status_category_tag = models.CharField(unique=True, max_length=45, verbose_name='Status')
-    status_category_color = models.CharField(unique=True, max_length=7)
+    color_name = models.CharField(unique=True, max_length=7)
     color_hex = ColorField(default='#000000')
     class_design = models.CharField(unique=True, max_length=50)
 
