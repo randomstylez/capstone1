@@ -223,24 +223,10 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
         # return self.cleaned_data
 
 
-class SubscriberDataForm (forms.ModelForm):
+class EmailActions:
 
-    services = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                              queryset=Service.objects.all(), required=False)
-    subservices = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                                 queryset=SubService.objects.all(), required=False)
-    name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Full Name", "class": "form-control"}),
-                           max_length=40, required=True)
-    email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
-                             required=True)
-
-    def check_mail_domain(self):
-        """
-        Method to check if the email provided belong to
-        the list of user domains registered on the system
-        """
-        # Verify that the subscriber email belong to our domain list
-        domain = self.cleaned_data["email"].split('@')[1]
+    @staticmethod
+    def check_email_domain(domain):
 
         # It verifies the existence or not of that email domain
         domain_exist = EmailDomainList.objects.filter(email_domain_name=domain).count()
@@ -250,21 +236,14 @@ class SubscriberDataForm (forms.ModelForm):
 
         return True
 
-    def notify_user_email(self):
-        """
-        Method to send a mail notification
-        about the subscription requested
-        """
-        email = self.cleaned_data["email"]
+    @staticmethod
+    def notify_subscription_to_user_email(email, services, subservices):
 
         service_list = ''
         service_list_html = ''
 
         subservice_list = ''
         subservice_list_html = ''
-
-        services = self.cleaned_data["services"]
-        subservices = self.cleaned_data["subservices"]
 
         if len(services):
             service_list += '<br>'
@@ -292,32 +271,160 @@ class SubscriberDataForm (forms.ModelForm):
 
         # Email content
         text = f"""\
-                                You have subscribed to receive notifications from the following services:
-                                <br>
-                                {service_list}
-                                You have subscribed to receive notifications from the following sub-services:
-                                {subservice_list}
-                                """
+            You have subscribed to receive notifications from the following services:
+            <br>
+            {service_list}
+            You have subscribed to receive notifications from the following sub-services:
+            {subservice_list}"""
 
         html = f"""\
-                                <html>
-                                  <body>
-                                    <p>You have subscribed to receive notifications from the following Service(s)
-                                    <br>
-                                    </p>
-                                    {service_list_html}
-                                    <p>You have subscribed to receive notifications from the following Sub-service(s)
-                                    <br>
-                                    </p>
-                                    {subservice_list_html}
-                                  </body>
-                                </html>
-                                """
+        <html>
+            <body>
+                <p>You have subscribed to receive notifications from the following Service(s)</p>
+                {service_list_html}
+                <p>You have subscribed to receive notifications from the following Sub-service(s)</p>
+                {subservice_list_html}
+            </body>
+        </html>"""
 
         subject = "Subscription requested!"
 
         mail_sender = MailSender(html, subject, text, email)
         mail_sender.send_mail()
+
+    @staticmethod
+    def send_subscription_notification(email, token):
+
+        hostname = 'https://status2.amlight.net'
+        view_path = '/subscriber'
+
+        link = hostname + view_path + '/' + email + '/' + token
+
+        # Email content
+        text = f"""\
+                                Link to modify your subscription:
+                                {link}
+                                """
+
+        html = f"""\
+                                <html>
+                                  <body>
+                                    <p>Link to modify your subscription<br>
+                                    </p>
+                                    <a href="{link}">Modify your subscription</a>
+                                  </body>
+                                </html>
+                                """
+
+        subject = "Modification requested on Subscription!"
+
+        mail_sender = MailSender(html, subject, text, email)
+        mail_sender.send_mail()
+
+
+class SubscriberDataForm(forms.ModelForm):
+
+    services = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                              queryset=Service.objects.all(), required=False)
+    subservices = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                                 queryset=SubService.objects.all(), required=False)
+    name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Full Name", "class": "form-control"}),
+                           max_length=40, required=True)
+    email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
+                             required=True)
+
+    def check_mail_domain(self):
+        """
+        Method to check if the email provided belong to
+        the list of user domains registered on the system
+        """
+        # Verify that the subscriber email belong to our domain list
+        domain = self.cleaned_data["email"].split('@')[1]
+
+        return EmailActions.check_email_domain(domain)
+
+        # # It verifies the existence or not of that email domain
+        # domain_exist = EmailDomainList.objects.filter(email_domain_name=domain).count()
+        #
+        # if domain_exist == 0:
+        #     return False
+        #
+        # return True
+
+    def notify_user_email(self):
+        """
+        Method to send a mail notification
+        about the subscription requested
+        """
+        email = self.cleaned_data["email"]
+        services = self.cleaned_data["services"]
+        subservices = self.cleaned_data["subservices"]
+
+        EmailActions.notify_subscription_to_user_email(email, services, subservices)
+
+        # email = self.cleaned_data["email"]
+        #
+        # service_list = ''
+        # service_list_html = ''
+        #
+        # subservice_list = ''
+        # subservice_list_html = ''
+        #
+        # services = self.cleaned_data["services"]
+        # subservices = self.cleaned_data["subservices"]
+        #
+        # if len(services):
+        #     service_list += '<br>'
+        #     service_list_html += '<ul>'
+        #     for service in services:
+        #         service_list += f"""{service}<br>"""
+        #         service_list_html += f"""<li>{service}</li>"""
+        #     service_list += '<br>'
+        #     service_list_html += '</ul>'
+        # else:
+        #     service_list += '<br>None selected<br>'
+        #     service_list_html += '<ul><li>None selected</li></ul>'
+        #
+        # if len(subservices):
+        #     subservice_list += '<br>'
+        #     subservice_list_html += '<ul>'
+        #     for subservice in subservices:
+        #         subservice_list += f"""{subservice}<br>"""
+        #         subservice_list_html += f"""<li>{subservice}</li>"""
+        #     subservice_list += '<br'
+        #     subservice_list_html += '</ul>'
+        # else:
+        #     subservice_list += '<br>None selected<br>'
+        #     subservice_list_html += '<ul><li>None selected</li></ul>'
+        #
+        # # Email content
+        # text = f"""\
+        #                         You have subscribed to receive notifications from the following services:
+        #                         <br>
+        #                         {service_list}
+        #                         You have subscribed to receive notifications from the following sub-services:
+        #                         {subservice_list}
+        #                         """
+        #
+        # html = f"""\
+        #                         <html>
+        #                           <body>
+        #                             <p>You have subscribed to receive notifications from the following Service(s)
+        #                             <br>
+        #                             </p>
+        #                             {service_list_html}
+        #                             <p>You have subscribed to receive notifications from the following Sub-service(s)
+        #                             <br>
+        #                             </p>
+        #                             {subservice_list_html}
+        #                           </body>
+        #                         </html>
+        #                         """
+        #
+        # subject = "Subscription requested!"
+        #
+        # mail_sender = MailSender(html, subject, text, email)
+        # mail_sender.send_mail()
 
     def clean(self):
         # Create token
@@ -326,11 +433,8 @@ class SubscriberDataForm (forms.ModelForm):
         # Update User's token
         self.cleaned_data["token"] = token
 
-        if self.check_mail_domain():
-            print("Valid email domain")
-            self.notify_user_email()
-        else:
-            print("Invalid email domain")
+        # if self.check_mail_domain():
+        #     self.notify_user_email()
 
     class Meta:
         model = Subscriber
@@ -382,17 +486,14 @@ class SubscriberForm(forms.ModelForm):
 
         # Insert user and insert token
         if not self.instance.pk:
+
             # Create token
             token = secrets.token_hex(64)
 
             # Update User's token
             self.cleaned_data["token"] = token
         else:
-            # SubscriberForm.get_user_data(self.cleaned_data["email"], self.cleaned_data["token"])
-            # SubscriberForm.send_link_by_user_id(self.instance.pk)
-            # SubscriberForm.send_link_by_user_email(self.cleaned_data["email"])
             self.update_user_token_by_user_id(self.instance.pk)
-            # self.update_user_token_by_user_email(self.cleaned_data["email"])
 
         return self.cleaned_data
 
@@ -403,43 +504,43 @@ class SubscriberForm(forms.ModelForm):
         :param user_id:
         :return:
         """
-
         # It gets the user's email and token given its ID
         user = Subscriber.objects.filter(pk=user_id).values('email', 'token')
 
         email = user[0]['email']
         token = user[0]['token']
 
-        # hostname = 'http://127.0.0.1:8000'
-        hostname = 'http://status2.amlight.net'
-
-        # we should create a mechanism to get the hostname. This option works on views request
-        # print(HttpRequest.get_host(self))
-
-        view_path = '/subscriber'
-
-        link = hostname + view_path + '/' + email + '/' + token
-
-        # Email content
-        text = f"""\
-                        Link to modify your subscription:
-                        {link}
-                        """
-
-        html = f"""\
-                        <html>
-                          <body>
-                            <p>Link to modify your subscription<br>
-                            </p>
-                            {link}
-                          </body>
-                        </html>
-                        """
-
-        subject = "Modification requested on Subscription!"
-
-        mail_sender = MailSender(html, subject, text, email)
-        mail_sender.send_mail()
+        EmailActions.send_subscription_notification(email, token)
+        # # hostname = 'http://127.0.0.1:8000'
+        # hostname = 'https://status2.amlight.net'
+        #
+        # # we should create a mechanism to get the hostname. This option works on views request
+        # # print(HttpRequest.get_host(self))
+        #
+        # view_path = '/subscriber'
+        #
+        # link = hostname + view_path + '/' + email + '/' + token
+        #
+        # # Email content
+        # text = f"""\
+        #                 Link to modify your subscription:
+        #                 {link}
+        #                 """
+        #
+        # html = f"""\
+        #                 <html>
+        #                   <body>
+        #                     <p>Link to modify your subscription<br>
+        #                     </p>
+        #                     <a href="{link}">Modify your subscription</a>
+        #                   </body>
+        #                 </html>
+        #                 """
+        #
+        # subject = "Modification requested on Subscription!"
+        #
+        # mail_sender = MailSender(html, subject, text, email)
+        # mail_sender.send_mail()
 
     @staticmethod
     def send_link_by_user_email(_email):
@@ -448,42 +549,42 @@ class SubscriberForm(forms.ModelForm):
         :param _email:
         :return:
         """
-
         # It gets the user's token given its email
         user = Subscriber.objects.filter(email=_email).values('token')
+        _token = str(user[0]['token'])  # Need to cast, otherwise it will have a nontype error
 
-        token = str(user[0]['token'])  # Need to cast, otherwise it will have a nontype error
+        EmailActions.send_subscription_notification(_email, _token)
 
-        # hostname = 'http://127.0.0.1:8000'
-        hostname = 'http://status2.amlight.net'
-
-        # we should create a mechanism to get the hostname. This option works on views request
-        # print(HttpRequest.get_host(self))
-
-        view_path = '/subscriber'  # email and toke
-
-        link = hostname + view_path + '/' + _email + '/' + token
-
-        # Email content
-        text = f"""\
-                            Link to modify your subscription:
-                            {link}
-                            """
-
-        html = f"""\
-                            <html>
-                              <body>
-                                <p>Link to modify your subscription<br>
-                                </p>
-                                {link}
-                              </body>
-                            </html>
-                            """
-
-        subject = "Modification requested on Subscription!"
-
-        mail_sender = MailSender(html, subject, text, _email)
-        mail_sender.send_mail()
+        # # hostname = 'http://127.0.0.1:8000'
+        # hostname = 'https://status2.amlight.net'
+        #
+        # # we should create a mechanism to get the hostname. This option works on views request
+        # # print(HttpRequest.get_host(self))
+        #
+        # view_path = '/subscriber'  # email and toke
+        #
+        # link = hostname + view_path + '/' + _email + '/' + token
+        #
+        # # Email content
+        # text = f"""\
+        #                     Link to modify your subscription:
+        #                     {link}
+        #                     """
+        #
+        # html = f"""\
+        #                     <html>
+        #                       <body>
+        #                         <p>Link to modify your subscription<br>
+        #                         </p>
+        #                         <a href="{link}">Modify your subscription</a>
+        #                       </body>
+        #                     </html>
+        #                     """
+        #
+        # subject = "Modification requested on Subscription!"
+        #
+        # mail_sender = MailSender(html, subject, text, _email)
+        # mail_sender.send_mail()
 
     @staticmethod
     def get_user_data(_email, _token):
@@ -519,6 +620,9 @@ class SubscriberForm(forms.ModelForm):
         """
         _token = secrets.token_hex(64)
 
+        # It will be used on read only cases
+        self.instance.token = _token
+
         # It will be used on no read only cases
         # self.cleaned_data["token"] = _token
 
@@ -530,9 +634,6 @@ class SubscriberForm(forms.ModelForm):
         # obj.token = _token
         # obj.save()
 
-        # It will be used on read only cases
-        self.instance.token = _token
-
     def update_user_token_by_user_email(self, _email):
         """
         Method to update the user token after submitting its information
@@ -541,6 +642,9 @@ class SubscriberForm(forms.ModelForm):
         :return:
         """
         _token = secrets.token_hex(64)
+
+        # It will be used on read only cases
+        self.instance.token = _token
 
         # It will be used on no read only cases
         # self.cleaned_data["token"] = _token
@@ -552,6 +656,3 @@ class SubscriberForm(forms.ModelForm):
         # obj = Subscriber.objects.get(email=_email)
         # obj.token = _token
         # obj.save()
-
-        # It will be used on read only cases
-        self.instance.token = _token
