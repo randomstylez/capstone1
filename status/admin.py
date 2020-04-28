@@ -3,7 +3,7 @@ from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDrop
 
 from status.forms import *
 from .models import ClientDomain
-from .models import EmailDomainList
+from .models import EmailDomain
 # Register your models here.
 from .models import Priority
 from .models import Region
@@ -187,8 +187,8 @@ class PriorityAdmin(admin.ModelAdmin):
     ordering = ['priority_tag']
 
 
-@admin.register(EmailDomainList)
-class EmailDomainListAdmin(admin.ModelAdmin):
+@admin.register(EmailDomain)
+class EmailDomainAdmin(admin.ModelAdmin):
     list_display = ('domain', 'description')
     search_fields = ['domain', 'description']
     ordering = ['domain']
