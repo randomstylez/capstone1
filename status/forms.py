@@ -77,7 +77,7 @@ class TicketForm(forms.ModelForm):
             data['priority'] = topology[0].priority
         data['service'] = None
         if services.count() != 0:
-            data['service'] = services[0].service_name
+            data['service'] = services[0].name
         data['subservice'] = 'None'
         if subservices.count() != 0:
             data['subservice'] = subservices[0].name

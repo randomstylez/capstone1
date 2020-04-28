@@ -63,11 +63,11 @@ class ServicesStatusView(View):
                 queryset = Region.objects.filter(name=region)
                 for e in queryset:
                     # services = list(dict.fromkeys(chain(services, e.services.all())))
-                    client_domain_services = e.client_domains.all().exclude(services__service_name=None).\
+                    client_domain_services = e.client_domains.all().exclude(services__name=None).\
                         values('services__service_name')
                     # services = list(dict.fromkeys(chain(services, tmp.all())))
-                    services = list(chain(services, client_domain_services.all().exclude(services__service_name=None).
-                                          values_list('services__service_name', flat=True)))
+                    services = list(chain(services, client_domain_services.all().exclude(services__name=None).
+                                          values_list('services__name', flat=True)))
                 context['services_list'] = services
 
             context['regions_checked'] = regions
@@ -77,7 +77,7 @@ class ServicesStatusView(View):
             searchfor = request.GET['search']
             services_list = []
             for service in services:
-                if searchfor.lower() in service.service_name.lower():
+                if searchfor.lower() in service.name.lower():
                     services_list.append(service)
 
             if not services_list:
@@ -100,7 +100,7 @@ class ServicesStatusView(View):
         for service in services:
 
             # sub_service_service = SubServiceServices.objects.filter(service=service)
-            sub_service_service = SubServiceServices.objects.filter(service__service_name=service)
+            sub_service_service = SubServiceServices.objects.filter(service__name=service)
 
             # Initializing queryset to empty
             tickets_list = Ticket.objects.none()
@@ -521,7 +521,7 @@ class ModifyUserSubscription(ListView):
         if services_deleted:
             # Deleting the services
             for service in services_deleted:
-                model_service = Service.objects.filter(service_name=service)[:1].get()
+                model_service = Service.objects.filter(name=service)[:1].get()
                 user.services.remove(model_service)
 
         # Getting list of sub_services to delete
@@ -539,7 +539,7 @@ class ModifyUserSubscription(ListView):
         if services_added:
             # Adding the services
             for service in services_added:
-                model_service = Service.objects.filter(service_name=service)[:1].get()
+                model_service = Service.objects.filter(name=service)[:1].get()
                 user.services.add(model_service)
 
         # Getting list of sub_services to add

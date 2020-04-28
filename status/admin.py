@@ -16,12 +16,12 @@ from .models import TicketLog
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
-    search_fields = ['name', 'description', 'services__service_name']
+    search_fields = ['name', 'description', 'services__name']
     list_filter = (('client_domains__services__subservice__ticket__status__tag',
                     DropdownFilter),
                    ('client_domains__name',
                     DropdownFilter),
-                   ('client_domains__services__service_name',
+                   ('client_domains__services__name',
                     DropdownFilter),
                    ('client_domains__services__subservice__name',
                     DropdownFilter))
@@ -36,7 +36,7 @@ class ClientDomainAdmin(admin.ModelAdmin):
                     DropdownFilter),
                    ('region__name',
                     DropdownFilter),
-                   ('services__service_name',
+                   ('services__name',
                     DropdownFilter),
                    ('services__subservice__name',
                     DropdownFilter))
@@ -46,8 +46,8 @@ class ClientDomainAdmin(admin.ModelAdmin):
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
     # list_display = ('service_name', 'service_description',)
-    list_display = ('service_name', 'description',)
-    search_fields = ['service_name', 'service_description', 'subservice__name', 'region__name']
+    list_display = ('name', 'description',)
+    search_fields = ['name', 'description', 'subservice__name', 'region__name']
     list_filter = (('subservice__ticket__status__tag',
                     DropdownFilter),
                    ('clientdomain__region__name',
@@ -56,13 +56,13 @@ class ServiceAdmin(admin.ModelAdmin):
                     DropdownFilter),
                    ('subservice__name',
                     DropdownFilter))
-    ordering = ['service_name']
+    ordering = ['name']
 
 
 @admin.register(SubService)
 class SubServiceAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
-    search_fields = ['name', 'description', 'services__service_name',
+    search_fields = ['name', 'description', 'services__name',
                      'services__clientdomain__region__name']
     list_filter = (('ticket__status__tag',
                     DropdownFilter),
@@ -125,7 +125,7 @@ class TicketAdmin(admin.ModelAdmin):
                     DropdownFilter),
                    ('sub_service__services__clientdomain__name',
                     DropdownFilter),
-                   ('sub_service__services__service_name',
+                   ('sub_service__services__name',
                     DropdownFilter),
                    ('sub_service',
                     RelatedDropdownFilter))

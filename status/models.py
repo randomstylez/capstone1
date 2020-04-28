@@ -11,19 +11,19 @@ class Service(models.Model):
 
     @property
     def description(self):
-        return Truncator(self.service_description).chars(55)
+        return Truncator(self.description).chars(55)
 
-    service_name = models.CharField(unique=True, max_length=100, verbose_name='Service')
-    service_description = models.TextField(blank=True, null=True)
+    name = models.CharField(unique=True, max_length=100, verbose_name='Service')
+    description = models.TextField(blank=True, null=True)
     # service_description = RichTextField(blank=True, null=True)
 
     class Meta:
         verbose_name = _("Service")
         verbose_name_plural = _("Services")
-        ordering = ['service_name']
+        ordering = ['name']
 
     def __str__(self):
-        return self.service_name
+        return self.name
 
 
 class ClientDomain(models.Model):
