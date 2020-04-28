@@ -19,10 +19,10 @@
         {% for instance in ticket_list %}
 
             <div class="container mt-4 py-3" id="list_events"
-                 style="border-left: 0.6rem solid {{instance.category_status.status_category_color_hex}};">
+                 style="border-left: 0.6rem solid {{instance.status.status_category_color_hex}};">
                 <a href="details/{{ instance.id}}">
                     <p><span class="bold">Sub-service Impacted: </span>{{ instance.sub_service.sub_service_name }}</p>
-                    <p><span class="bold">Status: </span>{{ instance.category_status.status_category_tag }}</p>
+                    <p><span class="bold">Status: </span>{{ instance.status.status_category_tag }}</p>
                     <p>{{ instance.action_description | safe }}</p> <!--  Description of the ticket  -->
                 </a>
             </div>
