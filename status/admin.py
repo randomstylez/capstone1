@@ -19,7 +19,7 @@ class RegionAdmin(admin.ModelAdmin):
     search_fields = ['name', 'description', 'services__service_name']
     list_filter = (('client_domains__services__subservice__ticket__status__tag',
                     DropdownFilter),
-                   ('client_domains__client_domain_name',
+                   ('client_domains__name',
                     DropdownFilter),
                    ('client_domains__services__service_name',
                     DropdownFilter),
@@ -30,8 +30,8 @@ class RegionAdmin(admin.ModelAdmin):
 
 @admin.register(ClientDomain)
 class ClientDomainAdmin(admin.ModelAdmin):
-    list_display = ('client_domain_name', 'client_domain_description',)
-    search_fields = ['client_domain_name', 'client_domain_description']
+    list_display = ('name', 'description',)
+    search_fields = ['name', 'description']
     list_filter = (('services__subservice__ticket__status__tag',
                     DropdownFilter),
                    ('region__name',
@@ -40,7 +40,7 @@ class ClientDomainAdmin(admin.ModelAdmin):
                     DropdownFilter),
                    ('services__subservice__name',
                     DropdownFilter))
-    ordering = ['client_domain_name']
+    ordering = ['name']
 
 
 @admin.register(Service)
@@ -52,7 +52,7 @@ class ServiceAdmin(admin.ModelAdmin):
                     DropdownFilter),
                    ('clientdomain__region__name',
                     DropdownFilter),
-                   ('clientdomain__client_domain_name',
+                   ('clientdomain__name',
                     DropdownFilter),
                    ('subservice__name',
                     DropdownFilter))
@@ -68,7 +68,7 @@ class SubServiceAdmin(admin.ModelAdmin):
                     DropdownFilter),
                    ('services__clientdomain__region__name',
                     DropdownFilter),
-                   ('services__clientdomain__client_domain_name',
+                   ('services__clientdomain__name',
                     DropdownFilter),
                    ('services',
                     RelatedDropdownFilter))
@@ -123,7 +123,7 @@ class TicketAdmin(admin.ModelAdmin):
                     RelatedDropdownFilter),
                    ('sub_service__services__clientdomain__region__name',
                     DropdownFilter),
-                   ('sub_service__services__clientdomain__client_domain_name',
+                   ('sub_service__services__clientdomain__name',
                     DropdownFilter),
                    ('sub_service__services__service_name',
                     DropdownFilter),
@@ -170,7 +170,7 @@ class SubServiceServicesAdmin(admin.ModelAdmin):
                     DropdownFilter),
                    ('service__clientdomain__region__name',
                     DropdownFilter),
-                   ('service__clientdomain__client_domain_name',
+                   ('service__clientdomain__name',
                     DropdownFilter),
                    ('service',
                     RelatedDropdownFilter),

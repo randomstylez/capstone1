@@ -27,17 +27,17 @@ class Service(models.Model):
 
 
 class ClientDomain(models.Model):
-    client_domain_name = models.CharField(unique=True, max_length=100, verbose_name='Client Domain')
-    client_domain_description = models.TextField(blank=True, null=True)
+    name = models.CharField(unique=True, max_length=100, verbose_name='Client Domain')
+    description = models.TextField(blank=True, null=True)
     services = models.ManyToManyField(Service)
 
     class Meta:
         verbose_name = _("Client Domain")
         verbose_name_plural = _("Client Domains")
-        ordering = ['client_domain_name']
+        ordering = ['name']
 
     def __str__(self):
-        return self.client_domain_name
+        return self.name
 
 
 class Region(models.Model):
