@@ -127,7 +127,7 @@ class Ticket(models.Model):
     # sub_service = models.ForeignKey(SubService, models.SET_NULL, null=True, verbose_name='Sub-Service')
 
     sub_service = models.ForeignKey(SubService, models.CASCADE, null=True, verbose_name='Sub-Service')
-    category_status = models.ForeignKey(StatusCategory, models.DO_NOTHING, null=True, default=3, verbose_name='Status')
+    status = models.ForeignKey(StatusCategory, models.DO_NOTHING, null=True, default=3, verbose_name='Status')
     begin = models.DateTimeField()
     end = models.DateTimeField(null=True, blank=True)
     action_description = RichTextField()
