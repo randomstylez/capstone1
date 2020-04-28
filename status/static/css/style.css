@@ -97,7 +97,7 @@ a:hover {
 }
 
 #list_of_services, #list_of_sub_services, #user_subservices, #user_services, #user_services_to_add,
-#user_subservices_to_add, #domain_list {
+#user_subservices_to_add, #email_domain_list {
     overflow: auto;
     height:8rem;
 }
