@@ -174,7 +174,7 @@ class Subscriber(models.Model):
 
 
 class EmailDomain(models.Model):
-    domain = models.CharField(unique=True, max_length=100, verbose_name='Email Domain')
+    domain = models.CharField(unique=True, max_length=100, verbose_name='Domain Name')
     description = models.TextField(blank=True, null=True)
 
     class Meta:
