@@ -17,7 +17,7 @@ from .models import TicketLog
 class RegionAdmin(admin.ModelAdmin):
     list_display = ('region_name', 'region_description',)
     search_fields = ['region_name', 'region_description', 'services__service_name']
-    list_filter = (('client_domains__services__subservice__ticket__status__status_category_tag',
+    list_filter = (('client_domains__services__subservice__ticket__status__tag',
                     DropdownFilter),
                    ('client_domains__client_domain_name',
                     DropdownFilter),
@@ -32,7 +32,7 @@ class RegionAdmin(admin.ModelAdmin):
 class ClientDomainAdmin(admin.ModelAdmin):
     list_display = ('client_domain_name', 'client_domain_description',)
     search_fields = ['client_domain_name', 'client_domain_description']
-    list_filter = (('services__subservice__ticket__status__status_category_tag',
+    list_filter = (('services__subservice__ticket__status__tag',
                     DropdownFilter),
                    ('region__region_name',
                     DropdownFilter),
@@ -48,7 +48,7 @@ class ServiceAdmin(admin.ModelAdmin):
     # list_display = ('service_name', 'service_description',)
     list_display = ('service_name', 'description',)
     search_fields = ['service_name', 'service_description', 'subservice__sub_service_name', 'region__region_name']
-    list_filter = (('subservice__ticket__status__status_category_tag',
+    list_filter = (('subservice__ticket__status__tag',
                     DropdownFilter),
                    ('clientdomain__region__region_name',
                     DropdownFilter),
@@ -64,7 +64,7 @@ class SubServiceAdmin(admin.ModelAdmin):
     list_display = ('sub_service_name', 'sub_service_description',)
     search_fields = ['sub_service_name', 'sub_service_description', 'services__service_name',
                      'services__clientdomain__region__region_name']
-    list_filter = (('ticket__status__status_category_tag',
+    list_filter = (('ticket__status__tag',
                     DropdownFilter),
                    ('services__clientdomain__region__region_name',
                     DropdownFilter),
@@ -77,8 +77,8 @@ class SubServiceAdmin(admin.ModelAdmin):
 
 @admin.register(Status)
 class StatusAdmin(admin.ModelAdmin):
-    list_display = ('status_category_tag', 'color_name', 'color_hex', 'class_design')
-    ordering = ['status_category_tag']
+    list_display = ('tag', 'color_name', 'color_hex', 'class_design')
+    ordering = ['tag']
 
 
 def notify_users(modeladmin, request, queryset):
@@ -118,7 +118,7 @@ class TicketAdmin(admin.ModelAdmin):
 
     # readonly_fields = ['notify_action']
 
-    search_fields = ['ticket_id', 'sub_service__sub_service_name', 'status__status_category_tag']
+    search_fields = ['ticket_id', 'sub_service__sub_service_name', 'status__tag']
     list_filter = (('status',
                     RelatedDropdownFilter),
                    ('sub_service__services__clientdomain__region__region_name',
@@ -142,9 +142,9 @@ class TicketAdmin(admin.ModelAdmin):
             status = formset.cleaned_data[-1]['status']
             # If the last Ticket Log status is 'No Issues,' means that the problem has
             # updating the Ticket End Time to the value specified on the last Ticket Events
-            if status.status_category_tag == 'No Issues':
+            if status.tag == 'No Issues':
                 form.instance.end = formset.cleaned_data[-1]['action_date']
-            status_category_id = Status.objects.get(status_category_tag=status)
+            status_category_id = Status.objects.get(tag=status)
             form.instance.category_status_id = status_category_id.pk
             form.instance.save()
         formset.save()
@@ -166,7 +166,7 @@ class SubServiceServicesAdmin(admin.ModelAdmin):
     list_display = ('service', 'subservice', 'priority',)
     list_filter = (('priority',
                     RelatedDropdownFilter),
-                   ('subservice__ticket__status__status_category_tag',
+                   ('subservice__ticket__status__tag',
                     DropdownFilter),
                    ('service__clientdomain__region__region_name',
                     DropdownFilter),

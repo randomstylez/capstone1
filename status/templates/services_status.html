@@ -22,7 +22,7 @@
                  style="border-left: 0.6rem solid {{instance.status.color_hex}};">
                 <a href="details/{{ instance.id}}">
                     <p><span class="bold">Sub-service Impacted: </span>{{ instance.sub_service.sub_service_name }}</p>
-                    <p><span class="bold">Status: </span>{{ instance.status.status_category_tag }}</p>
+                    <p><span class="bold">Status: </span>{{ instance.status.tag }}</p>
                     <p>{{ instance.action_description | safe }}</p> <!--  Description of the ticket  -->
                 </a>
             </div>
@@ -111,7 +111,7 @@
                     {% for status in status_list %}
 
                         <div class="row m-0 d-flex justify-content-between p-0 dropdown-item">
-                            <div class="col-1 d-inline">{{status.status_category_tag}}</div>
+                            <div class="col-1 d-inline">{{status.tag}}</div>
                             <div class="col-1 mr-2 d-inline">
                                <span style="color: {{status.color_hex}}">
                                <i class="{{status.class_design}}"></i>
@@ -214,7 +214,7 @@
 
                         <div class="row pl-2" id="legend_items">
                             <div class="col-10">
-                                <p class="my-1">{{status.status_category_tag}}</p>
+                                <p class="my-1">{{status.tag}}</p>
                             </div>
                             <div class="col-2 px-0">
                                 <p class="m-0 mt-1" style="color: {{status.color_hex}}">

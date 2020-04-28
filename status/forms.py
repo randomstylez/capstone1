@@ -175,7 +175,7 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
                 status = form.cleaned_data.get('status')
                 if status is not None:
-                    status_list.append(status.status_category_tag)
+                    status_list.append(status.tag)
                 else:
                     break
 
@@ -202,7 +202,7 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
             if not my_raises:
                 for form in form_list:
                     if [item for item in set(status_list) if status_list.count(item) > 1].count('No Issues'):
-                        if form.cleaned_data['status'].status_category_tag == 'No Issues':
+                        if form.cleaned_data['status'].tag == 'No Issues':
                             form.add_error("status", "You can not have {} status multiple times.".format(
                                 form.cleaned_data["status"]))
                             my_raises = True
@@ -211,8 +211,8 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
                 raise ValidationError("There are some errors on the Service's Status.")
 
             for form in form_list:
-                if status.status_category_tag != 'No Issues' and 'No Issues' in status_list \
-                        and form.cleaned_data['status'].status_category_tag == 'No Issues':
+                if status.tag != 'No Issues' and 'No Issues' in status_list \
+                        and form.cleaned_data['status'].tag == 'No Issues':
                     form.add_error("status", "{} is an status available only as a final stage.".format(
                         form.cleaned_data["status"]))
                     my_raises = True

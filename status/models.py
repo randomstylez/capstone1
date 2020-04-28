@@ -100,7 +100,7 @@ class SubServiceServices(models.Model):
 
 
 class Status(models.Model):
-    status_category_tag = models.CharField(unique=True, max_length=45, verbose_name='Status')
+    tag = models.CharField(unique=True, max_length=45, verbose_name='Status')
     color_name = models.CharField(unique=True, max_length=7)
     color_hex = ColorField(default='#000000')
     class_design = models.CharField(unique=True, max_length=50)
@@ -110,7 +110,7 @@ class Status(models.Model):
         verbose_name_plural = _("Status Categories")
 
     def __str__(self):
-        return self.status_category_tag
+        return self.tag
 
 
 class Ticket(models.Model):

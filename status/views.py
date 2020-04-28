@@ -94,7 +94,7 @@ class ServicesStatusView(View):
 
         # Declaring an empty dictionary to store status per day for each service
         status = {}
-        no_issues = Status.objects.filter(status_category_tag='No Issues')[0]
+        no_issues = Status.objects.filter(tag='No Issues')[0]
 
         # Getting list of tickets associated with each service
         for service in services:
@@ -120,7 +120,7 @@ class ServicesStatusView(View):
                     medium_priority_tickets = []
                     low_priority = []
                     for ticket in active_tickets_per_day:
-                        status = ticket.status.status_category_tag
+                        status = ticket.status.tag
                         if status == "In Process" or status == "Alert" or status == "Outage":
                             priority_tickets.append(ticket)
                         elif status == "Planned":
@@ -383,7 +383,7 @@ class ServiceHistoryView(View):
                     for ticket in tickets_list:
                         if (searchfor.lower() in ticket.ticket_id.lower()
                                 or searchfor.lower() in ticket.action_description.lower()
-                                or searchfor.lower() in ticket.status.status_category_tag.lower()):
+                                or searchfor.lower() in ticket.status.tag.lower()):
                             aux_list.append(ticket)
 
                     tickets_list = aux_list
