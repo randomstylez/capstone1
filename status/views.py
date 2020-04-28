@@ -93,7 +93,7 @@ class ServicesStatusView(View):
             context['services_list'] = services
 
         # Declaring an empty dictionary to store status per day for each service
-        status = {}
+        service_status = {}
         no_issues = Status.objects.filter(tag='No Issues')[0]
 
         # Getting list of tickets associated with each service
@@ -140,9 +140,9 @@ class ServicesStatusView(View):
                     status_per_day.append(no_issues)
 
             status_per_day.reverse()
-            status[service] = status_per_day
+            service_status[service] = status_per_day
 
-        context['status'] = status
+        context['status'] = service_status
 
         return render(request, self.template_name, context)
 
