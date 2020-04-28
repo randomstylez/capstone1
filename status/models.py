@@ -46,13 +46,13 @@ class Region(models.Model):
     # services = models.ManyToManyField(Service)
     client_domains = models.ManyToManyField(ClientDomain)
 
-    def __str__(self):
-        return self.region_name
-
     class Meta:
         verbose_name = _("Region")
         verbose_name_plural = _("Regions")
         ordering = ['region_name']
+
+    def __str__(self):
+        return self.region_name
 
 
 class SubService(models.Model):
