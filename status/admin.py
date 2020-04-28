@@ -137,12 +137,12 @@ class TicketAdmin(admin.ModelAdmin):
     form = TicketForm
 
     def save_formset(self, request, form, formset, change):
-        # If it is received data related to the ticket's logs, the ticket
-        # will update its status with the last status registered on the logs
+        # If it is received data related to the ticket's events, the ticket
+        # will update its status with the last status registered on the events
         if formset.cleaned_data:
             status = formset.cleaned_data[-1]['status']
             # If the last Ticket Log status is 'No Issues,' means that the problem has
-            # updating the Ticket End Time to the value specified on the last Ticket Log
+            # updating the Ticket End Time to the value specified on the last Ticket Events
             if status.status_category_tag == 'No Issues':
                 form.instance.end = formset.cleaned_data[-1]['action_date']
             status_category_id = Status.objects.get(status_category_tag=status)
