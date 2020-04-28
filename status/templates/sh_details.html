@@ -15,7 +15,7 @@
                 <!--  Ticket main information section  -->
                 <p><span class="bold">Sub-service affected:</span> {{ object.sub_service }}</p>
                 <div class="container mb-1 border-bottom py-2 mb-4"
-                     style="border-left: 0.4rem solid {{object.status.status_category_color_hex}};"
+                     style="border-left: 0.4rem solid {{object.status.color_hex}};"
                      id="ticket_info">
                     <div class="row px-3 pt-3 d-flex justify-content-between">
                         <p><span class="bold">Ticket ID:</span> {{object.ticket_id}}</p>
@@ -24,8 +24,8 @@
                             {{instance.ticket_id}}</p>
                         <p class="bold" data-toggle="tooltip" data-placement="top"
                            title="{{object.status.status_category_tag}}">
-                            <span style="color: {{object.status.status_category_color_hex}}">
-                            <i class="{{object.status.class_design}}"></i>
+                            <span style="color: {{object.status.color_hex}}">
+                                <i class="{{object.status.class_design}}"></i>
                             </span>
                         </p>
                     </div>

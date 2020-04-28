@@ -90,7 +90,7 @@
                     {% for instance in tickets_list %}
 
                         <div class="row border-bottom py-2 mb-4"
-                             style="border-left: 1.5rem solid {{instance.status.status_category_color_hex}};">
+                             style="border-left: 1.5rem solid {{instance.status.color_hex}};">
                             <div class="col-2 col-lg-1">
                                 <a href="/details/{{ instance.id}}">
                                     <p class="m-0 link" data-toggle="tooltip" data-placement="top"
@@ -103,7 +103,7 @@
                             <div class="col-2 col-lg-1">
                                 <p class="bold ml-3" data-toggle="tooltip" data-placement="top"
                                    title="{{instance.status.status_category_tag}}">
-                                      <span style="color: {{instance.status.status_category_color_hex}}">
+                                      <span style="color: {{instance.status.color_hex}}">
                                       <i class="{{instance.status.class_design}}"></i>
                                      </span>
                                 </p>

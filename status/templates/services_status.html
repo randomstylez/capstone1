@@ -19,7 +19,7 @@
         {% for instance in ticket_list %}
 
             <div class="container mt-4 py-3" id="list_events"
-                 style="border-left: 0.6rem solid {{instance.status.status_category_color_hex}};">
+                 style="border-left: 0.6rem solid {{instance.status.color_hex}};">
                 <a href="details/{{ instance.id}}">
                     <p><span class="bold">Sub-service Impacted: </span>{{ instance.sub_service.sub_service_name }}</p>
                     <p><span class="bold">Status: </span>{{ instance.status.status_category_tag }}</p>
@@ -113,7 +113,7 @@
                         <div class="row m-0 d-flex justify-content-between p-0 dropdown-item">
                             <div class="col-1 d-inline">{{status.status_category_tag}}</div>
                             <div class="col-1 mr-2 d-inline">
-                               <span style="color: {{status.status_category_color_hex}}">
+                               <span style="color: {{status.color_hex}}">
                                <i class="{{status.class_design}}"></i>
                                 </span>
                             </div>
@@ -185,7 +185,7 @@
                                 {% for status_day in status|get_value:instance %}
 
                                     <div class="col">
-                                        <p class="m-0 mt-1" style="color: {{status_day.status_category_color_hex}}">
+                                        <p class="m-0 mt-1" style="color: {{status_day.color_hex}}">
                                             <i class="{{status_day.class_design}}"></i>
                                         </p>
                                     </div>
@@ -217,7 +217,7 @@
                                 <p class="my-1">{{status.status_category_tag}}</p>
                             </div>
                             <div class="col-2 px-0">
-                                <p class="m-0 mt-1" style="color: {{status.status_category_color_hex}}">
+                                <p class="m-0 mt-1" style="color: {{status.color_hex}}">
                                     <i class="{{status.class_design}}"></i>
                                 </p>
                             </div>
