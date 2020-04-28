@@ -125,11 +125,11 @@ a:hover {
     margin: 0;
 }
 
-#ticketLogsHeading p {
+#ticket_logs_heading p {
     text-align: center;
 }
 
-#ticketLogscontent {
+#ticket_logs_content {
     overflow: auto;
     height: 17rem;
 }
@@ -208,7 +208,7 @@ h3 {
     height: 90vh;
 }
 
-#service_subservice_info, #sshistory_content {
+#service_subservice_info, #ss_history_content {
     height: 88vh;
 }
 
@@ -295,7 +295,7 @@ h3 {
         height: 30rem;
     }
 
-    #ticketLogscontent {
+    #ticket_logs_content {
         overflow: auto;
         height: 30rem;
     }
