@@ -21,8 +21,8 @@
                                 <p class="bold mb-2">See the list of approved domains below:</p>
                                 <div class="container border" id="domain_list">
 
-                                    {% for domain in domain_list %}
-                                        <p class="mb-0">- {{domain.email_domain_name}}</p>
+                                    {% for email_domain in domain_list %}
+                                        <p class="mb-0">- {{email_domain.domain}}</p>
                                     {% endfor %}
 
                                 </div>
