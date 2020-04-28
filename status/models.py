@@ -58,7 +58,7 @@ class Region(models.Model):
 class SubService(models.Model):
     name = models.CharField(unique=True, max_length=100, verbose_name='Sub-Service')
     # sub_service_description = HTMLField()
-    sub_service_description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     services = models.ManyToManyField(Service, through='SubServiceServices', verbose_name='Service')
 
     class Meta:

@@ -61,8 +61,8 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(SubService)
 class SubServiceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'sub_service_description',)
-    search_fields = ['name', 'sub_service_description', 'services__service_name',
+    list_display = ('name', 'description',)
+    search_fields = ['name', 'description', 'services__service_name',
                      'services__clientdomain__region__region_name']
     list_filter = (('ticket__status__tag',
                     DropdownFilter),
