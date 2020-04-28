@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from validate_email import validate_email
 
 from status.mail_sender import MailSender
-from .models import EmailDomainList
+from .models import EmailDomain
 from .models import Region
 from .models import Service
 from .models import SubService
@@ -162,7 +162,7 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
         status_list = []
         form_list = []
         change_detected = False
-        service_status = None
+        event_status = None
         main_begin = None
 
         if self.data['begin_0'] and self.data['begin_1']:
@@ -229,7 +229,7 @@ class EmailActions:
     def check_email_domain(domain):
 
         # It verifies the existence or not of that email domain
-        domain_exist = EmailDomainList.objects.filter(domain=domain).count()
+        domain_exist = EmailDomain.objects.filter(domain=domain).count()
 
         if domain_exist == 0:
             return False
@@ -477,7 +477,7 @@ class SubscriberForm(forms.ModelForm):
         domain = email.split('@')[1]
 
         # It verifies the existence or not of that email domain
-        domain_exist = EmailDomainList.objects.filter(domain=domain).count()
+        domain_exist = EmailDomain.objects.filter(domain=domain).count()
 
         if domain_exist == 0:
             self.add_error("email", "{} does not belong to our Users' domain.".format(
