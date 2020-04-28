@@ -530,7 +530,7 @@ class ModifyUserSubscription(ListView):
         if subservices_deleted:
             # Deleting the subservices
             for subservice in subservices_deleted:
-                model_subservice = SubService.objects.filter(sub_service_name=subservice)[:1].get()
+                model_subservice = SubService.objects.filter(name=subservice)[:1].get()
                 user.subservices.remove(model_subservice)
 
         # Getting list of services to add
@@ -548,7 +548,7 @@ class ModifyUserSubscription(ListView):
         if subservices_added:
             # Adding the subservices
             for subservice in subservices_added:
-                model_subservice = SubService.objects.filter(sub_service_name=subservice)[:1].get()
+                model_subservice = SubService.objects.filter(name=subservice)[:1].get()
                 user.subservices.add(model_subservice)
 
         context = {

@@ -15,37 +15,37 @@
                 <!--  Ticket main information section  -->
                 <p><span class="bold">Sub-service affected:</span> {{ object.sub_service }}</p>
                 <div class="container mb-1 border-bottom py-2 mb-4"
-                     style="border-left: 0.4rem solid {{object.status.color_hex}};"
+                     style="border-left: 0.4rem solid {{ object.status.color_hex }};"
                      id="ticket_info">
                     <div class="row px-3 pt-3 d-flex justify-content-between">
-                        <p><span class="bold">Ticket ID:</span> {{object.ticket_id}}</p>
+                        <p><span class="bold">Ticket ID:</span> {{ object.ticket_id }}</p>
                         <p class="m-0 link" data-toggle="tooltip" data-placement="top"
-                           title="Sub-service affected: {{instance.sub_service.sub_service_name}}" id="ticket_id">
-                            {{instance.ticket_id}}</p>
+                           title="Sub-service affected: {{ instance.sub_service.name }}" id="ticket_id">
+                            {{ instance.ticket_id }}</p>
                         <p class="bold" data-toggle="tooltip" data-placement="top"
-                           title="{{object.status.tag}}">
-                            <span style="color: {{object.status.color_hex}}">
-                                <i class="{{object.status.class_design}}"></i>
+                           title="{{ object.status.tag }}">
+                            <span style="color: {{ object.status.color_hex }}">
+                                <i class="{{ object.status.class_design }}"></i>
                             </span>
                         </p>
                     </div>
 
                     <div class="row">
                         <div class="col col-lg-4">
-                            <p><span class="bold">Started:</span> {{object.begin}}</p>
+                            <p><span class="bold">Started:</span> {{ object.begin }}</p>
                         </div>
                         <div class="col col-lg-4">
-                            <p><span class="bold">Ended:</span> {{object.end}}</p>
+                            <p><span class="bold">Ended:</span> {{ object.end }}</p>
                         </div>
                     </div>
                     <div class="row" id="ticket_details">
                         <div class="container mb-3">
                             <p class="bold">Description:</p>
-                            <p>{{object.action_description | safe}}</p>
+                            <p>{{ object.action_description | safe }}</p>
                         </div>
                         <div class="container mb-3">
                             <p class="bold">Notes:</p>
-                            <p>{{object.action_notes | safe}}</p>
+                            <p>{{ object.action_notes | safe }}</p>
                         </div>
                     </div>
                 </div>
@@ -90,9 +90,9 @@
                     {#Describe this "for" statement functionality#}
                     {% for instance in ticket_events %}
                         <div class="container ticket_log border py-2 my-2">
-                            <p><span class="bold">Service status: </span>{{instance.status.tag}}</p>
-                            <p><span class="bold">Action date: </span>{{instance.action_date}}</p>
-                            <p class="mb-0"><span class="bold">Notes: </span>{{instance.action_notes | safe}}</p>
+                            <p><span class="bold">Service status: </span>{{ instance.status.tag }}</p>
+                            <p><span class="bold">Action date: </span>{{ instance.action_date }}</p>
+                            <p class="mb-0"><span class="bold">Notes: </span>{{ instance.action_notes | safe }}</p>
                         </div>
                     {% endfor %}
 

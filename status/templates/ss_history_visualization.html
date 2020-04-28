@@ -19,7 +19,7 @@
                                     <input type="text" name="search" placeholder="Search..." class="form-control"
 
                                     {#Describe this conditional statement functionality#}
-                                    {% if searchfor %} value="{{searchfor}}" {% endif %}>
+                                    {% if searchfor %} value="{{ searchfor }}" {% endif %}>
 
                                 </div>
                             </div>
@@ -30,7 +30,7 @@
                     </form>
                 </div>
                 <div class="col-2">
-                    <a class="link" href="/{{object.id}}"><p>Reset search</p></a>
+                    <a class="link" href="/{{ object.id }}"><p>Reset search</p></a>
                 </div>
                 <div class="col-7" id="service_name">
                     <p><span class="bold">Business Service: </span>{{ object.service_name }}</p>
@@ -79,7 +79,7 @@
                         <h3>No results found for your search criteria</h3>
                     </div>
                     <div class="row mt-4 d-flex justify-content-center">
-                        <a class="link" href="/{{object.id}}">
+                        <a class="link" href="/{{ object.id }}">
                             <p>See all incidents</p>
                         </a>
                     </div>
@@ -90,43 +90,43 @@
                     {% for instance in tickets_list %}
 
                         <div class="row border-bottom py-2 mb-4"
-                             style="border-left: 1.5rem solid {{instance.status.color_hex}};">
+                             style="border-left: 1.5rem solid {{ instance.status.color_hex }};">
                             <div class="col-2 col-lg-1">
                                 <a href="/details/{{ instance.id}}">
                                     <p class="m-0 link" data-toggle="tooltip" data-placement="top"
-                                       title="Sub-service affected: {{instance.sub_service.sub_service_name}}"
+                                       title="Sub-service affected: {{ instance.sub_service.name }}"
                                        id="ticket_id">
-                                        {{instance.ticket_id}}
+                                        {{ instance.ticket_id }}
                                     </p>
                                 </a>
                             </div>
                             <div class="col-2 col-lg-1">
                                 <p class="bold ml-3" data-toggle="tooltip" data-placement="top"
-                                   title="{{instance.status.tag}}">
-                                      <span style="color: {{instance.status.color_hex}}">
-                                      <i class="{{instance.status.class_design}}"></i>
+                                   title="{{ instance.status.tag }}">
+                                      <span style="color: {{ instance.status.color_hex }}">
+                                      <i class="{{ instance.status.class_design }}"></i>
                                      </span>
                                 </p>
                             </div>
                             <div class="col-2 d-none d-lg-block">
-                                <p class="m-0">{{instance.begin | date:'m-d-Y h:i a'}}</p>
+                                <p class="m-0">{{ instance.begin | date:'m-d-Y h:i a' }}</p>
                             </div>
                             <div class="col-2 d-none d-lg-block">
-                                <p class="m-0">{{instance.end | date:'m-d-Y h:i a'}}</p>
+                                <p class="m-0">{{ instance.end | date:'m-d-Y h:i a' }}</p>
                             </div>
                             <div class="col-7 col-lg-6">
                                 <div class="row d-lg-none mb-1">
                                     <div class="col pl-0 pr-0 mr-2 border-right">
                                         <p class="m-0"><span class="bold">Started:</span>
-                                            {{instance.begin | date:'m-d-Y h:i a'}}</p>
+                                            {{ instance.begin | date:'m-d-Y h:i a' }}</p>
                                     </div>
                                     <div class="col pl-0">
                                         <p class="m-0"> <span class="bold">Ended:</span>
-                                            {{instance.end | date:'m-d-Y h:i a'}}</p>
+                                            {{ instance.end | date:'m-d-Y h:i a' }}</p>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <p class="m-0">{{instance.action_description | safe}}</p>
+                                    <p class="m-0">{{ instance.action_description | safe }}</p>
                                 </div>
                             </div>
                         </div>
@@ -142,7 +142,7 @@
             <div class="row mt-2">
                 <div class="col-6" id="ticket_legend"></div>
                 <div class="col-6 d-flex justify-content-end" id="subscribe_to_service">
-                    <a href="/subscription/{{object.id}}">
+                    <a href="/subscription/{{ object.id }}">
                         <button name="subscribe_to_service" class="btn btn-dark">Subscribe to this service</button>
                     </a>
                 </div>

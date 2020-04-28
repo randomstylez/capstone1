@@ -56,7 +56,7 @@ class Region(models.Model):
 
 
 class SubService(models.Model):
-    sub_service_name = models.CharField(unique=True, max_length=100, verbose_name='Sub-Service')
+    name = models.CharField(unique=True, max_length=100, verbose_name='Sub-Service')
     # sub_service_description = HTMLField()
     sub_service_description = models.TextField(blank=True, null=True)
     services = models.ManyToManyField(Service, through='SubServiceServices', verbose_name='Service')
@@ -64,10 +64,10 @@ class SubService(models.Model):
     class Meta:
         verbose_name = _("Sub-Service")
         verbose_name_plural = _("Sub-Services")
-        ordering = ['sub_service_name']
+        ordering = ['name']
 
     def __str__(self):
-        return self.sub_service_name
+        return self.name
 
 
 class Priority(models.Model):

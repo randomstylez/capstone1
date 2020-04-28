@@ -80,7 +80,7 @@ class TicketForm(forms.ModelForm):
             data['service'] = services[0].service_name
         data['subservice'] = 'None'
         if subservices.count() != 0:
-            data['subservice'] = subservices[0].sub_service_name
+            data['subservice'] = subservices[0].name
 
         for user in users:
             text = f"""\

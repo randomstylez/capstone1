@@ -21,7 +21,7 @@
             <div class="container mt-4 py-3" id="list_events"
                  style="border-left: 0.6rem solid {{instance.status.color_hex}};">
                 <a href="details/{{ instance.id}}">
-                    <p><span class="bold">Sub-service Impacted: </span>{{ instance.sub_service.sub_service_name }}</p>
+                    <p><span class="bold">Sub-service Impacted: </span>{{ instance.sub_service.name }}</p>
                     <p><span class="bold">Status: </span>{{ instance.status.tag }}</p>
                     <p>{{ instance.action_description | safe }}</p> <!--  Description of the ticket  -->
                 </a>

@@ -23,7 +23,7 @@ class RegionAdmin(admin.ModelAdmin):
                     DropdownFilter),
                    ('client_domains__services__service_name',
                     DropdownFilter),
-                   ('client_domains__services__subservice__sub_service_name',
+                   ('client_domains__services__subservice__name',
                     DropdownFilter))
     ordering = ['region_name']
 
@@ -38,7 +38,7 @@ class ClientDomainAdmin(admin.ModelAdmin):
                     DropdownFilter),
                    ('services__service_name',
                     DropdownFilter),
-                   ('services__subservice__sub_service_name',
+                   ('services__subservice__name',
                     DropdownFilter))
     ordering = ['client_domain_name']
 
@@ -47,22 +47,22 @@ class ClientDomainAdmin(admin.ModelAdmin):
 class ServiceAdmin(admin.ModelAdmin):
     # list_display = ('service_name', 'service_description',)
     list_display = ('service_name', 'description',)
-    search_fields = ['service_name', 'service_description', 'subservice__sub_service_name', 'region__region_name']
+    search_fields = ['service_name', 'service_description', 'subservice__name', 'region__region_name']
     list_filter = (('subservice__ticket__status__tag',
                     DropdownFilter),
                    ('clientdomain__region__region_name',
                     DropdownFilter),
                    ('clientdomain__client_domain_name',
                     DropdownFilter),
-                   ('subservice__sub_service_name',
+                   ('subservice__name',
                     DropdownFilter))
     ordering = ['service_name']
 
 
 @admin.register(SubService)
 class SubServiceAdmin(admin.ModelAdmin):
-    list_display = ('sub_service_name', 'sub_service_description',)
-    search_fields = ['sub_service_name', 'sub_service_description', 'services__service_name',
+    list_display = ('name', 'sub_service_description',)
+    search_fields = ['name', 'sub_service_description', 'services__service_name',
                      'services__clientdomain__region__region_name']
     list_filter = (('ticket__status__tag',
                     DropdownFilter),
@@ -72,7 +72,7 @@ class SubServiceAdmin(admin.ModelAdmin):
                     DropdownFilter),
                    ('services',
                     RelatedDropdownFilter))
-    ordering = ['sub_service_name']
+    ordering = ['name']
 
 
 @admin.register(Status)
@@ -118,7 +118,7 @@ class TicketAdmin(admin.ModelAdmin):
 
     # readonly_fields = ['notify_action']
 
-    search_fields = ['ticket_id', 'sub_service__sub_service_name', 'status__tag']
+    search_fields = ['ticket_id', 'sub_service__name', 'status__tag']
     list_filter = (('status',
                     RelatedDropdownFilter),
                    ('sub_service__services__clientdomain__region__region_name',
