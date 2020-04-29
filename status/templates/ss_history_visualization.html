@@ -89,7 +89,9 @@
                     {#Describe this "for" statement functionality#}
                     {% for instance in tickets_list %}
 
-                        <div class="row border-bottom py-2 mb-4"
+{#                        <div class="row border-bottom py-2 mb-4"#}
+{#                             style="border-left: 1.5rem solid {{ instance.status.color_hex }};">#}
+                        <div class="row border-bottom py-2"
                              style="border-left: 1.5rem solid {{ instance.status.color_hex }};">
                             <div class="col-2 col-lg-1">
                                 <a href="/details/{{ instance.id }}">
