@@ -86,7 +86,7 @@ class Priority(models.Model):
 
 class Topology(models.Model):
     service = models.ForeignKey(Service, models.CASCADE, verbose_name='Service')
-    subservices = models.ManyToManyField(SubService, verbose_name='Sub - Service', blank=True)
+    subservices = models.ManyToManyField(SubService, verbose_name='Sub - Service')
     priority = models.ForeignKey(Priority, models.DO_NOTHING)
 
     class Meta:

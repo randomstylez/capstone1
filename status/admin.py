@@ -11,13 +11,14 @@ from .models import Status
 from .models import SubService
 from .models import SubServiceServices
 from .models import TicketLog
+from .models import Topology
 
 
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
     search_fields = ['name', 'description', 'services__name']
-    list_filter = (('client_domains__services__subservice__ticket__status__tag',
+    list_filter = (('client_domains__services__topology__subservices__ticket__status__tag',
                     DropdownFilter),
                    ('client_domains__name',
                     DropdownFilter),
@@ -32,13 +33,13 @@ class RegionAdmin(admin.ModelAdmin):
 class ClientDomainAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
     search_fields = ['name', 'description']
-    list_filter = (('services__subservice__ticket__status__tag',
+    list_filter = (('services__topology__subservices__ticket__status__tag',
                     DropdownFilter),
                    ('region__name',
                     DropdownFilter),
                    ('services__name',
                     DropdownFilter),
-                   ('services__subservice__name',
+                   ('services__topology__subservices__name',
                     DropdownFilter))
     ordering = ['name']
 
@@ -175,6 +176,26 @@ class SubServiceServicesAdmin(admin.ModelAdmin):
                    ('subservice',
                     RelatedDropdownFilter))
     search_fields = ['service', 'subservice', 'priority']
+    ordering = ['service']
+
+
+@admin.register(Topology)
+class TopologyAdmin(admin.ModelAdmin):
+    # list_display = ('service', 'priority',)
+    list_display = ('service', 'priority',)
+    list_filter = (('priority',
+                    RelatedDropdownFilter),
+                   ('subservices__ticket__status__tag',
+                    DropdownFilter),
+                   ('service__clientdomain__region__name',
+                    DropdownFilter),
+                   ('service__clientdomain__name',
+                    DropdownFilter),
+                   ('service',
+                    RelatedDropdownFilter),
+                   ('subservices',
+                    RelatedDropdownFilter))
+    search_fields = ['service', 'subservices', 'priority']
     ordering = ['service']
 
 
