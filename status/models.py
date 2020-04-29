@@ -1,22 +1,22 @@
 from ckeditor.fields import RichTextField
 from colorfield.fields import ColorField
 from django.db import models
+from django.utils.html import format_html
 from django.utils.text import Truncator
-
 # Create your models here.
 from django.utils.translation import ugettext_lazy as _
 
 
 class Service(models.Model):
-
-    @property
-    def description(self):
-        return Truncator(self.service_description).chars(55)
-
     name = models.CharField(unique=True, max_length=100, verbose_name='Service')
-    service_description = models.TextField(blank=True, null=True, verbose_name='Description')
+    # service_description = models.TextField(blank=True, null=True, verbose_name='Description')
+    service_description = RichTextField(blank=True, null=True, verbose_name='Description')
 
-    # service_description = RichTextField(blank=True, null=True)
+    def description(self):
+        if self.service_description is not None:
+            return format_html(Truncator(self.service_description).chars(250))
+        return self.service_description
+    description.allow_tags = True
 
     class Meta:
         verbose_name = _("Service")
@@ -29,8 +29,15 @@ class Service(models.Model):
 
 class ClientDomain(models.Model):
     name = models.CharField(unique=True, max_length=100, verbose_name='Client Domain')
-    description = models.TextField(blank=True, null=True)
+    # description = models.TextField(blank=True, null=True)
+    domain_description = RichTextField(blank=True, null=True, verbose_name='Description')
     services = models.ManyToManyField(Service)
+
+    def description(self):
+        if self.domain_description is not None:
+            return format_html(self.domain_description)
+        return self.domain_description
+    description.allow_tags = True
 
     class Meta:
         verbose_name = _("Client Domain")
@@ -43,8 +50,15 @@ class ClientDomain(models.Model):
 
 class Region(models.Model):
     name = models.CharField(unique=True, max_length=100, verbose_name='Region')
-    description = models.TextField(blank=True, null=True)
+    # description = models.TextField(blank=True, null=True)
+    region_description = RichTextField(blank=True, null=True, verbose_name='Description')
     client_domains = models.ManyToManyField(ClientDomain)
+
+    def description(self):
+        if self.region_description is not None:
+            return format_html(self.region_description)
+        return self.region_description
+    description.allow_tags = True
 
     class Meta:
         verbose_name = _("Region")
@@ -58,8 +72,15 @@ class Region(models.Model):
 class SubService(models.Model):
     name = models.CharField(unique=True, max_length=100, verbose_name='Sub-Service')
     # sub_service_description = HTMLField()
-    description = models.TextField(blank=True, null=True)
+    # description = models.TextField(blank=True, null=True)
+    subservice_description = RichTextField(blank=True, null=True, verbose_name='Description')
     # services = models.ManyToManyField(Service, through='SubServiceServices', verbose_name='Service')
+
+    def description(self):
+        if self.subservice_description is not None:
+            return format_html(self.subservice_description)
+        return self.subservice_description
+    description.allow_tags = True
 
     class Meta:
         verbose_name = _("Sub-Service")
@@ -93,23 +114,27 @@ class Topology(models.Model):
         verbose_name = _("Topology")
         verbose_name_plural = _("Topologies")
 
-    # def __str__(self):
-    #     return "about {0} in {1}".format(self.subservice, self.service)
-
-
-class SubServiceServices(models.Model):
-    service = models.ForeignKey(Service, models.CASCADE, verbose_name='Service')
-    subservice = models.ForeignKey(SubService, models.CASCADE, verbose_name='Sub-Service')
-    priority = models.ForeignKey(Priority, models.DO_NOTHING)
-
-    class Meta:
-        unique_together = ('service', 'subservice')
-
-        verbose_name = _("Topology")
-        verbose_name_plural = _("Topologies")
+    def subservices_list(self):
+        return format_html("<br>".join([subservice.name for subservice in self.subservices.all()]))
+    subservices_list.allow_tags = True
 
     def __str__(self):
-        return "about {0} in {1}".format(self.subservice, self.service)
+        return "Topology {0}: about Service {1}, {2} priority".format(self.pk, self.service, self.priority)
+
+
+# class SubServiceServices(models.Model):
+#     service = models.ForeignKey(Service, models.CASCADE, verbose_name='Service')
+#     subservice = models.ForeignKey(SubService, models.CASCADE, verbose_name='Sub-Service')
+#     priority = models.ForeignKey(Priority, models.DO_NOTHING)
+#
+#     class Meta:
+#         unique_together = ('service', 'subservice')
+#
+#         verbose_name = _("Topology")
+#         verbose_name_plural = _("Topologies")
+#
+#     def __str__(self):
+#         return "about {0} in {1}".format(self.subservice, self.service)
 
 
 class Status(models.Model):
@@ -188,7 +213,14 @@ class Subscriber(models.Model):
 
 class EmailDomain(models.Model):
     domain = models.CharField(unique=True, max_length=100, verbose_name='Domain Name')
-    description = models.TextField(blank=True, null=True)
+    # description = models.TextField(blank=True, null=True)
+    domain_description = RichTextField(blank=True, null=True, verbose_name='Description')
+
+    def description(self):
+        if self.domain_description is not None:
+            return format_html(self.domain_description)
+        return self.domain_description
+    description.allow_tags = True
 
     class Meta:
         verbose_name = _("Email Domain")

@@ -9,7 +9,7 @@ from django.views.generic import ListView
 
 from .forms import SubscriberDataForm
 from .forms import SubscriberForm
-from .models import SubService, Ticket, Status, Service, TicketLog, SubServiceServices, Region, Subscriber, \
+from .models import SubService, Ticket, Status, Service, TicketLog, Region, Subscriber, \
     EmailDomain
 
 
@@ -62,12 +62,11 @@ class ServicesStatusView(View):
                 # Getting list of services
                 queryset = Region.objects.filter(name=region)
                 for e in queryset:
-                    # services = list(dict.fromkeys(chain(services, e.services.all())))
                     client_domain_services = e.client_domains.all().exclude(services__name=None). \
                         values('services__name')
-                    # services = list(dict.fromkeys(chain(services, tmp.all())))
-                    services = list(chain(services, client_domain_services.all().exclude(services__name=None).
-                                          values_list('services__name', flat=True)))
+                    services = list(set(chain(services, client_domain_services.all().exclude(services__name=None).
+                                              values_list('services__name', flat=True))))
+                services.sort()
                 context['services_list'] = services
 
             context['regions_checked'] = regions
@@ -99,14 +98,13 @@ class ServicesStatusView(View):
         # Getting list of tickets associated with each service
         for service in services:
 
-            # sub_service_service = SubServiceServices.objects.filter(service=service)
-            sub_service_service = SubServiceServices.objects.filter(service__name=service)
+            subservices = SubService.objects.filter(topology__service__name=service)
 
             # Initializing queryset to empty
             tickets_list = Ticket.objects.none()
 
-            for row in sub_service_service:
-                queryset = Ticket.objects.filter(sub_service=row.subservice)
+            for subservice in subservices:
+                queryset = Ticket.objects.filter(sub_service=subservice)
                 if queryset:
                     tickets_list = tickets_list | queryset
 
@@ -115,11 +113,14 @@ class ServicesStatusView(View):
                 active_tickets_per_day = tickets_list.filter(begin__lte=day).exclude(end__lte=day)
 
                 if active_tickets_per_day:
+
                     # Separating tickets in groups by priority
                     priority_tickets = []
                     medium_priority_tickets = []
                     low_priority = []
+
                     for ticket in active_tickets_per_day:
+
                         status = ticket.status.tag
                         if status == "In Process" or status == "Alert" or status == "Outage":
                             priority_tickets.append(ticket)
@@ -136,6 +137,7 @@ class ServicesStatusView(View):
                         status_per_day.append(low_priority[0].status)
                     else:
                         status_per_day.append(no_issues)
+
                 else:
                     status_per_day.append(no_issues)
 
@@ -149,6 +151,7 @@ class ServicesStatusView(View):
 
 # Subscription page
 class SubscriptionView(View):
+
     template_name = "subscription.html"
 
     def get(self, request, service_id=None, *args, **kwargs):
@@ -219,12 +222,15 @@ class SubscriptionView(View):
 
         form = SubscriberDataForm(request.POST, initial={'token': generate_token})
 
-        context = {
-            "form": form,
-            "subscription_active": True
-        }
+        context = {"form": form,  "subscription_active": True}
 
         service_specific = request.POST.get('service_specific')
+
+        if 'one_service' in request.POST:
+            context['one_service'] = request.POST.get('one_service')
+
+        if 'subs_updates' in request.POST:
+            context['subs_updates'] = request.POST.get('subs_updates')
 
         context['service_specific'] = False
         if service_specific == 'True':
@@ -292,9 +298,9 @@ class SubscriptionView(View):
                             user.save()
 
                             # Add subservices to the user account
-                            for subservice_toadd in subservices_to_add:
-                                if subservice_toadd not in user_subservices:
-                                    user.subservices.add(subservice_toadd)
+                            for subservice_to_add in subservices_to_add:
+                                if subservice_to_add not in user_subservices:
+                                    user.subservices.add(subservice_to_add)
                                     user.save()
 
                         context['subscribed'] = True
@@ -365,13 +371,14 @@ class ServiceHistoryView(View):
             context['object'] = obj
 
             # Getting all tickets affecting this service
-            sub_service_service = SubServiceServices.objects.filter(service=obj)
+            subservices = SubService.objects.filter(topology__service__name=obj.name)
 
             # Initializing queryset to empty
             tickets_list = Ticket.objects.none()
 
-            for row in sub_service_service:
-                queryset = Ticket.objects.filter(sub_service=row.subservice)
+            # for every subservice:
+            for subservice in subservices:
+                queryset = Ticket.objects.filter(sub_service=subservice)
                 if queryset:
                     tickets_list = tickets_list | queryset
 

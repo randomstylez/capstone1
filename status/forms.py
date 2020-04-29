@@ -9,9 +9,9 @@ from .models import EmailDomain
 from .models import Region
 from .models import Service
 from .models import SubService
-from .models import SubServiceServices
 from .models import Subscriber
 from .models import Ticket
+from .models import Topology
 
 
 class TicketForm(forms.ModelForm):
@@ -44,7 +44,8 @@ class TicketForm(forms.ModelForm):
         # Information to use in the email Body
         # region = Region.objects.filter(services__subservice__in=subservices)
         region = Region.objects.filter(client_domains__services__subservice__in=subservices)
-        topology = SubServiceServices.objects.filter(subservice__in=subservices)
+        # topology = SubServiceServices.objects.filter(subservice__in=subservices)
+        topology = Topology.objects.filter(subservice__in=subservices)
 
         changed_data = self.changed_data
         # print(self.cleaned_data)
