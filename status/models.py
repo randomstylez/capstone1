@@ -71,17 +71,17 @@ class SubService(models.Model):
 
 
 class Priority(models.Model):
-    priority_tag = models.CharField(unique=True, max_length=25)
-    priority_color = models.CharField(unique=True, max_length=7)
-    priority_color_hex = ColorField(unique=True, default='#000000')
+    tag = models.CharField(unique=True, max_length=25)
+    color = models.CharField(unique=True, max_length=7)
+    color_hex = ColorField(unique=True, default='#000000')
 
     class Meta:
-        verbose_name = _("Priority Tag")
-        verbose_name_plural = _("Priority Tags")
-        ordering = ['priority_tag']
+        verbose_name = _("Priority")
+        verbose_name_plural = _("Priorities")
+        ordering = ['tag']
 
     def __str__(self):
-        return self.priority_tag
+        return self.tag
 
 
 class SubServiceServices(models.Model):

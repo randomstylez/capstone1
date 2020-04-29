@@ -180,8 +180,8 @@ class SubServiceServicesAdmin(admin.ModelAdmin):
 
 @admin.register(Priority)
 class PriorityAdmin(admin.ModelAdmin):
-    list_display = ('priority_tag', 'priority_color', 'priority_color_hex')
-    ordering = ['priority_tag']
+    list_display = ('tag', 'color', 'color_hex')
+    ordering = ['tag']
 
 
 @admin.register(EmailDomain)
