@@ -45,7 +45,6 @@ class ClientDomainAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    # list_display = ('service_name', 'service_description',)
     list_display = ('name', 'description',)
     search_fields = ['name', 't_description', 'subservice__name', 'clientdomain__region__name']
     list_filter = (('subservice__ticket__status__tag',
