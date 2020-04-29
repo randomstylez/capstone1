@@ -91,11 +91,11 @@
                 <div class="container" id="ticket_events_content">
 
                     {#Describe this "for" statement functionality#}
-                    {% for instance in ticket_events %}
+                    {% for ticket in ticket_events %}
                         <div class="container ticket_log border py-2 my-2">
-                            <p><span class="bold">Service status: </span>{{ instance.status.tag }}</p>
-                            <p><span class="bold">Action date: </span>{{ instance.action_date }}</p>
-                            <p class="mb-0"><span class="bold">Notes: </span>{{ instance.action_notes | safe }}</p>
+                            <p><span class="bold">Service status: </span>{{ ticket.status.tag }}</p>
+                            <p><span class="bold">Action date: </span>{{ ticket.action_date }}</p>
+                            <p class="mb-0"><span class="bold">Notes: </span>{{ ticket.action_notes | safe }}</p>
                         </div>
                     {% endfor %}
 

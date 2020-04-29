@@ -172,17 +172,17 @@
                     {% else %}
 
                         {#Describe this "for" statement functionality#}
-                        {% for instance in services_list %}
+                        {% for service in services_list %}
 
                             <div class="row">
                                 <div class="col-5">
-                                    <a href="{{ instance.id }}">
-                                        <p>{{ instance }}</p>
+                                    <a href="{{ service.id }}">
+                                        <p>{{ service }}</p>
                                     </a>
                                 </div>
 
                                 {#Describe this "for" statement functionality#}
-                                {% for status_day in status|get_value:instance %}
+                                {% for status_day in status|get_value:service %}
 
                                     <div class="col">
                                         <p class="m-0 mt-1" style="color: {{ status_day.color_hex }}">

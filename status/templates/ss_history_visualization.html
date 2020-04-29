@@ -87,48 +87,48 @@
                     {#Describe this conditional statement functionality#}
                 {% else %}
                     {#Describe this "for" statement functionality#}
-                    {% for instance in tickets_list %}
+                    {% for ticket in tickets_list %}
 
 {#                        <div class="row border-bottom py-2 mb-4"#}
-{#                             style="border-left: 1.5rem solid {{ instance.status.color_hex }};">#}
+{#                             style="border-left: 1.5rem solid {{ ticket.status.color_hex }};">#}
                         <div class="row border-bottom py-2"
-                             style="border-left: 1.5rem solid {{ instance.status.color_hex }};">
+                             style="border-left: 1.5rem solid {{ ticket.status.color_hex }};">
                             <div class="col-2 col-lg-1">
-                                <a href="/details/{{ instance.id }}">
+                                <a href="/details/{{ ticket.id }}">
                                     <p class="m-0 link" data-toggle="tooltip" data-placement="top"
-                                       title="Sub-service affected: {{ instance.sub_service.name }}"
+                                       title="Sub-service affected: {{ ticket.sub_service.name }}"
                                        id="ticket_id">
-                                        {{ instance.ticket_id }}
+                                        {{ ticket.ticket_id }}
                                     </p>
                                 </a>
                             </div>
                             <div class="col-2 col-lg-1">
                                 <p class="bold ml-3" data-toggle="tooltip" data-placement="top"
-                                   title="{{ instance.status.tag }}">
-                                      <span style="color: {{ instance.status.color_hex }}">
-                                      <i class="{{ instance.status.class_design }}"></i>
+                                   title="{{ ticket.status.tag }}">
+                                      <span style="color: {{ ticket.status.color_hex }}">
+                                      <i class="{{ ticket.status.class_design }}"></i>
                                      </span>
                                 </p>
                             </div>
                             <div class="col-2 d-none d-lg-block">
-                                <p class="m-0">{{ instance.begin | date:'m-d-Y h:i a' }}</p>
+                                <p class="m-0">{{ ticket.begin | date:'m-d-Y h:i a' }}</p>
                             </div>
                             <div class="col-2 d-none d-lg-block">
-                                <p class="m-0">{{ instance.end | date:'m-d-Y h:i a' }}</p>
+                                <p class="m-0">{{ ticket.end | date:'m-d-Y h:i a' }}</p>
                             </div>
                             <div class="col-7 col-lg-6">
                                 <div class="row d-lg-none mb-1">
                                     <div class="col pl-0 pr-0 mr-2 border-right">
                                         <p class="m-0"><span class="bold">Started:</span>
-                                            {{ instance.begin | date:'m-d-Y h:i a' }}</p>
+                                            {{ ticket.begin | date:'m-d-Y h:i a' }}</p>
                                     </div>
                                     <div class="col pl-0">
                                         <p class="m-0"><span class="bold">Ended:</span>
-                                            {{ instance.end | date:'m-d-Y h:i a' }}</p>
+                                            {{ ticket.end | date:'m-d-Y h:i a' }}</p>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <p class="m-0">{{ instance.action_description | safe }}</p>
+                                    <p class="m-0">{{ ticket.action_description | safe }}</p>
                                 </div>
                             </div>
                         </div>
