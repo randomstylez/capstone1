@@ -11,10 +11,10 @@ class Service(models.Model):
 
     @property
     def description(self):
-        return Truncator(self.description).chars(55)
+        return Truncator(self.t_description).chars(55)
 
     name = models.CharField(unique=True, max_length=100, verbose_name='Service')
-    description = models.TextField(blank=True, null=True)
+    t_description = models.TextField(blank=True, null=True)
 
     # service_description = RichTextField(blank=True, null=True)
 
