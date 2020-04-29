@@ -59,7 +59,7 @@ class SubService(models.Model):
     name = models.CharField(unique=True, max_length=100, verbose_name='Sub-Service')
     # sub_service_description = HTMLField()
     description = models.TextField(blank=True, null=True)
-    services = models.ManyToManyField(Service, through='SubServiceServices', verbose_name='Service')
+    # services = models.ManyToManyField(Service, through='SubServiceServices', verbose_name='Service')
 
     class Meta:
         verbose_name = _("Sub-Service")
@@ -82,6 +82,19 @@ class Priority(models.Model):
 
     def __str__(self):
         return self.tag
+
+
+class Topology(models.Model):
+    service = models.ForeignKey(Service, models.CASCADE, verbose_name='Service')
+    subservices = models.ManyToManyField(SubService, verbose_name='Sub - Service', blank=True)
+    priority = models.ForeignKey(Priority, models.DO_NOTHING)
+
+    class Meta:
+        verbose_name = _("Topology")
+        verbose_name_plural = _("Topologies")
+
+    # def __str__(self):
+    #     return "about {0} in {1}".format(self.subservice, self.service)
 
 
 class SubServiceServices(models.Model):
