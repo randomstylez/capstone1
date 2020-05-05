@@ -3,7 +3,6 @@ from colorfield.fields import ColorField
 from django.db import models
 from django.utils.html import format_html
 from django.utils.text import Truncator
-# Create your models here.
 from django.utils.translation import ugettext_lazy as _
 
 
