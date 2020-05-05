@@ -489,33 +489,6 @@ class SubscriberForm(forms.ModelForm):
 
         EmailActions.send_subscription_notification(_email, _token)
 
-    # @staticmethod
-    # def get_user_data(_email, _token):
-    #     """
-    #     Method to get the services and sub-services associated
-    #     with a user(subscriber) given its email and token
-    #     :param _email:
-    #     :param _token:
-    #     :return:
-    #     """
-    #     # It collect the services and subservices associated to an user
-    #     services_subservices = Subscriber.objects.filter(email=_email, token=_token).values('services', 'subservices')
-    #     services = list()
-    #     sub_services = list()
-    #
-    #     if len(services_subservices) == 0:
-    #         print("Errors on the information provided")
-    #         return
-    #
-    #     # It creates the list of services and subservices
-    #     # avoiding repeated items on the list
-    #     for service_subservice in services_subservices:
-    #         if service_subservice['services'] not in services:
-    #             services.append(service_subservice['services'])
-    #
-    #         if service_subservice['subservices'] not in sub_services:
-    #             sub_services.append(service_subservice['subservices'])
-
     def update_user_token(self):
         """
         Method to update the user token after submitting its information
