@@ -13,8 +13,11 @@ from .forms import SubscriberForm
 from .models import SubService, Ticket, Status, Service, TicketLog, Region, Subscriber, EmailDomain
 
 
-# Services Status Visualization page
 class ServicesStatusView(View):
+    """
+    Services Status Visualization page
+    """
+
     template_name = "services_status.html"
 
     @staticmethod
@@ -88,8 +91,9 @@ class ServicesStatusView(View):
                 for e in queryset:
                     client_domain_services = e.client_domains.all().exclude(services__name=None). \
                         values('services__name')
-                    services = list(set(chain(services, client_domain_services.all().exclude(services__name=None).
-                                              values_list('services__name', flat=True))))
+                    services_list = client_domain_services.all().exclude(services__name=None).\
+                        values_list('services__name', flat=True)
+                    services = list(set(chain(services, services_list)))
                 services.sort()
                 context['services_list'] = services
 
@@ -146,7 +150,7 @@ class ServicesStatusView(View):
                     for ticket in active_tickets_per_day:
 
                         status = ticket.status.tag
-                        if status == "In Process" or status == "Alert" or status == "Outage":
+                        if status in ("In Process", "Alert", "Outage"):
                             priority_tickets.append(ticket)
                         elif status == "Planned":
                             medium_priority_tickets.append(ticket)
@@ -173,8 +177,10 @@ class ServicesStatusView(View):
         return render(request, self.template_name, context)
 
 
-# Subscription page
 class SubscriptionView(View):
+    """
+    Subscription page
+    """
 
     template_name = "subscription.html"
     context = dict()
@@ -222,7 +228,8 @@ class SubscriptionView(View):
                 request.session['object_passed'] = request.GET.get('object')
 
             if 'service_specific' in request.GET:
-                self.context['service_specific'] = bool(strtobool(request.GET.get('service_specific')))
+                val = strtobool(request.GET.get('service_specific'))
+                self.context['service_specific'] = bool(val)
             else:
                 self.context['service_specific'] = False
 
@@ -253,7 +260,7 @@ class SubscriptionView(View):
 
         form = SubscriberDataForm(request.POST, initial={'token': generate_token})
 
-        self.context = {"form": form,  "subscription_active": True}
+        self.context = {"form": form, "subscription_active": True}
 
         if 'one_service' in request.POST and request.POST.get('one_service') is not '' \
                 and request.POST.get('one_service') is not None:
@@ -316,7 +323,8 @@ class SubscriptionView(View):
 
                         service = None
 
-                        if request.POST.get('object') is not '' and request.POST.get('object') is not None:
+                        if request.POST.get('object') is not '' and \
+                                request.POST.get('object') is not None:
                             service = get_object_or_404(Service, id=request.POST['one_service'])
                         elif request.session.get('one_service', None) is not None:
                             service = get_object_or_404(Service, id=request.session['one_service'])
@@ -327,7 +335,7 @@ class SubscriptionView(View):
                         # If the user is not registered before save it
                         if not Subscriber.objects.filter(email=email).exists():
 
-                            # ************HERE WE NEED TO VERIFY USER EMAIL FIRST*******************
+                            # HERE WE NEED TO VERIFY USER EMAIL FIRST
                             subscriber = form.save()
                             SubscriberDataForm.notify_user_email(form)
                             # Add service to the user account
@@ -362,11 +370,11 @@ class SubscriptionView(View):
 
                     else:
                         # If the user selected at least one service or subservice
-                        if len(form.cleaned_data['services']) or len(form.cleaned_data['subservices']):
+                        if len(form.cleaned_data['services']) or \
+                                len(form.cleaned_data['subservices']):
                             # If the user is not registered before save it
                             if not Subscriber.objects.filter(email=email).exists():
-                                # ************HERE WE NEED TO VERIFY USER EMAIL FIRST*******************
-                                # subscriber = form.save()
+                                # HERE WE NEED TO VERIFY USER EMAIL FIRST
                                 form.save()
                                 SubscriberDataForm.notify_user_email(form)
                                 self.context['subscribed'] = True
@@ -409,8 +417,11 @@ class SubscriptionView(View):
         return render(request, self.template_name, self.context)
 
 
-# Services Status History Visualization page
 class ServiceHistoryView(View):
+    """
+    Services Status History Visualization page
+    """
+
     template_name = "ss_history_visualization.html"
 
     def get(self, request, service_id=None, *args, **kwargs):
@@ -443,9 +454,12 @@ class ServiceHistoryView(View):
 
                 if search_value is not '':
                     for ticket in tickets_list:
-                        if (search_value.lower() in ticket.ticket_id.lower()
-                                or search_value.lower() in ticket.action_description.lower()
-                                or search_value.lower() in ticket.status.tag.lower()):
+                        # if (search_value.lower() in ticket.ticket_id.lower()
+                        # or search_value.lower() in ticket.action_description.lower()
+                        # or search_value.lower() in ticket.status.tag.lower()):
+                        if (search_value.lower() in (ticket.ticket_id.lower(),
+                                                     ticket.action_description.lower(),
+                                                     ticket.status.tag.lower())):
                             aux_list.append(ticket)
 
                     tickets_list = aux_list
@@ -463,8 +477,11 @@ class ServiceHistoryView(View):
         return render(request, self.template_name, context)
 
 
-# Services Status History Details page
 class ServiceHistoryDetailsView(ListView):
+    """
+    Services Status History Details page
+    """
+
     template_name = "sh_details.html"
 
     def get(self, request, ticket_id=None, *args, **kwargs):
@@ -512,8 +529,13 @@ class ServiceHistoryDetailsView(ListView):
 
 
 class ModifyUserSubscription(ListView):
+    """
+    Modify Users Subscription page
+    """
+
     template_name = "modify_subscription.html"
 
+    # def get(self, request, email=None, token=None, *args, **kwargs):
     def get(self, request, email, token):
 
         # Getting user by token
@@ -567,7 +589,8 @@ class ModifyUserSubscription(ListView):
 
         return render(request, self.template_name, context)
 
-    def post(self, request, *args, **kwargs):
+    # def post(self, request, *args, **kwargs):
+    def post(self, request):
         """
         Method to modify subscription.
         This will allow to add and remove services and sub-services
