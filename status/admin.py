@@ -4,12 +4,10 @@ from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDrop
 from status.forms import *
 from .models import ClientDomain
 from .models import EmailDomain
-# Register your models here.
 from .models import Priority
 from .models import Region
 from .models import Status
 from .models import SubService
-# from .models import SubServiceServices
 from .models import TicketLog
 from .models import Topology
 
@@ -158,25 +156,6 @@ class SubscribersAdmin(admin.ModelAdmin):
     readonly_fields = ['token']
 
     form = SubscriberForm
-
-
-# @admin.register(SubServiceServices)
-# class SubServiceServicesAdmin(admin.ModelAdmin):
-#     list_display = ('service', 'subservice', 'priority',)
-#     list_filter = (('priority',
-#                     RelatedDropdownFilter),
-#                    ('subservice__ticket__status__tag',
-#                     DropdownFilter),
-#                    ('service__clientdomain__region__name',
-#                     DropdownFilter),
-#                    ('service__clientdomain__name',
-#                     DropdownFilter),
-#                    ('service',
-#                     RelatedDropdownFilter),
-#                    ('subservice',
-#                     RelatedDropdownFilter))
-#     search_fields = ['service', 'subservice', 'priority']
-#     ordering = ['service']
 
 
 @admin.register(Topology)
