@@ -1,13 +1,16 @@
 from django.contrib import admin
 from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDropdownFilter
 
-from status.forms import *
+from status.forms import TicketHistoryInlineFormset, TicketForm, SubscriberForm
 from .models import ClientDomain
 from .models import EmailDomain
 from .models import Priority
 from .models import Region
+from .models import Service
 from .models import Status
 from .models import SubService
+from .models import Subscriber
+from .models import Ticket
 from .models import TicketLog
 from .models import Topology
 
@@ -45,7 +48,8 @@ class ClientDomainAdmin(admin.ModelAdmin):
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
-    search_fields = ['name', 'service_description', 'topology__subservices__name', 'clientdomain__region__name']
+    search_fields = ['name', 'service_description', 'topology__subservices__name',
+                     'clientdomain__region__name']
     list_filter = (('topology__subservices__ticket__status__tag',
                     DropdownFilter),
                    ('clientdomain__region__name',
