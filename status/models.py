@@ -9,7 +9,6 @@ from django.utils.translation import ugettext_lazy as _
 
 class Service(models.Model):
     name = models.CharField(unique=True, max_length=100, verbose_name='Service')
-    # service_description = models.TextField(blank=True, null=True, verbose_name='Description')
     service_description = RichTextField(blank=True, null=True, verbose_name='Description')
 
     def description(self):
@@ -29,7 +28,6 @@ class Service(models.Model):
 
 class ClientDomain(models.Model):
     name = models.CharField(unique=True, max_length=100, verbose_name='Client Domain')
-    # description = models.TextField(blank=True, null=True)
     domain_description = RichTextField(blank=True, null=True, verbose_name='Description')
     services = models.ManyToManyField(Service)
 
@@ -50,7 +48,6 @@ class ClientDomain(models.Model):
 
 class Region(models.Model):
     name = models.CharField(unique=True, max_length=100, verbose_name='Region')
-    # description = models.TextField(blank=True, null=True)
     region_description = RichTextField(blank=True, null=True, verbose_name='Description')
     client_domains = models.ManyToManyField(ClientDomain)
 
@@ -71,10 +68,7 @@ class Region(models.Model):
 
 class SubService(models.Model):
     name = models.CharField(unique=True, max_length=100, verbose_name='Sub-Service')
-    # sub_service_description = HTMLField()
-    # description = models.TextField(blank=True, null=True)
     subservice_description = RichTextField(blank=True, null=True, verbose_name='Description')
-    # services = models.ManyToManyField(Service, through='SubServiceServices', verbose_name='Service')
 
     def description(self):
         if self.subservice_description is not None:
@@ -122,21 +116,6 @@ class Topology(models.Model):
         return "Topology {0}: about Service {1}, {2} priority".format(self.pk, self.service, self.priority)
 
 
-# class SubServiceServices(models.Model):
-#     service = models.ForeignKey(Service, models.CASCADE, verbose_name='Service')
-#     subservice = models.ForeignKey(SubService, models.CASCADE, verbose_name='Sub-Service')
-#     priority = models.ForeignKey(Priority, models.DO_NOTHING)
-#
-#     class Meta:
-#         unique_together = ('service', 'subservice')
-#
-#         verbose_name = _("Topology")
-#         verbose_name_plural = _("Topologies")
-#
-#     def __str__(self):
-#         return "about {0} in {1}".format(self.subservice, self.service)
-
-
 class Status(models.Model):
     tag = models.CharField(unique=True, max_length=45, verbose_name='Status')
     color_name = models.CharField(unique=True, max_length=7)
@@ -161,10 +140,9 @@ class Ticket(models.Model):
 
     ticket_id = models.CharField(unique=True, max_length=10)
 
-    # This action will allow keeping tickets regardless of the deletion of the sub-service where they belong.
-    # sub_service = models.ForeignKey(SubService, models.SET_NULL, null=True, verbose_name='Sub-Service')
-
-    sub_service = models.ForeignKey(SubService, models.CASCADE, null=True, verbose_name='Sub-Service')
+    # This action (models.SET_NULL) will allow keeping tickets regardless of
+    # the deletion of the sub-service where they belong.
+    sub_service = models.ForeignKey(SubService, models.SET_NULL, null=True, verbose_name='Sub-Service')
     status = models.ForeignKey(Status, models.DO_NOTHING, null=True, default=3, verbose_name='Status')
     begin = models.DateTimeField()
     end = models.DateTimeField(null=True, blank=True)
@@ -189,7 +167,6 @@ class TicketLog(models.Model):
     ticket = models.ForeignKey(Ticket, models.CASCADE)
     status = models.ForeignKey(Status, models.DO_NOTHING)
     action_date = models.DateTimeField()
-    # action_notes = models.TextField(blank=True, null=True, verbose_name='Notes')
     action_notes = RichTextField(blank=True, null=True, verbose_name='Notes')
 
     def __str__(self):
@@ -213,7 +190,6 @@ class Subscriber(models.Model):
 
 class EmailDomain(models.Model):
     domain = models.CharField(unique=True, max_length=100, verbose_name='Domain Name')
-    # description = models.TextField(blank=True, null=True)
     domain_description = RichTextField(blank=True, null=True, verbose_name='Description')
 
     def description(self):
