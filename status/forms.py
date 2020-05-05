@@ -14,216 +14,6 @@ from .models import Ticket
 from .models import Topology
 
 
-class TicketForm(forms.ModelForm):
-    NO = False
-    YES = True
-    YES_NO_CHOICES = (
-        (NO, 'No'),
-        (YES, 'Yes')
-    )
-
-    cleaned_data = None
-
-    class Meta:
-        model = Ticket
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super(TicketForm, self).__init__(*args, **kwargs)
-
-        if self.instance.id:
-            self.fields['notify_action'] = forms.ChoiceField(choices=self.YES_NO_CHOICES)
-
-    def notify_user(self, sub_service_id):
-        # It gets all the users who belong to that Sub Service
-
-        # It gets the list of services that has that Sub Service
-        services = Service.objects.filter(subservice=sub_service_id)
-        subservices = SubService.objects.filter(id=sub_service_id)
-
-        # Information to use in the email Body
-        # region = Region.objects.filter(services__subservice__in=subservices)
-        region = Region.objects.filter(client_domains__services__subservice__in=subservices)
-        # topology = SubServiceServices.objects.filter(subservice__in=subservices)
-        topology = Topology.objects.filter(subservice__in=subservices)
-
-        changed_data = self.changed_data
-        # print(self.cleaned_data)
-
-        users_mail1 = []
-        users_mail2 = []
-
-        if services.count() != 0:
-            # It gets the list of Key ID ot those services
-            users_mail1 = Subscriber.objects.filter(services__in=services)
-
-            # Remove duplicates
-            users_mail1 = list(dict.fromkeys(users_mail1))
-
-        if subservices.count() != 0:
-            users_mail2 = Subscriber.objects.filter(subservices__in=subservices)
-
-            # Remove duplicates
-            users_mail2 = list(dict.fromkeys(users_mail2))
-
-        users = list(set(users_mail1) | set(users_mail2))
-
-        data = dict()
-        data['ticket_id'] = self.cleaned_data['ticket_id']
-        data['region'] = 'None'
-        if region.count() != 0:
-            data['region'] = region[0].name
-        data['priority'] = 'None'
-        if topology.count() != 0:
-            data['priority'] = topology[0].priority
-        data['service'] = None
-        if services.count() != 0:
-            data['service'] = services[0].name
-        data['subservice'] = 'None'
-        if subservices.count() != 0:
-            data['subservice'] = subservices[0].name
-
-        for user in users:
-            text = f"""\
-                            Changes on the ticket {data['ticket_id']}:
-                            Region: {data['region']}
-                            Priority: {data['priority']}
-                            Service: {data['service']}
-                            Sub-Service: {data['subservice']}
-                            """
-
-            html = f"""\
-                            <html>
-                              <body>
-                                <p>Changes on the ticket 
-                                    <span style="font-weight: bold;">{data['ticket_id']}</span>:
-                                    <br>
-                                    <ul>
-                                        <li>
-                                            <span style="font-weight: bold;">Region:</span> {data['region']}
-                                        </li>
-                                        <li>
-                                            <span style="font-weight: bold;">Priority:</span> {data['priority']}
-                                        </li>
-                                        <li>
-                                            <span style="font-weight: bold;">Service:</span> {data['service']}
-                                        </li>
-                                        <li>
-                                            <span style="font-weight: bold;">Sub-Service:</span> {data['subservice']}
-                                        </li>
-                                    </ul>
-                                </p>
-                              </body>
-                            </html>
-                            """
-
-            subject = "Changes detected!"
-
-            mail_sender = MailSender(html, subject, text, user.email)
-            mail_sender.send_mail()
-
-    def clean(self):
-        self.cleaned_data = super().clean()
-
-        begin = self.cleaned_data['begin'].strftime('%Y-%m-%d %H:%M:%S')
-
-        if self.cleaned_data['end']:
-            end = self.cleaned_data['end'].strftime('%Y-%m-%d %H:%M:%S')
-
-            if begin > end:
-                self.add_error("begin", "The Begin date {} should follow a chronological order.".format(
-                    self.cleaned_data["begin"]))
-                self.add_error("end", "The End date {} should follow a chronological order.".format(
-                    self.cleaned_data["end"]))
-                raise ValidationError("There are some errors on the Ticket's dates.")
-
-        if self.changed_data:
-            if self.changed_data == ['notify_action'] and not self.instance.notify_action and \
-                    self.cleaned_data['notify_action'] == 'True':
-                self.instance.notify_action = True
-                self.notify_user(self.cleaned_data['sub_service'].pk)
-            elif self.changed_data != ['notify_action'] and \
-                    (self.cleaned_data['notify_action'] is True or self.cleaned_data['notify_action'] == 'True'):
-                self.instance.notify_action = True
-                try:
-                    self.notify_user(self.cleaned_data['sub_service'].pk)
-                except Exception as e:
-                    print(e)  # we should log this as an error
-
-
-class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
-
-    def __init__(self, *args, **kwargs):
-        super(TicketHistoryInlineFormset, self).__init__(*args, **kwargs)
-        for form in self.forms:
-            form.empty_permitted = False
-
-    def clean(self):
-
-        status_list = []
-        form_list = []
-        change_detected = False
-        status = None
-        main_begin = None
-
-        if self.data['begin_0'] and self.data['begin_1']:
-            main_begin = self.data['begin_0'] + ' ' + self.data['begin_1']
-
-        for form in self.forms:
-            if form.cleaned_data != {}:
-                if main_begin is None:
-                    main_begin = form.cleaned_data.get('begin').strftime('%Y-%m-%d %H:%M:%S')
-
-                status = form.cleaned_data.get('status')
-                if status is not None:
-                    status_list.append(status.tag)
-                else:
-                    break
-
-                if form.has_changed():
-                    change_detected = True
-
-                form_list.append(form)
-
-        if change_detected:
-
-            my_raises = False
-
-            for form in form_list:
-                begin = form.cleaned_data['action_date'].strftime('%Y-%m-%d %H:%M:%S')
-                if begin < main_begin:
-                    form.add_error("action_date", "You can not have an action date "
-                                                  "lower than the start day of the ticket {}.".
-                                   format(form.cleaned_data["action_date"]))
-                    my_raises = True
-
-            if my_raises:
-                raise ValidationError("There are some errors on the Service's Status.")
-
-            if not my_raises:
-                for form in form_list:
-                    if [item for item in set(status_list) if status_list.count(item) > 1].count('No Issues'):
-                        if form.cleaned_data['status'].tag == 'No Issues':
-                            form.add_error("status", "You can not have {} status multiple times.".format(
-                                form.cleaned_data["status"]))
-                            my_raises = True
-
-            if my_raises:
-                raise ValidationError("There are some errors on the Service's Status.")
-
-            for form in form_list:
-                if status.tag != 'No Issues' and 'No Issues' in status_list \
-                        and form.cleaned_data['status'].tag == 'No Issues':
-                    form.add_error("status", "{} is an status available only as a final stage.".format(
-                        form.cleaned_data["status"]))
-                    my_raises = True
-
-            if my_raises:
-                raise ValidationError("There are some errors on the Service's Status.")
-
-        # return self.cleaned_data
-
-
 class EmailActions:
 
     @staticmethod
@@ -321,6 +111,254 @@ class EmailActions:
 
         mail_sender = MailSender(html, subject, text, email)
         mail_sender.send_mail()
+
+    @staticmethod
+    def ticket_notification(sub_service_id, changed_data, cleaned_data, cleaned_data_ext=None):
+
+        # It gets all the users who belong to that Sub Service
+
+        # It gets the list of services that has that Sub Service
+        services = Service.objects.filter(topology__subservices=sub_service_id)
+        subservices = SubService.objects.filter(id=sub_service_id)
+
+        # Information to use in the email Body
+        # region = Region.objects.filter(services__subservice__in=subservices)
+        region = Region.objects.filter(client_domains__services__topology__subservices__in=subservices)
+        # topology = SubServiceServices.objects.filter(subservice__in=subservices)
+        topology = Topology.objects.filter(subservices__in=subservices)
+
+        _changed_data = changed_data
+        # print(self.cleaned_data)
+
+        users_mail1 = list()
+        users_mail2 = list()
+
+        if services.count() != 0:
+            # It gets the list of Key ID ot those services
+            users_mail1 = Subscriber.objects.filter(services__in=services)
+
+            # Remove duplicates
+            users_mail1 = list(dict.fromkeys(users_mail1))
+
+        if subservices.count() != 0:
+            users_mail2 = Subscriber.objects.filter(subservices__in=subservices)
+
+            # Remove duplicates
+            users_mail2 = list(dict.fromkeys(users_mail2))
+
+        users = list(set(users_mail1) | set(users_mail2))
+
+        data = dict()
+        data['ticket_id'] = cleaned_data.get('ticket_id')
+        data['region'] = 'None'
+        if region.count() != 0:
+            data['region'] = region[0].name
+        data['priority'] = 'None'
+        if topology.count() != 0:
+            data['priority'] = topology[0].priority
+        data['service'] = None
+        if services.count() != 0:
+            data['service'] = services[0].name
+        data['subservice'] = 'None'
+        if subservices.count() != 0:
+            data['subservice'] = subservices[0].name
+
+        for user in users:
+            text = f"""\
+                            Changes on the ticket {data['ticket_id']}:
+                            Region: {data['region']}
+                            Priority: {data['priority']}
+                            Service: {data['service']}
+                            Sub-Service: {data['subservice']}
+                            """
+
+            html = f"""\
+                            <html>
+                              <body>
+                                <p>Changes on the ticket 
+                                    <span style="font-weight: bold;">{data['ticket_id']}</span>:
+                                    <br>
+                                    <ul>
+                                        <li>
+                                            <span style="font-weight: bold;">Region:</span> {data['region']}
+                                        </li>
+                                        <li>
+                                            <span style="font-weight: bold;">Priority:</span> {data['priority']}
+                                        </li>
+                                        <li>
+                                            <span style="font-weight: bold;">Service:</span> {data['service']}
+                                        </li>
+                                        <li>
+                                            <span style="font-weight: bold;">Sub-Service:</span> {data['subservice']}
+                                        </li>
+                                    </ul>
+                                </p>
+                              </body>
+                            </html>
+                            """
+
+            subject = "Changes detected!"
+
+            mail_sender = MailSender(html, subject, text, user.email)
+            mail_sender.send_mail()
+
+
+class TicketForm(forms.ModelForm):
+    NO = False
+    YES = True
+    YES_NO_CHOICES = (
+        (NO, 'No'),
+        (YES, 'Yes')
+    )
+
+    cleaned_data = None
+
+    class Meta:
+        model = Ticket
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(TicketForm, self).__init__(*args, **kwargs)
+
+        if self.instance.id:
+            self.fields['notify_action'] = forms.ChoiceField(choices=self.YES_NO_CHOICES)
+
+    def clean(self):
+        self.cleaned_data = super().clean()
+        self.instance.user_notified = False
+
+        if super().is_valid():
+
+            begin = self.cleaned_data['begin'].strftime('%Y-%m-%d %H:%M:%S')
+
+            if 'end' in self.cleaned_data:
+
+                if self.cleaned_data['end'] is not None:
+                    end = self.cleaned_data['end'].strftime('%Y-%m-%d %H:%M:%S')
+
+                    if begin > end:
+                        self.add_error("begin", "The Begin date {} should follow a chronological order.".format(
+                            self.cleaned_data["begin"]))
+                        self.add_error("end", "The End date {} should follow a chronological order.".format(
+                            self.cleaned_data["end"]))
+                        raise ValidationError("There are some errors on the Ticket's dates.")
+
+            if self.changed_data:
+
+                if self.changed_data == ['notify_action'] and not self.instance.notify_action and \
+                        self.cleaned_data['notify_action'] == 'True':
+                    self.instance.notify_action = True
+
+                    try:
+                        # self.notify_user(self.cleaned_data['sub_service'].pk)
+                        EmailActions.ticket_notification(self.cleaned_data['sub_service'].pk, self.changed_data,
+                                                         self.cleaned_data)
+                        self.instance.user_notified = True
+                    except Exception as e:
+                        print(e)  # we should log this as an error
+
+                elif self.changed_data != ['notify_action'] and \
+                        (self.cleaned_data['notify_action'] is True or self.cleaned_data['notify_action'] == 'True'):
+                    self.instance.notify_action = True
+
+                    try:
+                        # self.notify_user(self.cleaned_data['sub_service'].pk)
+                        EmailActions.ticket_notification(self.cleaned_data['sub_service'].pk, self.changed_data,
+                                                         self.cleaned_data)
+                        self.instance.user_notified = True
+                    except Exception as e:
+                        print(e)  # we should log this as an error
+
+
+class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
+
+    def __init__(self, *args, **kwargs):
+        super(TicketHistoryInlineFormset, self).__init__(*args, **kwargs)
+        for form in self.forms:
+            form.empty_permitted = False
+
+    def clean(self):
+
+        if super().is_valid():
+            status_list = list()
+            form_list = list()
+            change_detected = False
+            status = None
+            main_begin = None
+            cleaned_data = dict()
+            cleaned_data_ext = list()
+            changed_data = list()
+
+            if self.data['begin_0'] and self.data['begin_1']:
+                main_begin = self.data['begin_0'] + ' ' + self.data['begin_1']
+
+            for form in self.forms:
+                if form.cleaned_data != {}:
+                    if main_begin is None:
+                        main_begin = form.cleaned_data.get('begin').strftime('%Y-%m-%d %H:%M:%S')
+
+                    status = form.cleaned_data.get('status')
+                    if status is not None:
+                        status_list.append(status.tag)
+                    else:
+                        break
+
+                    if form.has_changed():
+                        change_detected = True
+                        changed_data.append(form.changed_data)
+
+                        if 'ticket_id' not in cleaned_data:
+                            cleaned_data.update({'ticket_id': form.instance.ticket})
+                        cleaned_data_ext.append(form.cleaned_data)
+
+                    form_list.append(form)
+
+            if change_detected:
+
+                my_raises = False
+
+                for form in form_list:
+                    begin = form.cleaned_data['action_date'].strftime('%Y-%m-%d %H:%M:%S')
+
+                    if begin < main_begin:
+                        form.add_error("action_date", "You can not have an action date "
+                                                      "lower than the start day of the ticket {}.".
+                                       format(form.cleaned_data["action_date"]))
+                        my_raises = True
+
+                if my_raises:
+                    raise ValidationError("There are some errors on the Service's Status.")
+
+                if not my_raises:
+                    for form in form_list:
+                        if [item for item in set(status_list) if status_list.count(item) > 1].count('No Issues'):
+                            if form.cleaned_data['status'].tag == 'No Issues':
+                                form.add_error("status", "You can not have {} status multiple times.".format(
+                                    form.cleaned_data["status"]))
+                                my_raises = True
+
+                if my_raises:
+                    raise ValidationError("There are some errors on the Service's Status.")
+
+                for form in form_list:
+                    if status.tag != 'No Issues' and 'No Issues' in status_list \
+                            and form.cleaned_data['status'].tag == 'No Issues':
+                        form.add_error("status", "{} is an status available only as a final stage.".format(
+                            form.cleaned_data["status"]))
+                        my_raises = True
+
+                if my_raises:
+                    raise ValidationError("There are some errors on the Service's Status.")
+
+                if not self.instance.user_notified:
+                    try:
+                        # self.notify_user(self.cleaned_data['sub_service'].pk)
+                        EmailActions.ticket_notification(self.instance.sub_service_id, changed_data, cleaned_data,
+                                                         cleaned_data_ext)
+                    except Exception as e:
+                        print(e)  # we should log this as an error
+
+            # return self.cleaned_data
 
 
 class SubscriberDataForm(forms.ModelForm):
