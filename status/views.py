@@ -13,8 +13,6 @@ from .forms import SubscriberForm
 from .models import SubService, Ticket, Status, Service, TicketLog, Region, Subscriber, EmailDomain
 
 
-# Create your views here.
-
 # Services Status Visualization page
 class ServicesStatusView(View):
     template_name = "services_status.html"
@@ -82,7 +80,8 @@ class ServicesStatusView(View):
             regions = request.GET.getlist('regions')
 
             # Getting list of services
-            services = []
+            # services = []
+            services = list()
             for region in regions:
 
                 # Getting list of services
@@ -100,7 +99,8 @@ class ServicesStatusView(View):
         elif 'search_services' in request.GET:
 
             search_value = request.GET['search']
-            services_list = []
+            # services_list = []
+            services_list = list()
             for service in services:
                 if search_value.lower() in service.name.lower():
                     services_list.append(service)
@@ -113,12 +113,13 @@ class ServicesStatusView(View):
 
         else:
             # Getting list of services
-            services = []
+            services = list()
             services = list(dict.fromkeys(chain(services, Service.objects.all())))
             context['services_list'] = services
 
         # Declaring an empty dictionary to store status per day for each service
-        service_status = {}
+        # service_status = {}
+        service_status = dict()
         no_issues = Status.objects.filter(tag='No Issues')[0]
 
         # Getting list of tickets associated with each service
@@ -134,16 +135,20 @@ class ServicesStatusView(View):
                 if queryset:
                     tickets_list = tickets_list | queryset
 
-            status_per_day = []
+            # status_per_day = []
+            status_per_day = list()
             for day in list_of_five_days:
                 active_tickets_per_day = tickets_list.filter(begin__lte=day).exclude(end__lte=day)
 
                 if active_tickets_per_day:
 
                     # Separating tickets in groups by priority
-                    priority_tickets = []
-                    medium_priority_tickets = []
-                    low_priority = []
+                    # priority_tickets = []
+                    priority_tickets = list()
+                    # medium_priority_tickets = []
+                    medium_priority_tickets = list()
+                    # low_priority = []
+                    low_priority = list()
 
                     for ticket in active_tickets_per_day:
 
@@ -441,7 +446,8 @@ class ServiceHistoryView(View):
 
             if 'search_tickets' in request.GET:
                 search_value = request.GET['search']
-                aux_list = []
+                # aux_list = []
+                aux_list = list()
 
                 if search_value is not '':
                     for ticket in tickets_list:
@@ -543,7 +549,8 @@ class ModifyUserSubscription(ListView):
 
         # Getting the services this user is not registered to
         queryset = Service.objects.all()
-        services_not_registered = []
+        # services_not_registered = []
+        services_not_registered = list()
 
         for service in queryset:
             if service not in user_services:
@@ -556,7 +563,8 @@ class ModifyUserSubscription(ListView):
 
         # Getting the sub-services this user is not registered to
         queryset = SubService.objects.all()
-        sub_services_not_registered = []
+        # sub_services_not_registered = []
+        sub_services_not_registered = list()
 
         for sub_service in queryset:
             if sub_service not in user_sub_services:
