@@ -112,7 +112,8 @@ class Topology(models.Model):
     subservices_list.allow_tags = True
 
     def __str__(self):
-        return "Topology {0}: about Service {1}, {2} priority".format(self.pk, self.service, self.priority)
+        return "Topology {0}: about Service {1}, {2} " \
+               "priority".format(self.pk, self.service, self.priority)
 
 
 class Status(models.Model):
@@ -141,8 +142,10 @@ class Ticket(models.Model):
 
     # This action (models.SET_NULL) will allow keeping tickets regardless of
     # the deletion of the sub-service where they belong.
-    sub_service = models.ForeignKey(SubService, models.SET_NULL, null=True, verbose_name='Sub-Service')
-    status = models.ForeignKey(Status, models.DO_NOTHING, null=True, default=3, verbose_name='Status')
+    sub_service = models.ForeignKey(SubService, models.SET_NULL,
+                                    null=True, verbose_name='Sub-Service')
+    status = models.ForeignKey(Status, models.DO_NOTHING,
+                               null=True, default=3, verbose_name='Status')
     begin = models.DateTimeField()
     end = models.DateTimeField(null=True, blank=True)
     action_description = RichTextField()
