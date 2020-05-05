@@ -40,8 +40,8 @@ class EmailActions:
             service_list += '<br>'
             service_list_html += '<ul>'
             for service in services:
-                service_list += f"""{ service }<br>"""
-                service_list_html += f"""<li>{ service }</li>"""
+                service_list += f"""{service}<br>"""
+                service_list_html += f"""<li>{service}</li>"""
             service_list += '<br>'
             service_list_html += '</ul>'
         else:
@@ -52,8 +52,8 @@ class EmailActions:
             subservice_list += '<br>'
             subservice_list_html += '<ul>'
             for subservice in subservices:
-                subservice_list += f"""{ subservice }<br>"""
-                subservice_list_html += f"""<li>{ subservice }</li>"""
+                subservice_list += f"""{subservice}<br>"""
+                subservice_list_html += f"""<li>{subservice}</li>"""
             subservice_list += '<br'
             subservice_list_html += '</ul>'
         else:
@@ -64,17 +64,17 @@ class EmailActions:
         text = f"""\
             You have subscribed to receive notifications from the following services:
             <br>
-            { service_list }
+            {service_list}
             You have subscribed to receive notifications from the following sub-services:
-            { subservice_list }"""
+            {subservice_list}"""
 
         html = f"""\
         <html>
             <body>
                 <p>You have subscribed to receive notifications from the following Service(s)</p>
-                { service_list_html }
+                {service_list_html}
                 <p>You have subscribed to receive notifications from the following Sub-service(s)</p>
-                { subservice_list_html }
+                {subservice_list_html}
             </body>
         </html>"""
 
@@ -94,7 +94,7 @@ class EmailActions:
         # Email content
         text = f"""\
                                 Link to modify your subscription:
-                                { link }
+                                {link}
                                 """
 
         html = f"""\
@@ -102,7 +102,7 @@ class EmailActions:
                                   <body>
                                     <p>Link to modify your subscription<br>
                                     </p>
-                                    <a href="{ link }">Modify your subscription</a>
+                                    <a href="{link}">Modify your subscription</a>
                                   </body>
                                 </html>
                                 """
@@ -241,8 +241,8 @@ class TicketForm(forms.ModelForm):
                                        "The Begin date {} should follow a "
                                        "chronological order.".format(
                                            self.cleaned_data["begin"]))
-                        self.add_error("end", "The End date {} should follow a "
-                                              "chronological order.".format(self.cleaned_data["end"]))
+                        self.add_error("end", "The End date {} should follow a chronological "
+                                              "order.".format(self.cleaned_data["end"]))
                         raise ValidationError("There are some errors on the Ticket's dates.")
 
             if self.changed_data:
@@ -334,10 +334,13 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
                 if not my_raises:
                     for form in form_list:
-                        if [item for item in set(status_list) if status_list.count(item) > 1].count('No Issues'):
+                        if [item for item in set(status_list) if status_list.count(item) > 1].\
+                                count('No Issues'):
                             if form.cleaned_data['status'].tag == 'No Issues':
-                                form.add_error("status", "You can not have {} status multiple times.".format(
-                                    form.cleaned_data["status"]))
+                                form.add_error("status",
+                                               "You can not have {} "
+                                               "status multiple times.".
+                                               format(form.cleaned_data["status"]))
                                 my_raises = True
 
                 if my_raises:
@@ -346,8 +349,9 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
                 for form in form_list:
                     if status.tag != 'No Issues' and 'No Issues' in status_list \
                             and form.cleaned_data['status'].tag == 'No Issues':
-                        form.add_error("status", "{} is an status available only as a final stage.".format(
-                            form.cleaned_data["status"]))
+                        form.add_error("status",
+                                       "{} is an status available "
+                                       "only as a final stage.".format(form.cleaned_data["status"]))
                         my_raises = True
 
                 if my_raises:
@@ -355,21 +359,35 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
                 if not self.instance.user_notified:
                     try:
-                        EmailActions.ticket_notification(self.instance.sub_service_id, changed_data, cleaned_data,
+                        EmailActions.ticket_notification(self.instance.sub_service_id,
+                                                         changed_data,
+                                                         cleaned_data,
                                                          cleaned_data_ext)
                     except Exception as e:
                         print(e)  # we should log this as an error
 
 
 class SubscriberDataForm(forms.ModelForm):
-    services = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                              queryset=Service.objects.all(), required=False)
-    subservices = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                                 queryset=SubService.objects.all(), required=False)
-    name = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Full Name", "class": "form-control"}),
-                           max_length=40, required=True)
-    email = forms.EmailField(widget=forms.EmailInput(attrs={"placeholder": "Email", "class": "form-control"}),
-                             required=True)
+    services = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        queryset=Service.objects.all(),
+        required=False)
+
+    subservices = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        queryset=SubService.objects.all(),
+        required=False)
+
+    name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={"placeholder": "Full Name", "class": "form-control"}),
+        max_length=40,
+        required=True)
+
+    email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={"placeholder": "Email", "class": "form-control"}),
+        required=True)
 
     def check_mail_domain(self):
         """
