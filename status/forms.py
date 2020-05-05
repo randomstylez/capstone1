@@ -40,8 +40,8 @@ class EmailActions:
             service_list += '<br>'
             service_list_html += '<ul>'
             for service in services:
-                service_list += f"""{service}<br>"""
-                service_list_html += f"""<li>{service}</li>"""
+                service_list += f"""{ service }<br>"""
+                service_list_html += f"""<li>{ service }</li>"""
             service_list += '<br>'
             service_list_html += '</ul>'
         else:
@@ -52,8 +52,8 @@ class EmailActions:
             subservice_list += '<br>'
             subservice_list_html += '<ul>'
             for subservice in subservices:
-                subservice_list += f"""{subservice}<br>"""
-                subservice_list_html += f"""<li>{subservice}</li>"""
+                subservice_list += f"""{ subservice }<br>"""
+                subservice_list_html += f"""<li>{ subservice }</li>"""
             subservice_list += '<br'
             subservice_list_html += '</ul>'
         else:
@@ -64,17 +64,17 @@ class EmailActions:
         text = f"""\
             You have subscribed to receive notifications from the following services:
             <br>
-            {service_list}
+            { service_list }
             You have subscribed to receive notifications from the following sub-services:
-            {subservice_list}"""
+            { subservice_list }"""
 
         html = f"""\
         <html>
             <body>
                 <p>You have subscribed to receive notifications from the following Service(s)</p>
-                {service_list_html}
+                { service_list_html }
                 <p>You have subscribed to receive notifications from the following Sub-service(s)</p>
-                {subservice_list_html}
+                { subservice_list_html }
             </body>
         </html>"""
 
@@ -94,7 +94,7 @@ class EmailActions:
         # Email content
         text = f"""\
                                 Link to modify your subscription:
-                                {link}
+                                { link }
                                 """
 
         html = f"""\
@@ -102,7 +102,7 @@ class EmailActions:
                                   <body>
                                     <p>Link to modify your subscription<br>
                                     </p>
-                                    <a href="{link}">Modify your subscription</a>
+                                    <a href="{ link }">Modify your subscription</a>
                                   </body>
                                 </html>
                                 """
@@ -122,9 +122,9 @@ class EmailActions:
         subservices = SubService.objects.filter(id=sub_service_id)
 
         # Information to use in the email Body
-        # region = Region.objects.filter(services__subservice__in=subservices)
-        region = Region.objects.filter(client_domains__services__topology__subservices__in=subservices)
-        # topology = SubServiceServices.objects.filter(subservice__in=subservices)
+        region = Region.objects.filter(
+            client_domains__services__topology__subservices__in=subservices
+        )
         topology = Topology.objects.filter(subservices__in=subservices)
 
         _changed_data = changed_data
@@ -237,10 +237,12 @@ class TicketForm(forms.ModelForm):
                     end = self.cleaned_data['end'].strftime('%Y-%m-%d %H:%M:%S')
 
                     if begin > end:
-                        self.add_error("begin", "The Begin date {} should follow a chronological order.".format(
-                            self.cleaned_data["begin"]))
-                        self.add_error("end", "The End date {} should follow a chronological order.".format(
-                            self.cleaned_data["end"]))
+                        self.add_error("begin",
+                                       "The Begin date {} should follow a "
+                                       "chronological order.".format(
+                                           self.cleaned_data["begin"]))
+                        self.add_error("end", "The End date {} should follow a "
+                                              "chronological order.".format(self.cleaned_data["end"]))
                         raise ValidationError("There are some errors on the Ticket's dates.")
 
             if self.changed_data:
@@ -250,20 +252,21 @@ class TicketForm(forms.ModelForm):
                     self.instance.notify_action = True
 
                     try:
-                        # self.notify_user(self.cleaned_data['sub_service'].pk)
-                        EmailActions.ticket_notification(self.cleaned_data['sub_service'].pk, self.changed_data,
+                        EmailActions.ticket_notification(self.cleaned_data['sub_service'].pk,
+                                                         self.changed_data,
                                                          self.cleaned_data)
                         self.instance.user_notified = True
                     except Exception as e:
                         print(e)  # we should log this as an error
 
                 elif self.changed_data != ['notify_action'] and \
-                        (self.cleaned_data['notify_action'] is True or self.cleaned_data['notify_action'] == 'True'):
+                        (self.cleaned_data['notify_action'] is True or
+                         self.cleaned_data['notify_action'] == 'True'):
                     self.instance.notify_action = True
 
                     try:
-                        # self.notify_user(self.cleaned_data['sub_service'].pk)
-                        EmailActions.ticket_notification(self.cleaned_data['sub_service'].pk, self.changed_data,
+                        EmailActions.ticket_notification(self.cleaned_data['sub_service'].pk,
+                                                         self.changed_data,
                                                          self.cleaned_data)
                         self.instance.user_notified = True
                     except Exception as e:
@@ -352,13 +355,10 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
                 if not self.instance.user_notified:
                     try:
-                        # self.notify_user(self.cleaned_data['sub_service'].pk)
                         EmailActions.ticket_notification(self.instance.sub_service_id, changed_data, cleaned_data,
                                                          cleaned_data_ext)
                     except Exception as e:
                         print(e)  # we should log this as an error
-
-            # return self.cleaned_data
 
 
 class SubscriberDataForm(forms.ModelForm):
@@ -381,14 +381,6 @@ class SubscriberDataForm(forms.ModelForm):
 
         return EmailActions.check_email_domain(domain)
 
-        # # It verifies the existence or not of that email domain
-        # domain_exist = EmailDomainList.objects.filter(email_domain_name=domain).count()
-        #
-        # if domain_exist == 0:
-        #     return False
-        #
-        # return True
-
     def notify_user_email(self):
         """
         Method to send a mail notification
@@ -400,79 +392,12 @@ class SubscriberDataForm(forms.ModelForm):
 
         EmailActions.notify_subscription_to_user_email(email, services, subservices)
 
-        # email = self.cleaned_data["email"]
-        #
-        # service_list = ''
-        # service_list_html = ''
-        #
-        # subservice_list = ''
-        # subservice_list_html = ''
-        #
-        # services = self.cleaned_data["services"]
-        # subservices = self.cleaned_data["subservices"]
-        #
-        # if len(services):
-        #     service_list += '<br>'
-        #     service_list_html += '<ul>'
-        #     for service in services:
-        #         service_list += f"""{service}<br>"""
-        #         service_list_html += f"""<li>{service}</li>"""
-        #     service_list += '<br>'
-        #     service_list_html += '</ul>'
-        # else:
-        #     service_list += '<br>None selected<br>'
-        #     service_list_html += '<ul><li>None selected</li></ul>'
-        #
-        # if len(subservices):
-        #     subservice_list += '<br>'
-        #     subservice_list_html += '<ul>'
-        #     for subservice in subservices:
-        #         subservice_list += f"""{subservice}<br>"""
-        #         subservice_list_html += f"""<li>{subservice}</li>"""
-        #     subservice_list += '<br'
-        #     subservice_list_html += '</ul>'
-        # else:
-        #     subservice_list += '<br>None selected<br>'
-        #     subservice_list_html += '<ul><li>None selected</li></ul>'
-        #
-        # # Email content
-        # text = f"""\
-        #                         You have subscribed to receive notifications from the following services:
-        #                         <br>
-        #                         {service_list}
-        #                         You have subscribed to receive notifications from the following sub-services:
-        #                         {subservice_list}
-        #                         """
-        #
-        # html = f"""\
-        #                         <html>
-        #                           <body>
-        #                             <p>You have subscribed to receive notifications from the following Service(s)
-        #                             <br>
-        #                             </p>
-        #                             {service_list_html}
-        #                             <p>You have subscribed to receive notifications from the following Sub-service(s)
-        #                             <br>
-        #                             </p>
-        #                             {subservice_list_html}
-        #                           </body>
-        #                         </html>
-        #                         """
-        #
-        # subject = "Subscription requested!"
-        #
-        # mail_sender = MailSender(html, subject, text, email)
-        # mail_sender.send_mail()
-
     def clean(self):
         # Create token
         token = secrets.token_hex(64)
 
         # Update User's token
         self.cleaned_data["token"] = token
-
-        # if self.check_mail_domain():
-        #     self.notify_user_email()
 
     class Meta:
         model = Subscriber
@@ -532,7 +457,7 @@ class SubscriberForm(forms.ModelForm):
             # Update User's token
             self.cleaned_data["token"] = token
         else:
-            self.update_user_token_by_user_id(self.instance.pk)
+            self.update_user_token()
 
         return self.cleaned_data
 
@@ -550,36 +475,6 @@ class SubscriberForm(forms.ModelForm):
         token = user[0]['token']
 
         EmailActions.send_subscription_notification(email, token)
-        # # hostname = 'http://127.0.0.1:8000'
-        # hostname = 'https://status2.amlight.net'
-        #
-        # # we should create a mechanism to get the hostname. This option works on views request
-        # # print(HttpRequest.get_host(self))
-        #
-        # view_path = '/subscriber'
-        #
-        # link = hostname + view_path + '/' + email + '/' + token
-        #
-        # # Email content
-        # text = f"""\
-        #                 Link to modify your subscription:
-        #                 {link}
-        #                 """
-        #
-        # html = f"""\
-        #                 <html>
-        #                   <body>
-        #                     <p>Link to modify your subscription<br>
-        #                     </p>
-        #                     <a href="{link}">Modify your subscription</a>
-        #                   </body>
-        #                 </html>
-        #                 """
-        #
-        # subject = "Modification requested on Subscription!"
-        #
-        # mail_sender = MailSender(html, subject, text, email)
-        # mail_sender.send_mail()
 
     @staticmethod
     def send_link_by_user_email(_email):
@@ -594,63 +489,34 @@ class SubscriberForm(forms.ModelForm):
 
         EmailActions.send_subscription_notification(_email, _token)
 
-        # # hostname = 'http://127.0.0.1:8000'
-        # hostname = 'https://status2.amlight.net'
-        #
-        # # we should create a mechanism to get the hostname. This option works on views request
-        # # print(HttpRequest.get_host(self))
-        #
-        # view_path = '/subscriber'  # email and toke
-        #
-        # link = hostname + view_path + '/' + _email + '/' + token
-        #
-        # # Email content
-        # text = f"""\
-        #                     Link to modify your subscription:
-        #                     {link}
-        #                     """
-        #
-        # html = f"""\
-        #                     <html>
-        #                       <body>
-        #                         <p>Link to modify your subscription<br>
-        #                         </p>
-        #                         <a href="{link}">Modify your subscription</a>
-        #                       </body>
-        #                     </html>
-        #                     """
-        #
-        # subject = "Modification requested on Subscription!"
-        #
-        # mail_sender = MailSender(html, subject, text, _email)
-        # mail_sender.send_mail()
+    # @staticmethod
+    # def get_user_data(_email, _token):
+    #     """
+    #     Method to get the services and sub-services associated
+    #     with a user(subscriber) given its email and token
+    #     :param _email:
+    #     :param _token:
+    #     :return:
+    #     """
+    #     # It collect the services and subservices associated to an user
+    #     services_subservices = Subscriber.objects.filter(email=_email, token=_token).values('services', 'subservices')
+    #     services = list()
+    #     sub_services = list()
+    #
+    #     if len(services_subservices) == 0:
+    #         print("Errors on the information provided")
+    #         return
+    #
+    #     # It creates the list of services and subservices
+    #     # avoiding repeated items on the list
+    #     for service_subservice in services_subservices:
+    #         if service_subservice['services'] not in services:
+    #             services.append(service_subservice['services'])
+    #
+    #         if service_subservice['subservices'] not in sub_services:
+    #             sub_services.append(service_subservice['subservices'])
 
-    @staticmethod
-    def get_user_data(_email, _token):
-        """
-        Method to get the services and sub-services associated
-        with a user(subscriber) given its email and token
-        :param _email:
-        :param _token:
-        :return:
-        """
-        # It collect the services and subservices associated to an user
-        services_subservices = Subscriber.objects.filter(email=_email, token=_token).values('services', 'subservices')
-        services = list()
-        sub_services = list()
-
-        # It creates the list of services and subservices
-        # avoiding repeated items on the list
-        for service_subservice in services_subservices:
-            services.append(service_subservice['services']) \
-                if service_subservice['services'] not in services else services
-            sub_services.append(service_subservice['subservices']) \
-                if service_subservice['subservices'] not in sub_services else sub_services
-
-        if len(services_subservices) == 0:
-            print("Errors on the information provided")
-
-    def update_user_token_by_user_id(self, user_id):
+    def update_user_token(self):
         """
         Method to update the user token after submitting its information
         This function was thought to be used considering the User ID as a reference
@@ -664,34 +530,3 @@ class SubscriberForm(forms.ModelForm):
 
         # It will be used on no read only cases
         # self.cleaned_data["token"] = _token
-
-        # Or
-        # Subscriber.objects.filter(pk=user_id).update(token=_token)
-
-        # Or
-        # obj = Subscriber.objects.get(pk=user_id)
-        # obj.token = _token
-        # obj.save()
-
-    def update_user_token_by_user_email(self, _email):
-        """
-        Method to update the user token after submitting its information
-        This function was thought to be used considering the User email as a reference
-        :param _email:
-        :return:
-        """
-        _token = secrets.token_hex(64)
-
-        # It will be used on read only cases
-        self.instance.token = _token
-
-        # It will be used on no read only cases
-        # self.cleaned_data["token"] = _token
-
-        # Or
-        # Subscriber.objects.filter(email=_email).update(token=_token)
-
-        # Or
-        # obj = Subscriber.objects.get(email=_email)
-        # obj.token = _token
-        # obj.save()
