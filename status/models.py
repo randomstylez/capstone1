@@ -63,7 +63,7 @@ class ClientDomain(models.Model):
 
     def description(self):
         """
-        Method to truncate and render HTML content.
+        Method to render HTML content.
             - This action will allow visualizing a short
             description during the object listing process.
             - The HTML render process will help to visualize
@@ -85,14 +85,32 @@ class ClientDomain(models.Model):
 
 
 class Region(models.Model):
+    """
+    Class to specify the Region Model/Table
+        - A Region name, a description, and a relationship
+        to the ClientDomain module define its structure.
+        - The Region name will be mandatory, but no the description field.
+        - The name field could have a maximum of 100 characters.
+        - The description field will store an HTML enriched text content.
+        - The relationship with ClientDomain will help to set a
+        region to many client domains and vice versa.
+    """
+
     name = models.CharField(unique=True, max_length=100, verbose_name='Region')
     region_description = RichTextField(blank=True, null=True, verbose_name='Description')
     client_domains = models.ManyToManyField(ClientDomain)
 
     def description(self):
+        """
+        Method to support HTML formatting.
+        This will allow to visualize HTML enriched description
+        on the administrator zone related to the email domains.
+        :return: A html formatted description
+        """
         if self.region_description is not None:
             return format_html(self.region_description)
         return self.region_description
+
     description.allow_tags = True
 
     class Meta:
@@ -105,13 +123,28 @@ class Region(models.Model):
 
 
 class SubService(models.Model):
+    """
+    Class to specify the Subservices Model/Table
+        - A SubService name, a description define its structure.
+        - The Subservice name will be mandatory, but no the description field.
+        - The name field could have a maximum of 100 characters.
+        - The description field will store an HTML enriched text content.
+    """
+
     name = models.CharField(unique=True, max_length=100, verbose_name='Sub-Service')
     subservice_description = RichTextField(blank=True, null=True, verbose_name='Description')
 
     def description(self):
+        """
+        Method to support HTML formatting.
+        This will allow to visualize HTML enriched description
+        on the administrator zone related to the email domains.
+        :return: A html formatted description
+        """
         if self.subservice_description is not None:
             return format_html(self.subservice_description)
         return self.subservice_description
+
     description.allow_tags = True
 
     class Meta:
@@ -124,6 +157,12 @@ class SubService(models.Model):
 
 
 class Priority(models.Model):
+    """
+    Class to specify the Priority Model/Table
+        - A priority tag, a color, and a hexadecimal color value define its structure.
+        - All of them will be mandatory.
+    """
+
     tag = models.CharField(unique=True, max_length=25)
     color = models.CharField(unique=True, max_length=7)
     color_hex = ColorField(unique=True, default='#000000')
@@ -138,6 +177,14 @@ class Priority(models.Model):
 
 
 class Topology(models.Model):
+    """
+    Class to specify the Topology Model/Table
+        - A relationship to services, a relationship to subservices, and a relationship
+        to the priority module define its structure.
+        - The relationship with Subservices will help to set a
+        topology to many subservices and vice versa under different services.
+    """
+
     service = models.ForeignKey(Service, models.CASCADE, verbose_name='Service')
     subservices = models.ManyToManyField(SubService, verbose_name='Sub - Service')
     priority = models.ForeignKey(Priority, models.DO_NOTHING)
@@ -147,7 +194,12 @@ class Topology(models.Model):
         verbose_name_plural = _("Topologies")
 
     def subservices_list(self):
+        """
+        Method to create an HTML enriched list
+        :return:
+        """
         return format_html("<br>".join([subservice.name for subservice in self.subservices.all()]))
+
     subservices_list.allow_tags = True
 
     def __str__(self):
@@ -156,6 +208,12 @@ class Topology(models.Model):
 
 
 class Status(models.Model):
+    """
+    Class to specify the Status Model/Table
+        - A tag name, a color name, a hexadecimal color value,
+        and a class design definition define its structure.
+    """
+
     tag = models.CharField(unique=True, max_length=45, verbose_name='Status')
     color_name = models.CharField(unique=True, max_length=7)
     color_hex = ColorField(default='#000000')
@@ -170,6 +228,19 @@ class Status(models.Model):
 
 
 class Ticket(models.Model):
+    """
+    Class to specify the Ticket Model/Table
+        - A Ticket ID value, a relationship to Subservice Module,
+        a begin - end dates, actions (descriptions and notes),
+        and a notification field define its structure.
+        - The Client Domain name will be mandatory, but no the description field.
+        - The name field could have a maximum of 100 characters.
+        - The actions (notes and description) fields will store an HTML enriched text content.
+        - The relationship with SubServices will help to relate a
+        ticket to a subservice.
+        - The notification action field will control the notification process
+    """
+
     NO = False
     YES = True
     YES_NO_CHOICES = (
@@ -205,6 +276,15 @@ class Ticket(models.Model):
 
 
 class TicketLog(models.Model):
+    """
+    Class to specify the TicketLog Model/Table
+        - A ticket relationship, an status relationship,
+        and actions (dates and notes) define its structure.
+        - The action notes field will store an HTML enriched text content.
+        - The relationship with Ticket will help to related a
+        log to a certain ticket.
+    """
+
     ticket = models.ForeignKey(Ticket, models.CASCADE)
     status = models.ForeignKey(Status, models.DO_NOTHING)
     action_date = models.DateTimeField()
@@ -215,6 +295,14 @@ class TicketLog(models.Model):
 
 
 class Subscriber(models.Model):
+    """
+    Class to specify the Subscriber Model/Table
+        - A Subscriber name, a email, a token, and a relationship
+        to the Service and the Subservice modules define its structure.
+        - The relationship with Services will help to set a
+        subscriber to many services and vice versa, the same with subservice.
+    """
+
     name = models.CharField(max_length=45)
     email = models.CharField(max_length=45)
     token = models.CharField(max_length=128, null=True, blank=True)
@@ -230,13 +318,28 @@ class Subscriber(models.Model):
 
 
 class EmailDomain(models.Model):
+    """
+    Class to specify the EmailDomain Model/Table
+        - A Email Domain name, and a description, define its structure.
+        - The Email Domain name will be mandatory, but no the description field.
+        - The name field could have a maximum of 100 characters.
+        - The description field will store an HTML enriched text content.
+    """
+
     domain = models.CharField(unique=True, max_length=100, verbose_name='Domain Name')
     domain_description = RichTextField(blank=True, null=True, verbose_name='Description')
 
     def description(self):
+        """
+        Method to support HTML formatting.
+        This will allow to visualize HTML enriched description
+        on the administrator zone related to the email domains.
+        :return: A html formatted description
+        """
         if self.domain_description is not None:
             return format_html(self.domain_description)
         return self.domain_description
+
     description.allow_tags = True
 
     class Meta:
