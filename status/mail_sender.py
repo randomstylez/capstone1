@@ -1,5 +1,5 @@
 """
-
+This module will be in charge of all the mailing actions
 """
 import smtplib
 import ssl
@@ -11,16 +11,17 @@ from django.conf import settings
 
 class MailSender:
     """
-
+    Class to support the mailing settings and actions
     """
 
     def __init__(self, html, subject, text, to):
         """
-
-        :param html:
-        :param subject:
-        :param text:
-        :param to:
+        This method will facilitate the setup of the mail service,
+        as well as the message building process
+        :param html: message in html format
+        :param subject: message subject
+        :param text: message in plain text
+        :param to: destination mail info
         """
 
         self.smtp_server = settings.SMTP_HOST
@@ -45,7 +46,7 @@ class MailSender:
 
     def send_mail(self):
         """
-
+        Method in charge to create the mechanism to send the email
         :return:
         """
         # Create a secure SSL context
