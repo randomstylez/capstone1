@@ -34,6 +34,7 @@ class Service(models.Model):
         if self.service_description is not None:
             return format_html(Truncator(self.service_description).chars(250))
         return self.service_description
+
     description.allow_tags = True
 
     class Meta:
