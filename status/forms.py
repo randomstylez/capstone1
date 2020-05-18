@@ -86,7 +86,7 @@ class EmailActions:
     @staticmethod
     def send_subscription_notification(email, token):
 
-        hostname = 'https://status2.amlight.net'
+        hostname = 'https://status.amlight.net'
         view_path = '/subscriber'
 
         link = hostname + view_path + '/' + email + '/' + token
