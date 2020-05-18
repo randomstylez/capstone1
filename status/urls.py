@@ -1,12 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+This module will define all URL Configurations
+to be used by the Application.
+"""
 from django.urls import path
 
-from .views import (
-    ServicesStatusView,
-    SubscriptionView,
-    ServiceHistoryView,
-    ServiceHistoryDetailsView,
+from status.views import ServicesStatusView, SubscriptionView, \
+    ServiceHistoryView, ServiceHistoryDetailsView, \
     ModifyUserSubscription
-)
 
 urlpatterns = [
     path('', ServicesStatusView.as_view(),

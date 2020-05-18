@@ -1,5 +1,23 @@
 [run]
-omit = venv/*, *tests*, status/migrations/*, status/migrations
+omit =
+    venv/*,
+    htmlcov/*,
+    *static/*,
+    *tests*,
+    status/migrations/*,
+    status/migrations
+    *apps.py,
+    *migrations/*,
+    *settings*,
+    *tests/*,
+    *urls.py,
+    *wsgi.py,
+    manage.py,
+    *asgi.py,
+    *__init__.py
+
+plugins =
+    django_coverage_plugin
 
 [report]
 exclude_lines =

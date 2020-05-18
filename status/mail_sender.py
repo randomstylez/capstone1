@@ -1,3 +1,6 @@
+"""
+
+"""
 import smtplib
 import ssl
 from email.mime.multipart import MIMEMultipart
@@ -7,8 +10,18 @@ from django.conf import settings
 
 
 class MailSender:
+    """
+
+    """
 
     def __init__(self, html, subject, text, to):
+        """
+
+        :param html:
+        :param subject:
+        :param text:
+        :param to:
+        """
 
         self.smtp_server = settings.SMTP_HOST
         self.port = settings.SMTP_PORT
@@ -31,6 +44,10 @@ class MailSender:
         self.message.attach(part2)
 
     def send_mail(self):
+        """
+
+        :return:
+        """
         # Create a secure SSL context
         context = ssl.create_default_context()
 

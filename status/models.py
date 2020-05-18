@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+This module will define all the models and their
+relationships to build up the Application logic.
+"""
 from ckeditor.fields import RichTextField
 from colorfield.fields import ColorField
 from django.db import models
@@ -7,10 +12,25 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Service(models.Model):
+    """
+    Class to specify the Services model.
+        - A Service name and description define its structure.
+        - The Service name will be mandatory, but no the description field.
+        - The name field could have a maximum of 100 characters.
+        - The description field will store an HTML enriched text content.
+    """
     name = models.CharField(unique=True, max_length=100, verbose_name='Service')
     service_description = RichTextField(blank=True, null=True, verbose_name='Description')
 
     def description(self):
+        """
+        Method to truncate and render HTML content.
+            - This action will allow visualizing a short
+            description during the object listing process.
+            - The HTML render process will help to visualize
+            HTML rendered content on the listed object's stories.
+        :return: No return
+        """
         if self.service_description is not None:
             return format_html(Truncator(self.service_description).chars(250))
         return self.service_description
@@ -26,11 +46,29 @@ class Service(models.Model):
 
 
 class ClientDomain(models.Model):
+    """
+    Class to specify the Client Domain model.
+        - A Client Domain name, a description, and a relationship
+        to the Service module define its structure.
+        - The Client Domain name will be mandatory, but no the description field.
+        - The name field could have a maximum of 100 characters.
+        - The description field will store an HTML enriched text content.
+        - The relationship with Services will help to set a
+        client domain to many services and vice versa.
+    """
     name = models.CharField(unique=True, max_length=100, verbose_name='Client Domain')
     domain_description = RichTextField(blank=True, null=True, verbose_name='Description')
     services = models.ManyToManyField(Service)
 
     def description(self):
+        """
+        Method to truncate and render HTML content.
+            - This action will allow visualizing a short
+            description during the object listing process.
+            - The HTML render process will help to visualize
+            HTML rendered content on the listed object's stories.
+        :return: No return
+        """
         if self.domain_description is not None:
             return format_html(self.domain_description)
         return self.domain_description

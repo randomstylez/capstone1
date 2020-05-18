@@ -42,8 +42,6 @@ class ServicesStatusView(View):
         if request.session.get('subs_updates', None) is not None:
             del request.session['subs_updates']
 
-        print("I cleaned!")
-
     def get(self, request, *args, **kwargs):
 
         global services
@@ -589,8 +587,7 @@ class ModifyUserSubscription(ListView):
 
         return render(request, self.template_name, context)
 
-    # def post(self, request, *args, **kwargs):
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         """
         Method to modify subscription.
         This will allow to add and remove services and sub-services

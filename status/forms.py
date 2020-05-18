@@ -231,46 +231,51 @@ class TicketForm(forms.ModelForm):
 
             begin = self.cleaned_data['begin'].strftime('%Y-%m-%d %H:%M:%S')
 
-            if 'end' in self.cleaned_data:
+            if 'end' in self.cleaned_data and self.cleaned_data['end'] is not None:
 
-                if self.cleaned_data['end'] is not None:
-                    end = self.cleaned_data['end'].strftime('%Y-%m-%d %H:%M:%S')
+                end = self.cleaned_data['end'].strftime('%Y-%m-%d %H:%M:%S')
 
-                    if begin > end:
-                        self.add_error("begin",
-                                       "The Begin date {} should follow a "
-                                       "chronological order.".format(
-                                           self.cleaned_data["begin"]))
-                        self.add_error("end", "The End date {} should follow a chronological "
-                                              "order.".format(self.cleaned_data["end"]))
-                        raise ValidationError("There are some errors on the Ticket's dates.")
+                if begin > end:
+                    self.add_error("begin",
+                                   "The Begin date {} should follow a "
+                                   "chronological order.".format(
+                                       self.cleaned_data["begin"]))
 
-            if self.changed_data:
+                    self.add_error("end",
+                                   "The End date {} should follow a "
+                                   "chronological order.".format(
+                                       self.cleaned_data["end"]))
 
-                if self.changed_data == ['notify_action'] and not self.instance.notify_action and \
-                        self.cleaned_data['notify_action'] == 'True':
-                    self.instance.notify_action = True
+                    raise ValidationError("There are some errors on the Ticket's dates.")
 
-                    try:
-                        EmailActions.ticket_notification(self.cleaned_data['sub_service'].pk,
-                                                         self.changed_data,
-                                                         self.cleaned_data)
-                        self.instance.user_notified = True
-                    except Exception as e:
-                        print(e)  # we should log this as an error
+            if self.changed_data and (self.changed_data == ['notify_action'] and
+                                      not self.instance.notify_action and
+                                      self.cleaned_data['notify_action'] == 'True'):
 
-                elif self.changed_data != ['notify_action'] and \
-                        (self.cleaned_data['notify_action'] is True or
-                         self.cleaned_data['notify_action'] == 'True'):
-                    self.instance.notify_action = True
+                self.instance.notify_action = True
 
-                    try:
-                        EmailActions.ticket_notification(self.cleaned_data['sub_service'].pk,
-                                                         self.changed_data,
-                                                         self.cleaned_data)
-                        self.instance.user_notified = True
-                    except Exception as e:
-                        print(e)  # we should log this as an error
+                try:
+                    EmailActions.ticket_notification(self.cleaned_data['sub_service'].pk,
+                                                     self.changed_data,
+                                                     self.cleaned_data)
+                    self.instance.user_notified = True
+
+                except Exception as e:
+                    print(e)  # we should log this as an error
+
+            elif self.changed_data and self.changed_data != ['notify_action'] and \
+                    (self.cleaned_data['notify_action'] is True or
+                     self.cleaned_data['notify_action'] == 'True'):
+
+                self.instance.notify_action = True
+
+                try:
+                    EmailActions.ticket_notification(self.cleaned_data['sub_service'].pk,
+                                                     self.changed_data,
+                                                     self.cleaned_data)
+                    self.instance.user_notified = True
+                except Exception as e:
+                    print(e)  # we should log this as an error
 
 
 class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
@@ -297,10 +302,14 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
             for form in self.forms:
                 if form.cleaned_data != {}:
+                    # Review this. I believe that this is an unreachable condition.
+                    # If the form is valid, main begin will have always a value
                     if main_begin is None:
                         main_begin = form.cleaned_data.get('begin').strftime('%Y-%m-%d %H:%M:%S')
 
                     status = form.cleaned_data.get('status')
+                    # Review this. I believe that this is an unreachable condition.
+                    # If the form is valid, status will have always a value
                     if status is not None:
                         status_list.append(status.tag)
                     else:
@@ -334,7 +343,7 @@ class TicketHistoryInlineFormset(forms.models.BaseInlineFormSet):
 
                 if not my_raises:
                     for form in form_list:
-                        if [item for item in set(status_list) if status_list.count(item) > 1].\
+                        if [item for item in set(status_list) if status_list.count(item) > 1]. \
                                 count('No Issues'):
                             if form.cleaned_data['status'].tag == 'No Issues':
                                 form.add_error("status",
