@@ -45,7 +45,6 @@ html, body {
 h1 {
     text-align: center;
     font-family: 'Fira Sans', sans-serif;
-    /*font-weight: Semi-Bold;*/
     font-weight: Bold;
     font-size: 1.5rem;
 }
@@ -276,6 +275,7 @@ h3 {
 
 @media (min-width: 1200px) {
     /*Extra Large*/
+
     .navbar-light .navbar-nav .nav-link, .btn, .dropdown-item, p, .form-control, #subscribe,
     #user_subservices, #user_services, #user_services_to_add, #user_subservices_to_add {
         font-size: 0.8rem;
@@ -290,9 +290,9 @@ h3 {
     }
 }
 
-
 @media (min-width: 1400px) {
     /*Extra Large*/
+
     #incidents_data {
         overflow: auto;
         height: 30rem;

@@ -153,6 +153,13 @@ class TicketAdmin(admin.ModelAdmin):
 
 @admin.register(Subscriber)
 class SubscribersAdmin(admin.ModelAdmin):
+    """
+    Class to support the Subscriber module registering on the admin
+
+    It is created a form relation between this subscription
+    and the SubscriberForm form
+    """
+
     list_display = ('name', 'email')
     search_fields = ['name', 'email']
     ordering = ['name']
@@ -164,6 +171,9 @@ class SubscribersAdmin(admin.ModelAdmin):
 
 @admin.register(Topology)
 class TopologyAdmin(admin.ModelAdmin):
+    """
+    Class to support the Topology module registering on the admin
+    """
 
     list_display = ('service', 'subservices_list', 'priority',)
     list_filter = (('priority',
@@ -184,12 +194,20 @@ class TopologyAdmin(admin.ModelAdmin):
 
 @admin.register(Priority)
 class PriorityAdmin(admin.ModelAdmin):
+    """
+    Class to support the Priority module registering on the admin
+    """
+
     list_display = ('tag', 'color', 'color_hex')
     ordering = ['tag']
 
 
 @admin.register(EmailDomain)
 class EmailDomainAdmin(admin.ModelAdmin):
+    """
+    Class to support the EmailDomain module registering on the admin
+    """
+
     list_display = ('domain', 'description')
     search_fields = ['domain', 'domain_description']
     ordering = ['domain']
