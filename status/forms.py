@@ -114,6 +114,14 @@ class EmailActions:
 
     @staticmethod
     def ticket_notification(sub_service_id, changed_data, cleaned_data, cleaned_data_ext=None):
+        """
+        Method in charge to control the ticket notification process
+        :param sub_service_id:
+        :param changed_data:
+        :param cleaned_data:
+        :param cleaned_data_ext: It will get all the data related to the ticket logs
+        :return:
+        """
 
         # It gets all the users who belong to that Sub Service
 
