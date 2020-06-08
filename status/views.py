@@ -51,8 +51,66 @@ class ServicesStatusView(View):
         # Getting most recent 5 tickets
         queryset = Ticket.objects.all().order_by('begin').reverse()[:5]
 
+        # Initializing queryset to empty
+        recent_tickets = Ticket.objects.none()
+
+        new_queryset = None
+
+        if queryset:
+            recent_tickets_list = recent_tickets | queryset
+
+            recent_high_high_priority_tickets = list()
+            recent_high_low_priority_tickets = list()
+            recent_medium_high_priority_tickets = list()
+            recent_medium_low_priority_tickets = list()
+            recent_low_priority_ticket = list()
+
+            for ticket in recent_tickets_list:
+
+                status = ticket.status.tag
+                if status == "Outage":
+                    recent_high_high_priority_tickets.append(ticket)
+                elif status == "Alert":
+                    recent_high_low_priority_tickets.append(ticket)
+                elif status == "In Process":
+                    recent_medium_high_priority_tickets.append(ticket)
+                elif status == "Planned":
+                    recent_medium_low_priority_tickets.append(ticket)
+                else:
+                    recent_low_priority_ticket.append(ticket)
+
+            queryset_high_high = Ticket.objects.none()
+            if len(recent_high_high_priority_tickets):
+                custom_list = [ticket.id for ticket in recent_high_high_priority_tickets]
+                queryset_high_high = Ticket.objects.filter(pk__in=custom_list)
+
+            queryset_high_low = Ticket.objects.none()
+            if len(recent_high_low_priority_tickets):
+                custom_list = [ticket.id for ticket in recent_high_low_priority_tickets]
+                queryset_high_low = Ticket.objects.filter(pk__in=custom_list)
+
+            queryset_medium_high = Ticket.objects.none()
+            if len(recent_medium_high_priority_tickets):
+                custom_list = [ticket.id for ticket in recent_medium_high_priority_tickets]
+                queryset_medium_high = Ticket.objects.filter(pk__in=custom_list)
+
+            queryset_medium_low = Ticket.objects.none()
+            if len(recent_medium_low_priority_tickets):
+                custom_list = [ticket.id for ticket in recent_medium_low_priority_tickets]
+                queryset_medium_low = Ticket.objects.filter(pk__in=custom_list)
+
+            queryset_low = Ticket.objects.none()
+            if len(recent_low_priority_ticket):
+                custom_list = [ticket.id for ticket in recent_low_priority_ticket]
+                queryset_low = Ticket.objects.filter(pk__in=custom_list)
+
+            new_queryset = queryset_high_high.union(queryset_high_low,
+                                                    queryset_medium_high,
+                                                    queryset_medium_low,
+                                                    queryset_low)
+
         context = {
-            "ticket_list": queryset,
+            "ticket_list": new_queryset,
             "service_active": True
         }
 
