@@ -49,7 +49,8 @@ class ServicesStatusView(View):
         self.remove_sessions(request)
 
         # Getting most recent 5 tickets
-        queryset = Ticket.objects.all().order_by('begin').reverse()[:5]
+        # queryset = Ticket.objects.all().order_by('begin').reverse()[:5]
+        queryset = Ticket.objects.all().order_by('pk').reverse()[:5]
 
         # Initializing queryset to empty
         recent_tickets = Ticket.objects.none()
@@ -195,6 +196,7 @@ class ServicesStatusView(View):
             status_per_day = list()
             for day in list_of_five_days:
                 active_tickets_per_day = tickets_list.filter(begin__lte=day).exclude(end__lte=day)
+                # active_tickets_per_day = tickets_list.filter(begin__lte=day)
 
                 if active_tickets_per_day:
 
@@ -221,6 +223,16 @@ class ServicesStatusView(View):
                         status_per_day.append(low_priority[0].status)
                     else:
                         status_per_day.append(no_issues)
+
+                    # if priority_tickets:
+                    #     status_per_day.append(priority_tickets[0].status)
+                    # if medium_priority_tickets:
+                    #     status_per_day.append(medium_priority_tickets[0].status)
+                    # if low_priority:
+                    #     status_per_day.append(low_priority[0].status)
+                    #
+                    # if not priority_tickets and not medium_priority_tickets and not low_priority:
+                    #     status_per_day.append(no_issues)
 
                 else:
                     status_per_day.append(no_issues)
