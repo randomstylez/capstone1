@@ -188,11 +188,9 @@
                                             {% for status_day in status_days %}
                                                 {% for id, status in status_day.items %}
                                                     {% if id == 'None' %}
-{#                                                        <i class="{{ status_day.class_design }}" style="color: {{ status_day.color_hex }}"></i>#}
                                                         <i class="{{ status.class_design }}" style="color: {{ status.color_hex }}"></i>
                                                     {% else %}
                                                         <a href="/details/{{ id }}">
-{#                                                            <i class="{{ status_day.class_design }}" style="color: {{ status_day.color_hex }}"></i>#}
                                                             <i class="{{ status.class_design }}" style="color: {{ status.color_hex }}"></i>
                                                         </a>
                                                     {% endif %}
