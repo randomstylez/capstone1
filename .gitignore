@@ -26,6 +26,8 @@ htmlcov
 htmlcov/
 htmlcov/*
 
+sent_emails/*.log
+
 .coverage
 .coverage.*
 coverage.xml
