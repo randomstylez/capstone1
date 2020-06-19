@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+from django.core.mail.utils import DNS_NAME
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -150,6 +152,16 @@ SMTP_HOST = "XXXSMTPHOSTXXX"
 SMTP_PORT = 587
 SMTP_USER = "XXXSMTPUSERXXX"
 SMTP_PASS = "XXXSMTPPASSXXX"
+
+# SMTP Configuration
+DNS_NAME._fqdn = 'localhost'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'XXXSMTPHOSTXXX'
+DEFAULT_FROM_EMAIL = 'XXXSMTPUSERXXX'
+EMAIL_HOST_USER = 'XXXSMTPUSERXXX'
+EMAIL_HOST_PASSWORD = 'XXXSMTPPASSXXX'
+EMAIL_PORT = 587
 
 SESSION_COOKIE_SECURE = True
 
