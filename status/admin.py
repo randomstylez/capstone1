@@ -50,7 +50,7 @@ class ClientDomainAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'scope_type')
+    list_display = ('name', 'description', 'scope')
     search_fields = ['name', 'service_description', 'topology__subservices__name',
                      'clientdomain__region__name']
     list_filter = (('topology__subservices__ticket__status__tag',

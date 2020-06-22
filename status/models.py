@@ -22,10 +22,11 @@ class Service(models.Model):
     """
     MULTI_DOMAIN = "multi_domain"
     INTER_DOMAIN = "inter_domain"
-    DOMAIN_CHOICES = [
+    DOMAIN_CHOICES = (
         (MULTI_DOMAIN, "Multi-Domain"),
         (INTER_DOMAIN, "Inter-Domain")  
-    ]
+    )
+
     name = models.CharField(unique=True, max_length=100, verbose_name='Service')
     service_description = RichTextField(blank=True, null=True, verbose_name='Description')
     scope = models.CharField(max_length=30, choices=DOMAIN_CHOICES, default=MULTI_DOMAIN, blank=False)
@@ -37,7 +38,7 @@ class Service(models.Model):
             description during the object listing process.
             - The HTML render process will help to visualize
             HTML rendered content on the listed object's stories.
-        :return: No return
+        :return: a truncated value formatted to HTML
         """
         if self.service_description is not None:
             return format_html(Truncator(self.service_description).chars(250))
