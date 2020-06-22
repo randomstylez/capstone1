@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django_admin_listfilter_dropdown.filters import ChoiceDropdownFilter, DropdownFilter, RelatedDropdownFilter
+from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDropdownFilter
 
-from status.forms import TicketHistoryInlineFormset, TicketForm, SubscriberForm, ClientDomainForm
+from status.forms import TicketHistoryInlineFormset, TicketForm, SubscriberForm
 from .models import ClientDomain
 from .models import EmailDomain
 from .models import Priority
@@ -32,7 +32,6 @@ class RegionAdmin(admin.ModelAdmin):
 
 @admin.register(ClientDomain)
 class ClientDomainAdmin(admin.ModelAdmin):
-    form = ClientDomainForm
     list_display = ('name', 'description',)
     search_fields = ['name', 'domain_description']
     list_filter = (('services__topology__subservices__ticket__status__tag',
@@ -42,15 +41,13 @@ class ClientDomainAdmin(admin.ModelAdmin):
                    ('services__name',
                     DropdownFilter),
                    ('services__topology__subservices__name',
-                    DropdownFilter),
-                    ('services__scope',
                     DropdownFilter))
     ordering = ['name']
 
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'scope_type')
+    list_display = ('name', 'description',)
     search_fields = ['name', 'service_description', 'topology__subservices__name',
                      'clientdomain__region__name']
     list_filter = (('topology__subservices__ticket__status__tag',
@@ -60,9 +57,7 @@ class ServiceAdmin(admin.ModelAdmin):
                    ('clientdomain__name',
                     DropdownFilter),
                    ('topology__subservices__name',
-                    DropdownFilter),
-                    ('scope', 
-                    ChoiceDropdownFilter))
+                    DropdownFilter))
     ordering = ['name']
 
 
