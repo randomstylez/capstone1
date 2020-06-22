@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDropdownFilter
+from django_admin_listfilter_dropdown.filters import ChoiceDropdownFilter, DropdownFilter, RelatedDropdownFilter
 
 from status.forms import TicketHistoryInlineFormset, TicketForm, SubscriberForm
 from .models import ClientDomain
@@ -47,7 +47,7 @@ class ClientDomainAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description',)
+    list_display = ('name', 'description', 'scope_type')
     search_fields = ['name', 'service_description', 'topology__subservices__name',
                      'clientdomain__region__name']
     list_filter = (('topology__subservices__ticket__status__tag',
@@ -57,7 +57,9 @@ class ServiceAdmin(admin.ModelAdmin):
                    ('clientdomain__name',
                     DropdownFilter),
                    ('topology__subservices__name',
-                    DropdownFilter))
+                    DropdownFilter),
+                    ('scope', 
+                    ChoiceDropdownFilter))
     ordering = ['name']
 
 
