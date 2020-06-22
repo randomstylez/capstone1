@@ -12,6 +12,37 @@ from .models import SubService
 from .models import Subscriber
 from .models import Ticket
 from .models import Topology
+from .models import ClientDomain
+
+
+class ClientDomainForm(forms.ModelForm):
+
+    def clean(self):
+        services = self.cleaned_data['services']
+        
+        tmp_inter_services = []  # list to hold inter-domain services chosen by user
+
+        for service in services:
+            if service.scope == Service.INTER_DOMAIN:
+                # tmp_inter_services.append(service.name)
+                
+                """
+                if user chose more than 1 inter-domain service
+                currently the feature is not needed, but will be
+                left here commented out if that feature is needed
+                in the future
+                """
+                # if len(tmp_inter_services) > 1:  
+                #     self.add_error("services", "Only 1 inter-domain service can be chosen. \
+                #             Please choose between " + " and ".join(tmp_inter_services))
+                #     raise ValidationError("There are some errors in services")
+
+                # check if it is already taken by another client domain
+                if ClientDomain.objects.filter(services__in=[service]) \
+                        .exclude(name=self.instance).exists():
+                    self.add_error("services", "{} is an inter-domain service and has  \
+                                already been taken.".format(service))
+                    raise ValidationError("There are some errors in services")
 
 
 class EmailActions:
