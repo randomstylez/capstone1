@@ -18,17 +18,9 @@ class Service(models.Model):
         - The Service name will be mandatory, but no the description field.
         - The name field could have a maximum of 100 characters.
         - The description field will store an HTML enriched text content.
-        - The scope field will identify if service is inter-domain or multi-domain
     """
-    MULTI_DOMAIN = "multi_domain"
-    INTER_DOMAIN = "inter_domain"
-    DOMAIN_CHOICES = [
-        (MULTI_DOMAIN, "Multi-Domain"),
-        (INTER_DOMAIN, "Inter-Domain")  
-    ]
     name = models.CharField(unique=True, max_length=100, verbose_name='Service')
     service_description = RichTextField(blank=True, null=True, verbose_name='Description')
-    scope = models.CharField(max_length=30, choices=DOMAIN_CHOICES, default=MULTI_DOMAIN, blank=True)
 
     def description(self):
         """
@@ -52,9 +44,6 @@ class Service(models.Model):
 
     def __str__(self):
         return self.name
-    
-    def scope_type(self):
-        return str(self.scope).upper()
 
 
 class ClientDomain(models.Model):

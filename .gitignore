@@ -33,4 +33,3 @@ sent_emails/*.log
 coverage.xml
 *.cover
 .coveragerc
-status/migrations/0044_service_scope.py
