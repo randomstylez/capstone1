@@ -239,7 +239,7 @@ class Status(models.Model):
         return self.tag
 
 
-def getNewTicketId():
+def get_new_ticket_id():
     # this method returns the 'id' of the last ticket object added to the DB and increments it by 1
     # if 8 ticket objects are in the database it will return T000000009
     latest_tickets_id_plus1 = 'T' + str(Ticket.objects.latest('id').id + 1).zfill(8)
@@ -268,7 +268,7 @@ class Ticket(models.Model):
         (YES, 'Yes')
     )
 
-    ticket_id = models.CharField(unique=True, max_length=10, default=getNewTicketId)
+    ticket_id = models.CharField(unique=True, max_length=10, default=get_new_ticket_id)
 
     # This action (models.SET_NULL) will allow keeping tickets regardless of
     # the deletion of the sub-service where they belong.
