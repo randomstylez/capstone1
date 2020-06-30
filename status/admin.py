@@ -113,6 +113,7 @@ class TicketHistoryInline(admin.StackedInline):
 class TicketAdmin(admin.ModelAdmin):
     list_display = ('ticket_id', 'sub_service', 'status', 'begin', 'end', 'notify_action',)
 
+
     fieldsets = [
         ('Sub-Service on process', {'fields': ['ticket_id', 'sub_service', 'status']}),
         ('Date information', {'fields': ['begin', 'end']}),
@@ -122,9 +123,11 @@ class TicketAdmin(admin.ModelAdmin):
 
     inlines = [TicketHistoryInline]
 
-    # readonly_fields = ['notify_action']
+    # ticket id will be auto generated when landing on Add Ticket
+    readonly_fields = ['ticket_id']
 
-    search_fields = ['ticket_id', 'sub_service__name', 'status__tag']
+    search_fields = ['sub_service__name', 'status__tag'] #removed ticket_id 6/29
+
     list_filter = (('status',
                     RelatedDropdownFilter),
                    ('sub_service__topology__service__clientdomain__region__name',
