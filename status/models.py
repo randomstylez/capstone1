@@ -246,6 +246,7 @@ def getNewTicketId():
 
     return latest_tickets_id_plus1
 
+
 class Ticket(models.Model):
     """
     Class to specify the Ticket Model/Table
